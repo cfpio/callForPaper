@@ -37,7 +37,7 @@ public class CommentUserService {
      * @return List of comments
      */
     public List<CommentUser> findAll(int userId, int talkId) {
-        List<Comment> comments = commentRepo.findByTalkForUser(talkId, userId);
+        List<Comment> comments = commentRepo.findByTalkForUser(talkId, userId, Event.current());
         return mapper.mapAsList(comments, CommentUser.class);
     }
 
@@ -72,7 +72,7 @@ public class CommentUserService {
      * @return Edited comment or null if talk doesn't exists for this user
      */
     public CommentUser editComment(int userId, int talkId, CommentUser commentUser) {
-        Comment comment = commentRepo.findByIdForTalkAndUser(commentUser.getId(), talkId, userId);
+        Comment comment = commentRepo.findByIdForTalkAndUser(commentUser.getId(), talkId, userId, Event.current());
         if (comment == null) return null;
         if (comment.getUser() != null && comment.getUser().getId() !=  userId) return null; //cannot edit a comment posted by an other user
 

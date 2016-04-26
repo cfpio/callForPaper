@@ -43,7 +43,7 @@ public class CommentAdminService {
      * @return List of comments
      */
     public List<CommentUser> findAll(int talkId, boolean internal) {
-        List<Comment> comments = commentRepo.findByTalkIdAndInternal(talkId, internal);
+        List<Comment> comments = commentRepo.findByEventIdAndTalkIdAndInternal(Event.current(), talkId, internal);
         return mapper.mapAsList(comments, CommentUser.class);
     }
 
@@ -79,7 +79,7 @@ public class CommentAdminService {
      * @return Edited comment or null if talk doesn't
      */
     public CommentUser editComment(CommentUser commentUser) {
-        Comment comment = commentRepo.findOne(commentUser.getId());
+        Comment comment = commentRepo.findByIdAndEventId(commentUser.getId(), Event.current());
         if (comment == null) return null;
 
         mapper.map(commentUser, comment);
@@ -89,11 +89,11 @@ public class CommentAdminService {
     }
 
     /**
-     * Delete a comment
-     * @param comment Comment to delete
-     * @return Deleted comment
+     * Delete a id
+     * @param id Comment to delete
+     * @return Deleted id
      */
-    public void delete(int comment) {
-        commentRepo.delete(comment);
+    public void delete(int id) {
+        commentRepo.deleteByIdAndEventId(id, Event.current());
     }
 }
