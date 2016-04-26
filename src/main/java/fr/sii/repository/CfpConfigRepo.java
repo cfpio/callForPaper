@@ -10,10 +10,10 @@ import org.springframework.data.repository.query.Param;
  */
 public interface CfpConfigRepo extends JpaRepository<CfpConfig, Integer>{
 
-    @Query("SELECT c.value FROM CfpConfig c where c.key = :cKey")
-    String findValueByKey(@Param("cKey") String key);
+    @Query("SELECT c.value FROM CfpConfig c where c.key = :cKey and c.event.id = :eventId")
+    String findValueByKey(@Param("cKey") String key, @Param("eventId") String eventId);
 
-    CfpConfig findByKey(String key);
+    CfpConfig findByKeyAndEventId(String key, String eventId);
 
 
 }

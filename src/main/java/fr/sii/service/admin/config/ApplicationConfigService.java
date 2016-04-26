@@ -2,13 +2,12 @@ package fr.sii.service.admin.config;
 
 import fr.sii.dto.ApplicationSettings;
 import fr.sii.entity.CfpConfig;
+import fr.sii.entity.Event;
 import fr.sii.repository.CfpConfigRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,12 +34,12 @@ public class ApplicationConfigService {
     public ApplicationSettings getAppConfig() {
         ApplicationSettings applicationSettings = new ApplicationSettings();
 
-        applicationSettings.setEventName(cfpConfigRepo.findValueByKey(EVENT_NAME));
-        applicationSettings.setCommunity(cfpConfigRepo.findValueByKey(COMMUNITY));
-        applicationSettings.setDate(cfpConfigRepo.findValueByKey(DATE));
-        applicationSettings.setDecisionDate(cfpConfigRepo.findValueByKey(DECISION_DATE));
-        applicationSettings.setReleaseDate(cfpConfigRepo.findValueByKey(RELEASE_DATE));
-        applicationSettings.setOpen(Boolean.valueOf(cfpConfigRepo.findValueByKey(OPEN)));
+        applicationSettings.setEventName(cfpConfigRepo.findValueByKey(EVENT_NAME, Event.current()));
+        applicationSettings.setCommunity(cfpConfigRepo.findValueByKey(COMMUNITY, Event.current()));
+        applicationSettings.setDate(cfpConfigRepo.findValueByKey(DATE, Event.current()));
+        applicationSettings.setDecisionDate(cfpConfigRepo.findValueByKey(DECISION_DATE, Event.current()));
+        applicationSettings.setReleaseDate(cfpConfigRepo.findValueByKey(RELEASE_DATE, Event.current()));
+        applicationSettings.setOpen(Boolean.valueOf(cfpConfigRepo.findValueByKey(OPEN, Event.current())));
         applicationSettings.setConfigured(true);
 
         return applicationSettings;
@@ -48,7 +47,7 @@ public class ApplicationConfigService {
 
     @Cacheable("isCfpOpen")
     public boolean isCfpOpen() {
-        CfpConfig conf = cfpConfigRepo.findByKey(OPEN);
+        CfpConfig conf = cfpConfigRepo.findByKeyAndEventId(OPEN, Event.current());
         return Boolean.valueOf(conf.getValue());
     }
 
@@ -67,7 +66,7 @@ public class ApplicationConfigService {
     @CacheEvict("applicationSettings")
     @Transactional
     public void saveConf(String key, String value) {
-        CfpConfig conf = cfpConfigRepo.findByKey(key);
+        CfpConfig conf = cfpConfigRepo.findByKeyAndEventId(key, Event.current());
         conf.setValue(value);
         cfpConfigRepo.save(conf);
 
