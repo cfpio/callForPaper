@@ -91,7 +91,7 @@ public class RateAdminService {
         Rate newRate = mapper.map(rate, Rate.class);
         newRate.setAdded(new Date());
         newRate.setAdminUser(admin);
-        newRate.setTalk(talkRepo.getOne(talkId));
+        newRate.setTalk(talkRepo.getOne(talkId));     // FIXME do we need to check the talk belong to current event ?
         rateRepo.save(newRate);
         rateRepo.flush(); //to get rate id
         return mapper.map(newRate, RateAdmin.class);

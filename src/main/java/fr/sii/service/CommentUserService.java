@@ -2,6 +2,7 @@ package fr.sii.service;
 
 import fr.sii.dto.CommentUser;
 import fr.sii.entity.Comment;
+import fr.sii.entity.Event;
 import fr.sii.entity.Talk;
 import fr.sii.repository.CommentRepo;
 import fr.sii.repository.TalkRepo;
@@ -48,7 +49,7 @@ public class CommentUserService {
      * @return Added comment or null if talk doesn't exists for this user
      */
     public CommentUser addComment(int userId, int talkId, CommentUser commentUser) {
-        Talk talk = talkRepo.findByIdAndUserId(talkId, userId);
+        Talk talk = talkRepo.findByIdAndEventIdAndUserId(talkId, Event.current(), userId);
         if (talk == null) return null;
 
         Comment comment = mapper.map(commentUser, Comment.class);

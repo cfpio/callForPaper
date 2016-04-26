@@ -3,6 +3,7 @@ package fr.sii.service;
 import fr.sii.dto.CommentUser;
 import fr.sii.entity.AdminUser;
 import fr.sii.entity.Comment;
+import fr.sii.entity.Event;
 import fr.sii.entity.Talk;
 import fr.sii.entity.User;
 import fr.sii.repository.CommentRepo;
@@ -55,7 +56,7 @@ public class CommentAdminService {
      * @return Added comment or null if talk doesn't exists
      */
     public CommentUser addComment(AdminUser admin, int talkId, CommentUser commentUser, boolean internal) {
-        Talk talk = talkRepo.findOne(talkId);
+        Talk talk = talkRepo.findByIdAndEventId(talkId, Event.current());
         if (talk == null) return null;
         List<User> users = userRepo.findByEmail(admin.getEmail());
         if (users.isEmpty()) throw new IllegalStateException("Admin with email [" + admin.getEmail() + "] doesn't exists in user table");

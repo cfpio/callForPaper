@@ -64,7 +64,7 @@ public class TalkAdminService {
      * @return List of talks
      */
     public List<TalkAdmin> findAll(Talk.State... states) {
-        List<Talk> talks = talkRepo.findByStatesFetch(Arrays.asList(states));
+        List<Talk> talks = talkRepo.findByEventIdAndStatesFetch(Event.current(), Arrays.asList(states));
         List<Rate> rates = rateRepo.findAllFetchAdmin(Event.current());
 
         AdminUser admin = adminUserService.getCurrentUser();
@@ -96,7 +96,7 @@ public class TalkAdminService {
      * @return Talk or null if not found
      */
     public TalkAdmin getOne(int talkId) {
-        Talk talk = talkRepo.findOne(talkId);
+        Talk talk = talkRepo.findByIdAndEventId(talkId, Event.current());
         TalkAdmin talkAdmin = mapper.map(talk, TalkAdmin.class);
         UserProfil user = mapper.map(talk.getUser(),UserProfil.class);
         user.setImageProfilURL(talk.getUser().getImageProfilURL());
@@ -111,7 +111,7 @@ public class TalkAdminService {
      * @return Edited talk
      */
     public TalkAdmin edit(TalkAdmin talkAdmin)  throws CospeakerNotFoundException {
-      Talk talk = talkRepo.findOne(talkAdmin.getId());
+      Talk talk = talkRepo.findByIdAndEventId(talkAdmin.getId(), Event.current());
       if (talk == null) return null;
 
 
@@ -153,7 +153,7 @@ public class TalkAdminService {
      * @return Deleted talk
      */
     public TalkAdmin delete(int talkId) {
-        Talk talk = talkRepo.findOne(talkId);
+        Talk talk = talkRepo.findByIdAndEventId(talkId, Event.current());
         TalkAdmin deleted = mapper.map(talk, TalkAdmin.class);
         talkRepo.delete(talk);
         return deleted;
