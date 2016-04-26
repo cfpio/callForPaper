@@ -2,6 +2,7 @@ package fr.sii.service.admin.user;
 
 import java.util.List;
 
+import fr.sii.entity.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +28,7 @@ public class AdminUserService {
 
     public List<AdminUser> findAll()
     {
-        return adminUserRepo.findAll();
+        return adminUserRepo.findByEventId(Event.current());
     }
 
     /**
@@ -38,7 +39,7 @@ public class AdminUserService {
     public AdminUser findFromUserId(int userId) {
         User user = userRepo.findOne(userId);
         if (user == null) return null;
-        return adminUserRepo.findByEmail(user.getEmail());
+        return adminUserRepo.findByEventIdAndEmail(Event.current(), user.getEmail());
     }
 
     /**

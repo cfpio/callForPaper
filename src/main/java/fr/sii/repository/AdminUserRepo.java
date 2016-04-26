@@ -6,5 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface AdminUserRepo extends JpaRepository<AdminUser, Integer> {
-    AdminUser findByEmail(String email);
+
+    AdminUser findByEventIdAndEmail(String eventId, String email);
+
+    List<AdminUser> findByEventId(String eventId);
 }
