@@ -23,7 +23,7 @@ public interface CommentRepo extends JpaRepository<Comment, Integer> {
      */
     @Query("SELECT c FROM Comment c " +
             "JOIN c.talk t JOIN t.user u " +
-            "WHERE c.id = :cId AND t.event.id = :eventId AND.id = :tId AND u.id = :uId AND c.internal = false")
+            "WHERE c.id = :cId AND t.event.id = :eventId AND id = :tId AND u.id = :uId AND c.internal = false")
     Comment findByIdForTalkAndUser(@Param("cId") int commentId, @Param("tId") int talkId, @Param("uId") int userId, @Param("eventId") String eventId);
 
     /**
