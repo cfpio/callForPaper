@@ -10,13 +10,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import fr.sii.entity.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import fr.sii.domain.exception.CospeakerNotFoundException;
 import fr.sii.dto.Speaker;
-import fr.sii.dto.TalkAdmin;
 import fr.sii.dto.TalkUser;
 import fr.sii.dto.TrackDto;
 import fr.sii.dto.user.CospeakerProfil;
@@ -309,7 +309,7 @@ public class TalkUserService {
         setCoSpeaker(talkUser, talk);
 
         talkUser.setState(newState);
-        talk.setTrack(trackRepo.findOne(talkUser.getTrackId()));
+        talk.setTrack(trackRepo.findByIdAndEventId(talkUser.getTrackId(), Event.current()));
         talk.setTalkFormat(talkFormatRepo.findOne(talkUser.getFormat()));
         mapper.map(talkUser, talk);
 

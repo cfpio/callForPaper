@@ -3,6 +3,7 @@ package fr.sii.service;
 import fr.sii.dto.TalkAdmin;
 import fr.sii.dto.user.UserProfil;
 import fr.sii.entity.AdminUser;
+import fr.sii.entity.Event;
 import fr.sii.entity.Rate;
 import fr.sii.entity.Talk;
 import fr.sii.repository.RateRepo;
@@ -11,7 +12,6 @@ import fr.sii.repository.TrackRepo;
 import fr.sii.repository.UserRepo;
 import fr.sii.entity.User;
 
-import fr.sii.entity.TalkFormat;
 import fr.sii.dto.user.CospeakerProfil;
 import fr.sii.domain.exception.CospeakerNotFoundException;
 
@@ -25,8 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.ArrayList;
 import java.util.HashSet;
 
 
@@ -117,7 +115,7 @@ public class TalkAdminService {
       if (talk == null) return null;
 
 
-      talk.setTrack(trackRepo.findOne(talkAdmin.getTrackId()));
+      talk.setTrack(trackRepo.findByIdAndEventId(talkAdmin.getTrackId(), Event.current()));
       talk.setTalkFormat(talkFormatRepo.findOne(talkAdmin.getFormat()));
       setCoSpeaker(talkAdmin, talk);
 
