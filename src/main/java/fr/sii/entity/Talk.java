@@ -38,6 +38,8 @@ public class Talk {
     private Date added;
     private TalkFormat talkFormat;
     private User user;
+    private Event event;
+
     //schedule data
     private Date date;
     private String heure;
@@ -49,12 +51,15 @@ public class Talk {
         return talkFormat.getDureeMinutes();
     }
 
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getId() {
         return id;
+    }
+
+    @ManyToOne
+    public Event getEvent() {
+        return event;
     }
 
     @NotNull
@@ -124,6 +129,10 @@ public class Talk {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
     }
 
     public void setState(State state) {

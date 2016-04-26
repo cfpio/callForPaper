@@ -335,13 +335,56 @@
         </insert>
     </changeSet>
 
-		<changeSet id="18" author="marc">
-			<update tableName="tracks">
-        <column name="description" value="Langages"/>
-				<column name="libelle" value="Langages"/>
-        <where>id = 7</where>
-    </update>
+    <changeSet id="18" author="marc">
+		<update tableName="tracks">
+            <column name="description" value="Langages"/>
+            <column name="libelle" value="Langages"/>
+            <where>id = 7</where>
+        </update>
     </changeSet>
 
+    <changeSet id="19" author="ndeloof">
+        <comment>Creation of tenant ID discriminator column</comment>
+        <createTable tableName="events">
+            <column name="id" type="varchar(255)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+        </createTable>
+        <addColumn tableName="admins">
+            <column name="event_id" type="varchar(255)"/>
+        </addColumn>
+        <addForeignKeyConstraint constraintName="fk_event_1" referencedTableName="events" baseColumnNames="event_id" baseTableName="admins" referencedColumnNames="id"/>
+
+        <addColumn tableName="cfpconfig">
+            <column name="event_id" type="varchar(255)"/>
+        </addColumn>
+        <addForeignKeyConstraint constraintName="fk_event_2" referencedTableName="events" baseColumnNames="event_id" baseTableName="cfpconfig" referencedColumnNames="id"/>
+
+        <addColumn tableName="talks">
+            <column name="event_id" type="varchar(255)"/>
+        </addColumn>
+        <addForeignKeyConstraint constraintName="fk_event_3" referencedTableName="events" baseColumnNames="event_id" baseTableName="talks" referencedColumnNames="id"/>
+
+        <addColumn tableName="talkformat">
+            <column name="event_id" type="varchar(255)"/>
+        </addColumn>
+        <addForeignKeyConstraint constraintName="fk_event_4" referencedTableName="events" baseColumnNames="event_id" baseTableName="talkformat" referencedColumnNames="id"/>
+
+        <addColumn tableName="tracks">
+            <column name="event_id" type="varchar(255)"/>
+        </addColumn>
+        <addForeignKeyConstraint constraintName="fk_event_5" referencedTableName="events" baseColumnNames="event_id" baseTableName="tracks" referencedColumnNames="id"/>
+
+        <addColumn tableName="comments">
+            <column name="event_id" type="varchar(255)"/>
+        </addColumn>
+        <addForeignKeyConstraint constraintName="fk_event_6" referencedTableName="events" baseColumnNames="event_id" baseTableName="comments" referencedColumnNames="id"/>
+
+        <addColumn tableName="rates">
+            <column name="event_id" type="varchar(255)"/>
+        </addColumn>
+        <addForeignKeyConstraint constraintName="fk_event_7" referencedTableName="events" baseColumnNames="event_id" baseTableName="rates" referencedColumnNames="id"/>
+
+    </changeSet>
 
 </databaseChangeLog>

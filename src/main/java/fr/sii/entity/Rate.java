@@ -21,11 +21,21 @@ public class Rate {
 
     private Talk talk;
     private AdminUser adminUser;
+    private Event event;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getId() {
         return id;
+    }
+
+    @ManyToOne
+    public Event getEvent() {
+        return event;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
     }
 
     @Max(5)
