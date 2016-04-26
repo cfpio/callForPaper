@@ -250,7 +250,7 @@ public class TalkUserService {
      * @return List of talk formats
      */
     public List<TalkFormat> getTalkFormat() {
-        return talkFormatRepo.findAll();
+        return talkFormatRepo.findByEventId(Event.current());
     }
 
     /**
@@ -310,7 +310,7 @@ public class TalkUserService {
 
         talkUser.setState(newState);
         talk.setTrack(trackRepo.findByIdAndEventId(talkUser.getTrackId(), Event.current()));
-        talk.setTalkFormat(talkFormatRepo.findOne(talkUser.getFormat()));
+        talk.setTalkFormat(talkFormatRepo.findByIdAndEventId(talkUser.getFormat(), Event.current()));
         mapper.map(talkUser, talk);
 
         talkRepo.save(talk);

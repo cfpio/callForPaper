@@ -116,7 +116,7 @@ public class TalkAdminService {
 
 
       talk.setTrack(trackRepo.findByIdAndEventId(talkAdmin.getTrackId(), Event.current()));
-      talk.setTalkFormat(talkFormatRepo.findOne(talkAdmin.getFormat()));
+      talk.setTalkFormat(talkFormatRepo.findByIdAndEventId(talkAdmin.getFormat(), Event.current()));
       setCoSpeaker(talkAdmin, talk);
 
       mapper.map(talkAdmin, talk);
