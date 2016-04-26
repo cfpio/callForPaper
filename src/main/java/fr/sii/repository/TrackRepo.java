@@ -13,5 +13,5 @@ public interface TrackRepo extends JpaRepository<Track, Integer> {
 
     Track findByIdAndEventId(int integer, String eventId);
 
-    List<Track> findAll();
+    List<Track> findByEventId(String eventId);
 }

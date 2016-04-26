@@ -65,7 +65,7 @@ public class TalkAdminService {
      */
     public List<TalkAdmin> findAll(Talk.State... states) {
         List<Talk> talks = talkRepo.findByStatesFetch(Arrays.asList(states));
-        List<Rate> rates = rateRepo.findAllFetchAdmin();
+        List<Rate> rates = rateRepo.findAllFetchAdmin(Event.current());
 
         AdminUser admin = adminUserService.getCurrentUser();
         Map<Integer, List<Rate>> reviewed = rates.stream()

@@ -2,6 +2,7 @@ package fr.sii.service;
 
 import fr.sii.dto.RateAdmin;
 import fr.sii.entity.AdminUser;
+import fr.sii.entity.Event;
 import fr.sii.entity.Rate;
 import fr.sii.repository.RateRepo;
 import fr.sii.repository.TalkRepo;
@@ -34,7 +35,7 @@ public class RateAdminService {
      * @return All rates
      */
     public List<RateAdmin> getAll() {
-        List<Rate> rates = rateRepo.findAll();
+        List<Rate> rates = rateRepo.findByEventId(Event.current());
         return mapper.mapAsList(rates, RateAdmin.class);
     }
 
@@ -44,7 +45,7 @@ public class RateAdminService {
      * @return Rates
      */
     public List<RateAdmin> findForUser(int userId) {
-        List<Rate> rates = rateRepo.findByTalkUserId(userId);
+        List<Rate> rates = rateRepo.findByEventIdAndTalkUserId(Event.current(), userId);
         return mapper.mapAsList(rates, RateAdmin.class);
     }
 
@@ -54,7 +55,7 @@ public class RateAdminService {
      * @return Rates
      */
     public List<RateAdmin> findForTalk(int talkId) {
-        List<Rate> rates = rateRepo.findByTalkId(talkId);
+        List<Rate> rates = rateRepo.findByEventIdAndTalkId(Event.current(), talkId);
         return mapper.mapAsList(rates, RateAdmin.class);
     }
 
@@ -65,7 +66,7 @@ public class RateAdminService {
      * @return Rate or null if not talk rated by this admin
      */
     public RateAdmin findForTalkAndAdmin(int talkId, int adminId) {
-        Rate rates = rateRepo.findByTalkIdAndAdminUserId(talkId, adminId);
+        Rate rates = rateRepo.findByEventIdAndTalkIdAndAdminUserId(Event.current(), talkId, adminId);
         return mapper.map(rates, RateAdmin.class);
     }
 
@@ -75,7 +76,7 @@ public class RateAdminService {
      * @return Rate or null if not found
      */
     public RateAdmin get(int rateId) {
-        Rate rate = rateRepo.findOne(rateId);
+        Rate rate = rateRepo.findByIdAndEventId(rateId, Event.current());
         return mapper.map(rate, RateAdmin.class);
     }
 
@@ -102,7 +103,7 @@ public class RateAdminService {
      * @return Edited rate
      */
     public RateAdmin edit(RateAdmin rate) {
-        Rate editRate = rateRepo.findOne(rate.getId());
+        Rate editRate = rateRepo.findByIdAndEventId(rate.getId(), Event.current());
         mapper.map(rate, editRate);
         editRate.setAdded(new Date());
         rateRepo.flush();
@@ -115,7 +116,7 @@ public class RateAdminService {
      * @return Deleted rate
      */
     public RateAdmin delete(int rateId) {
-        Rate rate = rateRepo.findOne(rateId);
+        Rate rate = rateRepo.findByIdAndEventId(rateId, Event.current());
         RateAdmin deleted = mapper.map(rate, RateAdmin.class);
         rateRepo.delete(rate);
         return deleted;
@@ -125,6 +126,6 @@ public class RateAdminService {
      * Delete all rates
      */
     public void deleteAll() {
-        rateRepo.deleteAll();
+        rateRepo.deleteByEventId(Event.current());
     }
 }

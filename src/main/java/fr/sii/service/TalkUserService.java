@@ -259,7 +259,7 @@ public class TalkUserService {
      * @return List of talk tracks
      */
     public List<TrackDto> getTracks() {
-        List<Track> tracks = trackRepo.findAll();
+        List<Track> tracks = trackRepo.findByEventId(Event.current());
         return mapper.mapAsList(tracks, TrackDto.class);
     }
 
