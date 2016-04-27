@@ -1,0 +1,9 @@
+machine:
+  services:
+    - docker
+
+
+test:
+  override:
+    - docker info
+    - docker build -f Dockerfile.build .
