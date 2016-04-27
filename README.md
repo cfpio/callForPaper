@@ -1,6 +1,7 @@
 
 # Call For Papers
 
+
 <img src="https://raw.githubusercontent.com/SII-Nantes/callForPaper/master/readme/screenshot.png" alt="alt text" width="100%">
 
 ## Features
