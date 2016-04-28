@@ -29,7 +29,7 @@
         </encoder>
     </appender>
 
-    <logger name="fr.sii" level="INFO"/>
+    <logger name="io.cfp" level="INFO"/>
 
     <!-- root -->
     <root level="INFO">

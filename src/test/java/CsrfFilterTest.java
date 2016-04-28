@@ -21,7 +21,7 @@
 /**
  * Created by tmaugin on 22/05/2015.
  */
-import fr.sii.config.filter.CsrfFilter;
+import io.cfp.config.filter.CsrfFilter;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;

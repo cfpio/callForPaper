@@ -20,8 +20,8 @@
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jwt.JWTClaimsSet;
-import fr.sii.domain.token.Token;
-import fr.sii.service.auth.AuthUtils;
+import io.cfp.domain.token.Token;
+import io.cfp.service.auth.AuthUtils;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;

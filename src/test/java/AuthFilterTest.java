@@ -20,10 +20,10 @@
 
 import com.jayway.restassured.response.Header;
 import com.nimbusds.jose.JOSEException;
-import fr.sii.config.filter.AuthFilter;
-import fr.sii.config.filter.CsrfFilter;
-import fr.sii.domain.token.Token;
-import fr.sii.service.auth.AuthUtils;
+import io.cfp.config.filter.AuthFilter;
+import io.cfp.config.filter.CsrfFilter;
+import io.cfp.domain.token.Token;
+import io.cfp.service.auth.AuthUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeUtils;
 import org.junit.Before;
