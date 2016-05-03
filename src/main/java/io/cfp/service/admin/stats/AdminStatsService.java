@@ -34,7 +34,6 @@ import java.util.Collections;
 import static io.cfp.entity.Talk.State.*;
 
 @Service
-@Transactional
 public class AdminStatsService {
 
     @Autowired
@@ -43,6 +42,7 @@ public class AdminStatsService {
     @Autowired
     private TalkRepo talkRepo;
 
+    @Transactional(readOnly = true)
     public AdminMeter getAdminMeter() {
         AdminMeter meter = new AdminMeter();
         meter.setSpeakers((int) userRepo.count());

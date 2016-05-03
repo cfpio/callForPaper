@@ -21,15 +21,12 @@
 package io.cfp.controller.common.user;
 
 import io.cfp.config.global.GlobalSettings;
-import io.cfp.domain.common.Uri;
 import io.cfp.domain.exception.NotFoundException;
-import io.cfp.entity.User;
 import io.cfp.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @RestController
