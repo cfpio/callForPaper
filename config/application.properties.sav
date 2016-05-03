@@ -7,7 +7,6 @@ cfp.google.clientsecret=g4uJRnvOF_nIESvYcdq1gksd
 cfp.github.clientid=5fb632a6027ffe32338b
 cfp.github.clientsecret=f6f6ec707257776b1eda31ecd97ed12a3535e013
 
-
 spring.jpa.hibernate.ddl-auto=validate
 spring.jpa.properties.hibernate.globally_quoted_identifiers=true
 liquibase.changeLog=classpath:/changelog/changelog-master.xml
@@ -25,7 +24,6 @@ spring.mail.host=localhost
 
 # debug
 server.tomcat.accessLogEnabled=true
-logging.level.fr.sii=DEBUG
 
 # garbage to remove later?
 
@@ -38,17 +36,6 @@ cfp.google.password=
 cfp.email.emailsender=cfp@breizhcamp.org
 cfp.email.send=true
 
-# enable everything in dev mode
-
-endpoints.autoconfig.enabled=true
-endpoints.beans.enabled=true
-endpoints.configprops.enabled=true
-endpoints.dump.enabled=true
-endpoints.env.enabled=true
+# disable everything except health
+endpoints.enabled=false
 endpoints.health.enabled=true
-endpoints.info.enabled=true
-endpoints.liquibase.enabled=true
-endpoints.metrics.enabled=true
-endpoints.mappings.enabled=true
-endpoints.shutdown.enabled=true
-endpoints.trace.enabled=true
