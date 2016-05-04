@@ -20,7 +20,8 @@ public class TenantFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String host = new URL(request.getRequestURL().toString()).getHost();
 
-        String tenant = host.substring(0, host.indexOf('.'));
+        int i = host.indexOf('.');
+        String tenant = (i > 0 ? host.substring(0, i) : "default");
         Event.setCurrent(tenant);
     }
 }

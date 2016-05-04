@@ -413,4 +413,18 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="21" author="ndeloof">
+        <comment>Insert initial data to make contribution easier starting with a fresh new database. For sure, production instance has to get this removed :P</comment>
+        <insert tableName="users">
+            <column name="id" value="1"/>
+            <column name="email" value="info@cfp.io"/>
+            <!-- password is toto123 -->
+            <column name="password" value="$2a$10$eigJoKgJQQK1TlYyzKCSZ.sPyUHk7.PdMbEpkMhoq.P2YnQYKhwzi"/>
+            <column name="verified" valueBoolean="true"/>
+        </insert>
+        <insert tableName="events">
+            <column name="id" value="default"></column>
+        </insert>
+    </changeSet>
+
 </databaseChangeLog>
