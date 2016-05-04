@@ -425,6 +425,13 @@
         <insert tableName="events">
             <column name="id" value="default"></column>
         </insert>
+        <insert tableName="admins">
+            <column name="id" value="1"/>
+            <column name="name" value="info@cfp.io"/>
+            <column name="email" value="info@cfp.io"/>
+            <column name="event_id" value="default"/>
+        </insert>
+
     </changeSet>
 
 </databaseChangeLog>
