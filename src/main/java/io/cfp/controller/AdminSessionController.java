@@ -20,14 +20,17 @@
 
 package io.cfp.controller;
 
+import io.cfp.domain.exception.CospeakerNotFoundException;
 import io.cfp.dto.TalkAdmin;
 import io.cfp.entity.Talk;
 import io.cfp.service.TalkAdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import io.cfp.domain.exception.CospeakerNotFoundException;
-
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 

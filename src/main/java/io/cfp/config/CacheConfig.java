@@ -23,7 +23,6 @@ package io.cfp.config;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.cache.guava.GuavaCache;
 import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;

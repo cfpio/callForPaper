@@ -20,12 +20,12 @@
 
 package io.cfp.dto;
 
+import io.cfp.dto.user.CospeakerProfil;
+import io.cfp.dto.user.UserProfil;
+import io.cfp.entity.Talk;
+
 import java.util.Date;
 import java.util.Set;
-
-import io.cfp.dto.user.UserProfil;
-import io.cfp.dto.user.CospeakerProfil;
-import io.cfp.entity.Talk;
 
 /**
  * Talk DTO for user view

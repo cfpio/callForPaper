@@ -20,7 +20,7 @@
 
 package io.cfp.config.auth;
 
-import io.cfp.entity.AdminUser;
+import io.cfp.entity.User;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -34,8 +34,8 @@ public class AuthConfig {
 
     @Bean
     @Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
-    public AdminUser connectedAdmin() {
-        return new AdminUser();
+    public User connectedAdmin() {
+        return new User();
     }
 
 }

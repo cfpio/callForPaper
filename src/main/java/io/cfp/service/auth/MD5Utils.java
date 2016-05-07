@@ -20,9 +20,9 @@
 
 package io.cfp.service.auth;
 
-import java.util.*;
-import java.io.*;
-import java.security.*;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class MD5Utils {
   public static String hex(byte[] array) {

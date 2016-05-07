@@ -20,26 +20,12 @@
 
 package io.cfp.service;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import io.cfp.entity.Event;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import io.cfp.domain.exception.CospeakerNotFoundException;
 import io.cfp.dto.Speaker;
 import io.cfp.dto.TalkUser;
 import io.cfp.dto.TrackDto;
 import io.cfp.dto.user.CospeakerProfil;
+import io.cfp.entity.Event;
 import io.cfp.entity.Talk;
 import io.cfp.entity.TalkFormat;
 import io.cfp.entity.Track;
@@ -49,6 +35,19 @@ import io.cfp.repository.TalkRepo;
 import io.cfp.repository.TrackRepo;
 import io.cfp.repository.UserRepo;
 import ma.glasnost.orika.MapperFacade;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Service for managing talks by the user

@@ -20,9 +20,9 @@
 
 package io.cfp.dto;
 
-import java.util.Date;
-
 import io.cfp.dto.user.UserProfil;
+
+import java.util.Date;
 
 /**
  * Comment DTO sent to the speaker

@@ -20,6 +20,9 @@
 
 package io.cfp.config.email;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -27,9 +30,6 @@ import java.util.Map;
 /**
  * Created by tmaugin on 02/04/2015.
  */
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 /**
  * Email settings

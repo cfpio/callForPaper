@@ -20,22 +20,19 @@
 
 package io.cfp.service;
 
+import io.cfp.domain.exception.CospeakerNotFoundException;
 import io.cfp.dto.TalkAdmin;
+import io.cfp.dto.user.CospeakerProfil;
 import io.cfp.dto.user.UserProfil;
-import io.cfp.entity.AdminUser;
 import io.cfp.entity.Event;
 import io.cfp.entity.Rate;
 import io.cfp.entity.Talk;
+import io.cfp.entity.User;
 import io.cfp.repository.RateRepo;
+import io.cfp.repository.TalkFormatRepo;
 import io.cfp.repository.TalkRepo;
 import io.cfp.repository.TrackRepo;
 import io.cfp.repository.UserRepo;
-import io.cfp.entity.User;
-
-import io.cfp.dto.user.CospeakerProfil;
-import io.cfp.domain.exception.CospeakerNotFoundException;
-
-import io.cfp.repository.TalkFormatRepo;
 import io.cfp.service.admin.user.AdminUserService;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,10 +40,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.HashSet;
-
 
 import static java.util.stream.Collectors.*;
 
@@ -87,7 +83,7 @@ public class TalkAdminService {
         List<Talk> talks = talkRepo.findByEventIdAndStatesFetch(Event.current(), Arrays.asList(states));
         List<Rate> rates = rateRepo.findAllFetchAdmin(Event.current());
 
-        AdminUser admin = adminUserService.getCurrentUser();
+        User admin = adminUserService.getCurrentUser();
         Map<Integer, List<Rate>> reviewed = rates.stream()
             .filter(r -> admin.getId() == r.getAdminUser().getId())
             .collect(groupingBy(r -> r.getTalk().getId()));
@@ -148,7 +144,7 @@ public class TalkAdminService {
 
     /**
      * For each cospeaker, check if the user is in the CFP database and set the id on the user object
-     * @param talkUser TalkUser
+     * @param talk TalkUser
      * @param talk Talk
      * @throws CospeakerNotFoundException If a cospeaker is not found
      */

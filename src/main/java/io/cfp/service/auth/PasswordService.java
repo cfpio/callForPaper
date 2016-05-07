@@ -44,4 +44,5 @@ public final class PasswordService {
     public static boolean checkPassword(String plaintext , String hashed) {
         return BCrypt.checkpw(plaintext, hashed);
     }
+
 }

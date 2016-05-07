@@ -20,7 +20,12 @@
 
 package io.cfp.config.exception;
 
-import io.cfp.domain.exception.*;
+import io.cfp.domain.exception.BadRequestException;
+import io.cfp.domain.exception.CospeakerNotFoundException;
+import io.cfp.domain.exception.ErrorResponse;
+import io.cfp.domain.exception.ForbiddenException;
+import io.cfp.domain.exception.NotFoundException;
+import io.cfp.domain.exception.NotVerifiedException;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

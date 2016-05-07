@@ -20,22 +20,6 @@
 
 package io.cfp.controller.oauth;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.google.api.client.auth.oauth2.AuthorizationCodeTokenRequest;
 import com.google.api.client.auth.oauth2.TokenResponse;
 import com.google.api.client.auth.oauth2.TokenResponseException;
@@ -49,10 +33,22 @@ import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.services.plus.Plus;
 import com.google.api.services.plus.model.Person;
 import com.nimbusds.jose.JOSEException;
-
 import io.cfp.config.google.GoogleSettings;
 import io.cfp.domain.token.Token;
 import io.cfp.entity.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/auth/google", produces = "application/json; charset=utf-8")

@@ -20,21 +20,16 @@
 
 package io.cfp.entity;
 
-import java.util.Set;
+import org.hibernate.annotations.Type;
+import org.hibernate.validator.constraints.Email;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import org.hibernate.annotations.Type;
-import org.hibernate.validator.constraints.Email;
-import org.springframework.util.StringUtils;
 
 /**
  * Speaker account
@@ -68,7 +63,6 @@ public class User {
      * token to verify local e-mail address, empty when e-mail verified
      */
     private String verifyToken;
-
 
 
     /* ****  USER PROFILE  **** */

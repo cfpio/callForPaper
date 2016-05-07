@@ -21,7 +21,6 @@
 package io.cfp.service;
 
 import io.cfp.dto.CommentUser;
-import io.cfp.entity.AdminUser;
 import io.cfp.entity.Comment;
 import io.cfp.entity.Event;
 import io.cfp.entity.Talk;
@@ -75,7 +74,7 @@ public class CommentAdminService {
      * @param internal Is the comment is internal to admins or visible to the user
      * @return Added comment or null if talk doesn't exists
      */
-    public CommentUser addComment(AdminUser admin, int talkId, CommentUser commentUser, boolean internal) {
+    public CommentUser addComment(User admin, int talkId, CommentUser commentUser, boolean internal) {
         Talk talk = talkRepo.findByIdAndEventId(talkId, Event.current());
         if (talk == null) return null;
         User user = userRepo.findByEmail(admin.getEmail());

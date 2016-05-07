@@ -20,12 +20,10 @@
 
 package io.cfp.service.user;
 
-import io.cfp.dto.TalkUser;
 import io.cfp.dto.user.UserProfil;
 import io.cfp.entity.User;
 import io.cfp.repository.UserRepo;
 import ma.glasnost.orika.MapperFacade;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

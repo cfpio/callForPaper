@@ -419,7 +419,7 @@
             <column name="id" value="1"/>
             <column name="email" value="info@cfp.io"/>
             <!-- password is toto123 -->
-            <column name="password" value="$2a$10$eigJoKgJQQK1TlYyzKCSZ.sPyUHk7.PdMbEpkMhoq.P2YnQYKhwzi"/>
+            <column name="password" value="$2a$10$L/0Fhifp1PitGMmCqnAmg.KCFN./RYPAF7aCeuWS9KRC/JcwvOy8q"/>
             <column name="verified" valueBoolean="true"/>
         </insert>
         <insert tableName="events">
@@ -436,6 +436,65 @@
     <changeSet id="22" author="ndeloof">
         <addNotNullConstraint tableName="users" columnDataType="varchar(255)" columnName="email"/>
         <addUniqueConstraint tableName="users" columnNames="email"/>
+    </changeSet>
+
+    <changeSet id="23" author="ndeloof">
+        <createTable tableName="roles">
+            <column name="id" type="int">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="int"/>
+            <column name="event_id" type="varchar(255)"/>
+        </createTable>
+
+        <addAutoIncrement tableName="roles" columnName="id" columnDataType="int"/>
+        <addForeignKeyConstraint baseTableName="roles" baseColumnNames="user_id" constraintName="roles_users" referencedTableName="users" referencedColumnNames="id"/>
+        <createIndex tableName="roles" indexName="roles_email">
+            <column name="user_id"/>
+            <column name="event_id"/>
+        </createIndex>
+
+        <insert tableName="roles">
+            <column name="id" value="1"/>
+            <column name="name" value="ADMIN"/>
+            <column name="user_id" value="1"/>
+            <column name="event_id" value="default"/>
+        </insert>
+
+        <insert tableName="cfpconfig">
+            <column name="key" value="community"/>
+            <column name="value" value="default"/>
+            <column name="event_id" value="default"/>
+        </insert>
+        <insert tableName="cfpconfig">
+            <column name="key" value="default"/>
+            <column name="value" value="true"/>
+            <column name="event_id" value="default"/>
+        </insert>
+        <insert tableName="cfpconfig">
+            <column name="key" value="date"/>
+            <column name="value" value="31/12/2016"/>
+            <column name="event_id" value="default"/>
+        </insert>
+        <insert tableName="cfpconfig">
+            <column name="key" value="decisionDate"/>
+            <column name="value" value="31/12/2016"/>
+            <column name="event_id" value="default"/>
+        </insert>
+        <insert tableName="cfpconfig">
+            <column name="key" value="releaseDate"/>
+            <column name="value" value="31/12/2016"/>
+            <column name="event_id" value="default"/>
+        </insert>
+        <insert tableName="cfpconfig">
+            <column name="key" value="open"/>
+            <column name="value" value="true"/>
+            <column name="event_id" value="default"/>
+        </insert>
+
     </changeSet>
 
 </databaseChangeLog>

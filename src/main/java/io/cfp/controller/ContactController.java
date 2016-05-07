@@ -20,19 +20,6 @@
 
 package io.cfp.controller;
 
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import io.cfp.domain.exception.NotFoundException;
 import io.cfp.domain.exception.NotVerifiedException;
 import io.cfp.dto.CommentUser;
@@ -41,6 +28,17 @@ import io.cfp.entity.User;
 import io.cfp.service.CommentUserService;
 import io.cfp.service.TalkUserService;
 import io.cfp.service.email.EmailingService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.util.List;
+import java.util.Locale;
 
 @RestController
 @RequestMapping(value = "api/restricted/sessions/{talkId}/contacts", produces = "application/json; charset=utf-8")

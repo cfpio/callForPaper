@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import io.cfp.repository.UserRepo;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -83,7 +84,7 @@ public class EmailingServiceTest {
     private EmailingSettings emailingSettings;
 
     @Autowired
-    private AdminUserService adminUserServiceCustom;
+    private UserRepo users;
 
     private User user;
 
@@ -115,7 +116,7 @@ public class EmailingServiceTest {
 
         ReflectionTestUtils.setField(emailingService, "globalSettings", globalSettings);
         ReflectionTestUtils.setField(emailingService, "emailingSettings", emailingSettings);
-        ReflectionTestUtils.setField(emailingService, "adminUserServiceCustom", adminUserServiceCustom);
+        ReflectionTestUtils.setField(emailingService, "users", users);
         ReflectionTestUtils.setField(emailingService, "javaMailSender", javaMailSender);
         ReflectionTestUtils.setField(emailingService, "applicationConfigService", applicationConfigService);
 

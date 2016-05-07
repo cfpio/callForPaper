@@ -20,11 +20,6 @@
 
 package io.cfp.dto.user;
 
-import java.util.Set;
-import io.cfp.dto.TalkUser;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-
 public class CospeakerProfil {
     private int id;
     private String email;

@@ -20,60 +20,52 @@
 
 package io.cfp.service.admin.user;
 
-import java.util.List;
-
 import io.cfp.entity.Event;
+import io.cfp.entity.Role;
+import io.cfp.entity.User;
+import io.cfp.repository.RoleRepository;
+import io.cfp.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import io.cfp.entity.AdminUser;
-import io.cfp.entity.User;
-import io.cfp.repository.AdminUserRepo;
-import io.cfp.repository.UserRepo;
 
 @Service
 @Transactional
 public class AdminUserService {
 
     @Autowired
-    private AdminUserRepo adminUserRepo;
+    private RoleRepository roles;
 
     @Autowired
     private UserRepo userRepo;
 
     /** Current loggued admin, scoped request object */
     @Autowired
-    private AdminUser currentAdmin;
-
-    public List<AdminUser> findAll()
-    {
-        return adminUserRepo.findByEventId(Event.current());
-    }
+    private User currentAdmin;
 
     /**
      * Retrieve an admin if the user e-mail match an admin e-mail
      * @param email Email of the connected user
      * @return AdminUser if existing, null otherwise
      */
-    public AdminUser findFromEmail(String email) {
-        User user = userRepo.findByEmail(email);
-        if (user == null) return null;
-        return adminUserRepo.findByEventIdAndEmail(Event.current(), user.getEmail());
+    public User findFromEmail(String email) {
+        User u = userRepo.findByEmail(email);
+        Role role = roles.findByUserIdAndEventIdAndName(u.getId(), Event.current(), Role.ADMIN);
+        if (role == null) return null;
+        return u;
     }
 
     /**
      * Set connected admin for the current request
      * @param admin Admin to set
      */
-    public void setCurrentAdmin(AdminUser admin) {
+    public void setCurrentAdmin(User admin) {
         //warning, do not replace the autowired object because it's a proxy around an object created by spring in the request
         currentAdmin.setId(admin.getId());
         currentAdmin.setEmail(admin.getEmail());
-        currentAdmin.setName(admin.getName());
     }
 
-    public AdminUser getCurrentUser() {
+    public User getCurrentUser() {
         if (currentAdmin.getEmail() == null) return null;
         return currentAdmin;
     }

@@ -20,15 +20,12 @@
 
 package io.cfp.repository;
 
-import java.util.List;
-
-import io.cfp.entity.Talk;
+import io.cfp.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.Collection;
-import io.cfp.entity.User;
+import java.util.List;
 
 public interface UserRepo extends JpaRepository<User, Integer> {
 
@@ -39,5 +36,8 @@ public interface UserRepo extends JpaRepository<User, Integer> {
     List<User> findByGithubId(String providerId);
 
     List<User> findByVerifyToken(String verifyToken);
+
+    @Query("select u.email from User u, Role r where r.name = 'ADMIN' and r.event.id = :eventId and r.user.id = u.id")
+    List<String> findAdminsEmail(@Param("eventId") String eventId);
 
 }

@@ -20,13 +20,16 @@
 
 package io.cfp.controller;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
+import io.cfp.domain.exception.ForbiddenException;
+import io.cfp.domain.exception.NotFoundException;
+import io.cfp.dto.CommentUser;
+import io.cfp.dto.TalkAdmin;
+import io.cfp.entity.User;
+import io.cfp.service.CommentAdminService;
+import io.cfp.service.TalkAdminService;
+import io.cfp.service.admin.user.AdminUserService;
+import io.cfp.service.email.EmailingService;
+import io.cfp.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,17 +37,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.cfp.domain.exception.ForbiddenException;
-import io.cfp.domain.exception.NotFoundException;
-import io.cfp.dto.CommentUser;
-import io.cfp.dto.TalkAdmin;
-import io.cfp.entity.AdminUser;
-import io.cfp.entity.User;
-import io.cfp.service.CommentAdminService;
-import io.cfp.service.TalkAdminService;
-import io.cfp.service.admin.user.AdminUserService;
-import io.cfp.service.email.EmailingService;
-import io.cfp.service.user.UserService;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Manages comments sent by administrators to speakers about a talk
@@ -82,7 +79,7 @@ public class AdminContactController {
     @RequestMapping(method = RequestMethod.POST)
     public CommentUser postContact(@Valid @RequestBody CommentUser comment, @PathVariable int talkId, HttpServletRequest httpServletRequest) throws NotFoundException, IOException {
 
-        AdminUser admin = adminUserServiceCustom.getCurrentUser();
+        User admin = adminUserServiceCustom.getCurrentUser();
         TalkAdmin talk = talkService.getOne(talkId);
         User user = userService.findById(talk.getUserId());
 

@@ -20,7 +20,14 @@
 
 package io.cfp.entity;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -40,7 +47,7 @@ public class Rate {
     private boolean hate;
 
     private Talk talk;
-    private AdminUser adminUser;
+    private User adminUser;
     private Event event;
 
     @Id
@@ -86,7 +93,7 @@ public class Rate {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admin")
-    public AdminUser getAdminUser() {
+    public User getAdminUser() {
         return adminUser;
     }
 
@@ -115,7 +122,7 @@ public class Rate {
         this.talk = talk;
     }
 
-    public void setAdminUser(AdminUser adminUser) {
+    public void setAdminUser(User adminUser) {
         this.adminUser = adminUser;
     }
 }

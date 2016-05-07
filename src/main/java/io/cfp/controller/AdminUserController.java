@@ -20,19 +20,17 @@
 
 package io.cfp.controller;
 
-import javax.servlet.http.HttpServletRequest;
-
+import com.nimbusds.jwt.JWTClaimsSet;
+import io.cfp.dto.AdminUserInfo;
+import io.cfp.entity.User;
+import io.cfp.service.admin.user.AdminUserService;
+import io.cfp.service.auth.AuthUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nimbusds.jwt.JWTClaimsSet;
-
-import io.cfp.dto.AdminUserInfo;
-import io.cfp.entity.AdminUser;
-import io.cfp.service.admin.user.AdminUserService;
-import io.cfp.service.auth.AuthUtils;
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping(value="/api/adminUser")
@@ -53,7 +51,7 @@ public class AdminUserController {
             return new AdminUserInfo("./", false, false, false, "");
         }
 
-        AdminUser adminUser = adminUserService.findFromEmail(claimsSet.getSubject());
+        User adminUser = adminUserService.findFromEmail(claimsSet.getSubject());
 
         if (adminUser == null) {
             return new AdminUserInfo("./", false, false, false, "");

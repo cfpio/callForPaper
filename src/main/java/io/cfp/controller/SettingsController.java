@@ -21,18 +21,16 @@
 package io.cfp.controller;
 
 import io.cfp.config.global.ServiceProviderSettings;
+import io.cfp.domain.exception.NotVerifiedException;
+import io.cfp.dto.TrackDto;
+import io.cfp.entity.TalkFormat;
+import io.cfp.service.TalkUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.cfp.entity.Talk;
-import io.cfp.entity.TalkFormat;
 import java.util.List;
-import io.cfp.domain.exception.NotVerifiedException;
-
-import io.cfp.service.TalkUserService;
-import io.cfp.dto.TrackDto;
 
 @RestController
 @RequestMapping(value="/api/settings", produces = "application/json; charset=utf-8")

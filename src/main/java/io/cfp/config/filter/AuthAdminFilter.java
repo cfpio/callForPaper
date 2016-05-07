@@ -21,14 +21,19 @@
 package io.cfp.config.filter;
 
 import com.nimbusds.jwt.JWTClaimsSet;
-import io.cfp.entity.AdminUser;
+import io.cfp.entity.User;
 import io.cfp.service.admin.user.AdminUserService;
 import io.cfp.service.auth.AuthUtils;
 import org.slf4j.MDC;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import javax.servlet.*;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -59,7 +64,7 @@ public class AuthAdminFilter extends AuthFilter {
             JWTClaimsSet token = readToken(authHeader);
             String email = token.getSubject();
 
-            AdminUser admin = adminUserService.findFromEmail(email);
+            User admin = adminUserService.findFromEmail(email);
             if (admin == null) throw new InvalidTokenException(HttpServletResponse.SC_UNAUTHORIZED, AUTH_ERROR_MSG);
 
             MDC.put(USER_ID, email);

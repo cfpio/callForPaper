@@ -20,9 +20,8 @@
 
 package io.cfp.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import io.cfp.entity.Track;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 

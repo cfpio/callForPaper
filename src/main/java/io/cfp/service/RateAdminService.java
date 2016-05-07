@@ -21,9 +21,9 @@
 package io.cfp.service;
 
 import io.cfp.dto.RateAdmin;
-import io.cfp.entity.AdminUser;
 import io.cfp.entity.Event;
 import io.cfp.entity.Rate;
+import io.cfp.entity.User;
 import io.cfp.repository.RateRepo;
 import io.cfp.repository.TalkRepo;
 import ma.glasnost.orika.MapperFacade;
@@ -107,7 +107,7 @@ public class RateAdminService {
      * @param talkId Talk attached to the rate
      * @return Added rate
      */
-    public RateAdmin add(RateAdmin rate, AdminUser admin, int talkId) {
+    public RateAdmin add(RateAdmin rate, User admin, int talkId) {
         Rate newRate = mapper.map(rate, Rate.class);
         newRate.setAdded(new Date());
         newRate.setAdminUser(admin);

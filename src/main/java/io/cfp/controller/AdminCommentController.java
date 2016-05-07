@@ -23,11 +23,15 @@ package io.cfp.controller;
 import io.cfp.domain.exception.ForbiddenException;
 import io.cfp.domain.exception.NotFoundException;
 import io.cfp.dto.CommentUser;
-import io.cfp.entity.AdminUser;
+import io.cfp.entity.User;
 import io.cfp.service.CommentAdminService;
 import io.cfp.service.admin.user.AdminUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -56,7 +60,7 @@ public class AdminCommentController {
      */
     @RequestMapping(method=RequestMethod.POST)
     public CommentUser postComment(@Valid @RequestBody CommentUser comment, @PathVariable int talkId) throws NotFoundException, IOException {
-        AdminUser admin = adminUserServiceCustom.getCurrentUser();
+        User admin = adminUserServiceCustom.getCurrentUser();
         return commentService.addComment(admin, talkId, comment, true);
     }
 

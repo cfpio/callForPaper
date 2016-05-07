@@ -20,17 +20,20 @@
 
 package io.cfp.service.email;
 
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-
+import io.cfp.config.email.EmailingSettings;
+import io.cfp.config.email.EmailingSettings.EmailType;
+import io.cfp.config.global.GlobalSettings;
+import io.cfp.dto.TalkAdmin;
+import io.cfp.dto.TalkUser;
+import io.cfp.dto.user.CospeakerProfil;
+import io.cfp.dto.user.UserProfil;
+import io.cfp.entity.Event;
+import io.cfp.entity.Role;
+import io.cfp.entity.User;
+import io.cfp.repository.RoleRepository;
+import io.cfp.repository.UserRepo;
+import io.cfp.service.admin.config.ApplicationConfigService;
+import io.cfp.service.admin.user.AdminUserService;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -43,17 +46,15 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import io.cfp.config.email.EmailingSettings;
-import io.cfp.config.email.EmailingSettings.EmailType;
-import io.cfp.config.global.GlobalSettings;
-import io.cfp.dto.TalkAdmin;
-import io.cfp.dto.TalkUser;
-import io.cfp.dto.user.CospeakerProfil;
-import io.cfp.dto.user.UserProfil;
-import io.cfp.entity.AdminUser;
-import io.cfp.entity.User;
-import io.cfp.service.admin.config.ApplicationConfigService;
-import io.cfp.service.admin.user.AdminUserService;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
 
 @Service
 public class EmailingService {
@@ -70,7 +71,7 @@ public class EmailingService {
     private EmailingSettings emailingSettings;
 
     @Autowired
-    private AdminUserService adminUserServiceCustom;
+    private UserRepo users;
 
     @Autowired
     private JavaMailSenderImpl javaMailSender;
@@ -121,10 +122,7 @@ public class EmailingService {
     public void sendNewCommentToSpeaker(User speaker, TalkAdmin talk, Locale locale) {
         log.debug("Sending new comment email to speaker '{}' for talk '{}'", speaker.getEmail(), talk.getName());
 
-        List<String> bcc = new ArrayList<>();
-        for (AdminUser adminUser : adminUserServiceCustom.findAll()) {
-            bcc.add(adminUser.getEmail());
-        }
+        List<String> bcc = users.findAdminsEmail(Event.current());
 
         HashMap<String, String> map = new HashMap<>();
         map.put("name", speaker.getFirstname());
@@ -154,10 +152,8 @@ public class EmailingService {
     public void sendNewCommentToAdmins(User speaker, TalkUser talk, Locale locale) {
         log.debug("Sending new comment email to admins for talk '{}'", talk.getName());
 
-        List<String> bcc = new ArrayList<>();
-        for (AdminUser adminUser : adminUserServiceCustom.findAll()) {
-            bcc.add(adminUser.getEmail());
-        }
+        List<String> bcc = users.findAdminsEmail(Event.current());
+
         HashMap<String, String> map = new HashMap<>();
         map.put("name", speaker.getFirstname());
         map.put("talk", talk.getName());
