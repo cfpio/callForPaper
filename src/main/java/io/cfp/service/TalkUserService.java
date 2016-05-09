@@ -73,9 +73,6 @@ public class TalkUserService {
     @Autowired
     private EventRepository events;
 
-    @Autowired
-    private MapperFacade mapper;
-
     /**
      * Retrieve all talks for a User
      *
@@ -94,14 +91,16 @@ public class TalkUserService {
         Set<Speaker> speakers = new HashSet<>();
         for(Talk talk : talks){
             if(talk.getUser() != null) {
-                Speaker speaker = mapper.map(talk.getUser(), Speaker.class);
+                Speaker speaker = new Speaker(talk.getUser());
                 if (speaker != null && !speakers.contains(speaker)) {
                     speakers.add(speaker);
                 }
             }
 
             if(talk.getCospeakers() != null && !talk.getCospeakers().isEmpty()) {
-                List<Speaker> coSpeaker = mapper.mapAsList(talk.getCospeakers(), Speaker.class);
+                List<Speaker> coSpeaker = talk.getCospeakers().stream()
+                    .map( u -> new Speaker(u) )
+                    .collect(Collectors.toList());
                 if (coSpeaker != null ) {
                     speakers.addAll(coSpeaker);
                 }
@@ -140,16 +139,6 @@ public class TalkUserService {
             .stream().map(t -> new TalkUser(t))
             .collect(Collectors.toList());
     }
-
-    // /**
-    // * Retrieve the talk list whom the user is cospeaker
-    // * @param userId Id of the user to retrieve cospeaker talks
-    // * @return List of talks
-    // */
-    // public List<TalkUser> getCospeakerTalks(int userId) {
-    // List<Talk> talks = talkRepo.findByCospeakers(userId);
-    // return mapper.mapAsList(talks, TalkUser.class);
-    // }
 
     /**
      * Count number of talks the users has submitted (drafts included)
@@ -268,7 +257,7 @@ public class TalkUserService {
 
         if (talk.getState() != Talk.State.DRAFT)
             return null;
-        TalkUser deleted = mapper.map(talk, TalkUser.class);
+        TalkUser deleted = new TalkUser(talk);
         talkRepo.delete(talk);
         return deleted;
     }
@@ -288,8 +277,9 @@ public class TalkUserService {
      * @return List of talk tracks
      */
     public List<TrackDto> getTracks() {
-        List<Track> tracks = trackRepo.findByEventId(Event.current());
-        return mapper.mapAsList(tracks, TrackDto.class);
+        return trackRepo.findByEventId(Event.current()).stream()
+            .map( t -> new TrackDto(t) )
+            .collect(Collectors.toList());
     }
 
     /**
@@ -347,12 +337,10 @@ public class TalkUserService {
         talkUser.setState(newState);
         talk.setTrack(trackRepo.findByIdAndEventId(talkUser.getTrackId(), Event.current()));
         talk.setFormat(formatRepo.findByIdAndEventId(talkUser.getFormat(), Event.current()));
-        mapper.map(talkUser, talk);
-
         talkRepo.save(talk);
         talkRepo.flush();
 
-        return talkUser;
+        return new TalkUser(talk);
     }
 
     private void setCoSpeaker(TalkUser talkUser, Talk talk) throws CospeakerNotFoundException {

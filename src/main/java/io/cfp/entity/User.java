@@ -37,6 +37,7 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "users")
 public class User {
+
     public enum Provider {GOOGLE, GITHUB}
 
     private int id;
@@ -303,4 +304,95 @@ public class User {
             }
         }
     }
+
+    public User id(int id) {
+        this.id = id;
+        return this;
+    }
+
+    public User email(String email) {
+        this.email = email;
+        return this;
+    }
+
+    public User githubId(String githubId) {
+        this.githubId = githubId;
+        return this;
+    }
+
+    public User googleId(String googleId) {
+        this.googleId = googleId;
+        return this;
+    }
+
+    public User password(String password) {
+        this.password = password;
+        return this;
+    }
+
+    public User verified(boolean verified) {
+        this.verified = verified;
+        return this;
+    }
+
+    public User verifyToken(String verifyToken) {
+        this.verifyToken = verifyToken;
+        return this;
+    }
+
+    public User lastname(String lastname) {
+        this.lastname = lastname;
+        return this;
+    }
+
+    public User firstname(String firstname) {
+        this.firstname = firstname;
+        return this;
+    }
+
+    public User company(String company) {
+        this.company = company;
+        return this;
+    }
+
+    public User phone(String phone) {
+        this.phone = phone;
+        return this;
+    }
+
+    public User bio(String bio) {
+        this.bio = bio;
+        return this;
+    }
+
+    public User twitter(String twitter) {
+        this.twitter = twitter;
+        return this;
+    }
+
+    public User googleplus(String googleplus) {
+        this.googleplus = googleplus;
+        return this;
+    }
+
+    public User github(String github) {
+        this.github = github;
+        return this;
+    }
+
+    public User language(String language) {
+        this.language = language;
+        return this;
+    }
+
+    public User social(String social) {
+        this.social = social;
+        return this;
+    }
+
+    public User imageProfilURL(String imageProfilURL) {
+        this.imageProfilURL = imageProfilURL;
+        return this;
+    }
 }
+

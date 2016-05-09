@@ -35,12 +35,10 @@ import java.util.List;
 public class UserService {
 
 	private final UserRepo userRepo;
-	private final MapperFacade mapper;
 
     @Autowired
-    public UserService(UserRepo userRepo, MapperFacade mapper) {
+    public UserService(UserRepo userRepo) {
         this.userRepo = userRepo;
-        this.mapper = mapper;
     }
 
 	public User save(User user) {
@@ -92,9 +90,19 @@ public class UserService {
 	}
 
 	public void update(int userId, UserProfil profil) {
-		User user = userRepo.findOne(userId);
-		mapper.map(profil, user);
-        user.setId(userId);
+		User user = userRepo.findOne(userId)
+            .email(profil.getEmail())
+            .firstname(profil.getFirstname())
+            .lastname(profil.getLastname())
+            .bio(profil.getBio())
+            .phone(profil.getPhone())
+            .company(profil.getCompany())
+            .language(profil.getLanguage())
+            .github(profil.getGithub())
+            .twitter(profil.getTwitter())
+            .googleplus(profil.getGoogleplus())
+            .imageProfilURL(profil.getImageProfilURL())
+            .social(profil.getSocial());
         userRepo.saveAndFlush(user);
 	}
 }

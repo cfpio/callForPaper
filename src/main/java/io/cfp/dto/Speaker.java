@@ -20,6 +20,8 @@
 
 package io.cfp.dto;
 
+import io.cfp.entity.User;
+
 /**
  * Created by sylvain on 02/03/16.
  */
@@ -35,6 +37,21 @@ public class Speaker {
     private String googleplus;
     private String github;
     private String imageProfilURL;
+
+    public Speaker() { }
+
+    public Speaker(User user) {
+        this.id = user.getId();
+        this.firstname = user.getFirstname();
+        this.lastname = user.getLastname();
+        this.company = user.getCompany();
+        this.bio = user.getBio();
+        this.social = user.getSocial();
+        this.twitter = user.getTwitter();
+        this.googleplus = user.getGoogleplus();
+        this.github = user.getGithub();
+        this.imageProfilURL = user.getImageProfilURL();
+    }
 
     public String getLastname() {
         return lastname;
@@ -122,5 +139,56 @@ public class Speaker {
     @Override
     public int hashCode() {
         return id;
+    }
+
+
+    public Speaker id(int id) {
+        this.id = id;
+        return this;
+    }
+
+    public Speaker lastname(String lastname) {
+        this.lastname = lastname;
+        return this;
+    }
+
+    public Speaker firstname(String firstname) {
+        this.firstname = firstname;
+        return this;
+    }
+
+    public Speaker company(String company) {
+        this.company = company;
+        return this;
+    }
+
+    public Speaker bio(String bio) {
+        this.bio = bio;
+        return this;
+    }
+
+    public Speaker social(String social) {
+        this.social = social;
+        return this;
+    }
+
+    public Speaker twitter(String twitter) {
+        this.twitter = twitter;
+        return this;
+    }
+
+    public Speaker googleplus(String googleplus) {
+        this.googleplus = googleplus;
+        return this;
+    }
+
+    public Speaker github(String github) {
+        this.github = github;
+        return this;
+    }
+
+    public Speaker imageProfilURL(String imageProfilURL) {
+        this.imageProfilURL = imageProfilURL;
+        return this;
     }
 }
