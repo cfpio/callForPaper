@@ -20,6 +20,7 @@
 
 package io.cfp.entity;
 
+import com.fasterxml.jackson.databind.PropertyMetadata;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Entity;
@@ -77,5 +78,21 @@ public class Track {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+
+    public Track withEvent(Event event) {
+        this.event = event;
+        return this;
+    }
+
+    public Track withLibelle(String libelle) {
+        this.libelle = libelle;
+        return this;
+    }
+
+    public Track withDescription(String description) {
+        this.description = description;
+        return this;
     }
 }

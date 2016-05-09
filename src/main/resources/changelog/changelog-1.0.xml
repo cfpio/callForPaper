@@ -70,7 +70,7 @@
         </createTable>
 
         <createTable tableName="tracks">
-            <column name="id" type="INT">
+            <column autoIncrement="true" name="id" type="INT">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="libelle" type="VARCHAR(64)">
@@ -83,7 +83,7 @@
         </createTable>
 
         <createTable tableName="formats">
-            <column name="id" type="INT">
+            <column autoIncrement="true" name="id" type="INT">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="libelle" type="VARCHAR(64)">

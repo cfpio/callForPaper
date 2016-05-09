@@ -30,7 +30,7 @@ import java.util.List;
  */
 public interface TrackRepo extends JpaRepository<Track, Integer> {
 
-    Track findByIdAndEventId(int integer, String eventId);
+    Track findByIdAndEventId(int id, String eventId);
 
     List<Track> findByEventId(String eventId);
 }

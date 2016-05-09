@@ -20,6 +20,8 @@
 
 package io.cfp.dto;
 
+import io.cfp.entity.Track;
+
 /**
  * Created by SGUERNIO on 29/11/2015.
  */
@@ -27,6 +29,15 @@ public class TrackDto {
     private int id;
     private String libelle;
     private String description;
+
+    public TrackDto() {
+    }
+
+    public TrackDto(Track track) {
+        this.id = track.getId();
+        this.libelle = track.getLibelle();
+        this.description = track.getDescription();
+    }
 
     public int getId() {
         return id;
