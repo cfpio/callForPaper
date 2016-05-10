@@ -66,6 +66,6 @@ public class ApplicationTest {
                 .get("/api/application")
                 .then()
                 .statusCode(200)
-                .body("size()", equalTo(7));
+                .body("size()", equalTo(8));
     }
 }

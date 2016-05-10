@@ -23,11 +23,6 @@
             <column name="email" type="VARCHAR(255)">
                 <constraints nullable="false" unique="true"/>
             </column>
-            <column name="github_id" type="VARCHAR(255)"/>
-            <column name="google_id" type="VARCHAR(255)"/>
-            <column name="password" type="VARCHAR(62)"/>
-            <column name="verified" type="BOOLEAN"/>
-            <column name="verify_token" type="VARCHAR(255)"/>
             <column name="lastname" type="VARCHAR(255)"/>
             <column name="firstname" type="VARCHAR(255)"/>
             <column name="company" type="VARCHAR(255)"/>
@@ -203,9 +198,6 @@
         <insert tableName="users">
             <column name="id" value="1"/>
             <column name="email" value="info@cfp.io"/>
-            <!-- password is toto123 -->
-            <column name="password" value="$2a$10$L/0Fhifp1PitGMmCqnAmg.KCFN./RYPAF7aCeuWS9KRC/JcwvOy8q"/>
-            <column name="verified" valueBoolean="true"/>
         </insert>
         <insert tableName="roles">
             <column name="id" value="1"/>

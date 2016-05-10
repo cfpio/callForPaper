@@ -61,34 +61,6 @@ public class UserService {
 		return userRepo.findByEmail(email);
 	}
 
-	public User findByVerifyToken(String verifyToken) {
-		List<User> users = userRepo.findByVerifyToken(verifyToken);
-		if (!users.isEmpty())
-
-			return users.get(0);
-		else
-			return null;
-	}
-
-	public User findByProvider(User.Provider provider, String providerId) {
-		switch (provider) {
-			case GOOGLE:
-				List<User> users = userRepo.findByGoogleId(providerId);
-			if (!users.isEmpty())
-					return users.get(0);
-				else
-					return null;
-			case GITHUB:
-				List<User> users2 = userRepo.findByGithubId(providerId);
-				if (!users2.isEmpty())
-					return users2.get(0);
-				else
-					return null;
-			default:
-				throw new IllegalArgumentException();
-		}
-	}
-
 	public void update(int userId, UserProfil profil) {
 		User user = userRepo.findOne(userId)
             .email(profil.getEmail())

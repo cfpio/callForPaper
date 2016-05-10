@@ -31,12 +31,6 @@ public interface UserRepo extends JpaRepository<User, Integer> {
 
     User findByEmail(String email);
 
-    List<User> findByGoogleId(String providerId);
-
-    List<User> findByGithubId(String providerId);
-
-    List<User> findByVerifyToken(String verifyToken);
-
     @Query("select u.email from User u, Role r where r.name = 'ADMIN' and r.event.id = :eventId and r.user.id = u.id")
     List<String> findAdminsEmail(@Param("eventId") String eventId);
 

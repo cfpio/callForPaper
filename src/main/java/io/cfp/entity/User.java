@@ -43,29 +43,6 @@ public class User {
     private int id;
     private String email;
 
-    /**
-     * github oauth id if user connect with his account
-     */
-    private String githubId;
-    /**
-     * google oauth id if user connect with his account
-     */
-    private String googleId;
-
-    /**
-     * password if user have a local account
-     */
-    private String password;
-    /**
-     * for local account, true if user validate his e-mail address
-     */
-    private boolean verified;
-    /**
-     * token to verify local e-mail address, empty when e-mail verified
-     */
-    private String verifyToken;
-
-
     /* ****  USER PROFILE  **** */
     private String lastname;
     private String firstname;
@@ -87,34 +64,6 @@ public class User {
      */
     private String imageProfilURL;
 
-    /**
-     * Count sign in provider the user has
-     *
-     * @return Number of sign in provider
-     */
-    @Transient
-    public int getSignInMethodCount() {
-        int count = 0;
-        if (password != null) count++;
-        if (githubId != null) count++;
-        if (googleId != null) count++;
-        return count;
-    }
-
-    @Transient
-    public void setProviderId(Provider provider, String providerId) {
-        switch (provider) {
-            case GOOGLE:
-                this.setGoogleId(providerId);
-                break;
-            case GITHUB:
-                this.setGithubId(providerId);
-                break;
-            default:
-                throw new IllegalArgumentException();
-        }
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getId() {
@@ -124,29 +73,6 @@ public class User {
     @Email
     public String getEmail() {
         return email;
-    }
-
-    @Column(name = "github_id")
-    public String getGithubId() {
-        return githubId;
-    }
-
-    @Column(name = "google_id")
-    public String getGoogleId() {
-        return googleId;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public boolean isVerified() {
-        return verified;
-    }
-
-    @Column(name = "verify_token")
-    public String getVerifyToken() {
-        return verifyToken;
     }
 
     public String getLastname() {
@@ -203,26 +129,6 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public void setGithubId(String githubId) {
-        this.githubId = githubId;
-    }
-
-    public void setGoogleId(String googleId) {
-        this.googleId = googleId;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setVerified(boolean verified) {
-        this.verified = verified;
-    }
-
-    public void setVerifyToken(String verifyToken) {
-        this.verifyToken = verifyToken;
     }
 
     public void setLastname(String lastname) {
@@ -312,31 +218,6 @@ public class User {
 
     public User email(String email) {
         this.email = email;
-        return this;
-    }
-
-    public User githubId(String githubId) {
-        this.githubId = githubId;
-        return this;
-    }
-
-    public User googleId(String googleId) {
-        this.googleId = googleId;
-        return this;
-    }
-
-    public User password(String password) {
-        this.password = password;
-        return this;
-    }
-
-    public User verified(boolean verified) {
-        this.verified = verified;
-        return this;
-    }
-
-    public User verifyToken(String verifyToken) {
-        this.verifyToken = verifyToken;
         return this;
     }
 

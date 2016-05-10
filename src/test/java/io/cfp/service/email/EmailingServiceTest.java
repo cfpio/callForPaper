@@ -114,7 +114,6 @@ public class EmailingServiceTest {
         user.setId(1);
         user.setEmail(JOHN_DOE_EMAIL);
         user.setFirstname("john");
-        user.setVerifyToken("verifyToken");
 
         talkUser = new TalkUser();
         talkUser.setId(1);
@@ -249,20 +248,6 @@ public class EmailingServiceTest {
     }
 
     @Test
-    public void sendEmailValidation() {
-        // Given
-        String templatePath = emailingSettings.getTemplatePath(EmailingSettings.EmailType.VERIFY, Locale.FRENCH);
-        String subject = emailingSettings.getSubject(EmailingSettings.EmailType.VERIFY, Locale.FRENCH);
-
-        // When
-        emailingService.sendEmailValidation(user, Locale.FRENCH);
-
-        // Then
-        verify(emailingService).processContent(eq(templatePath), anyMap());
-        verify(emailingService).sendEmail(eq(JOHN_DOE_EMAIL), eq(subject), anyString(), isNull(List.class), isNull(List.class));
-    }
-
-    @Test
     public void processContentConfirmed() {
         // Given
         String templatePath = emailingSettings.getTemplatePath(EmailingSettings.EmailType.CONFIRMED, Locale.FRENCH);
@@ -329,22 +314,6 @@ public class EmailingServiceTest {
         map.put("event", "DevFest 2015");
         map.put("date", "13/11/1992");
         map.put("releaseDate", "12/11/1992");
-        map.put("hostname", "http://yourappid.appspot.com/");
-
-        // When
-        String content = emailingService.processContent(templatePath, map);
-
-        // Then
-        assertEquals(false, content.contains("$"));
-    }
-
-    @Test
-    public void processContentVerify() {
-        // Given
-        String templatePath = emailingSettings.getTemplatePath(EmailingSettings.EmailType.VERIFY, Locale.FRENCH);
-
-        HashMap<String, String> map = new HashMap<String, String>();
-        map.put("link", "http://google.fr");
         map.put("hostname", "http://yourappid.appspot.com/");
 
         // When
@@ -424,6 +393,7 @@ public class EmailingServiceTest {
             properties.setProperty("cfp.database.loaded", "");
             properties.setProperty("cfp.email.emailsender", "");
             properties.setProperty("cfp.email.send", "false");
+            properties.setProperty("authServer", "http://locahost");
             propertySourcesPlaceholderConfigurer.setProperties(properties);
             return propertySourcesPlaceholderConfigurer;
         }

@@ -260,31 +260,6 @@ public class EmailingService {
         sendEmail(user.getEmail(), subject, content, cc, null);
     }
 
-    /**
-     * Send email validation.
-     *
-     * @param user
-     * @param locale
-     */
-    @Async
-    public void sendEmailValidation(User user, Locale locale) {
-        log.debug("Sending email validation e-mail to '{}'", user.getEmail());
-
-        String link = globalSettings.getHostname() + "/#/verify?id=" + String.valueOf(user.getId()) + "&token=" + user.getVerifyToken();
-        log.debug(link);
-
-        HashMap<String, String> map = new HashMap<>();
-        map.put("link", link);
-        map.put("hostname", globalSettings.getHostname());
-
-        String templatePath = emailingSettings.getTemplatePath(EmailType.VERIFY, locale);
-
-        String content = processContent(templatePath, map);
-        String subject = emailingSettings.getSubject(EmailType.VERIFY, locale);
-
-        sendEmail(user.getEmail(), subject, content, null, null);
-    }
-
     public void sendEmail(String to, String subject, String content, List<String> cc, List<String> bcc) {
         if (!emailingSettings.isSend())
             return;

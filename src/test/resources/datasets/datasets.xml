@@ -31,7 +31,6 @@
         <insert tableName="users">
             <column name="id" value="10"/>
             <column name="email" value="EMAIL"/>
-            <column name="verified" valueBoolean="true"/>
         </insert>
         <insert tableName="events">
             <column name="id" value="EVENT_ID"/>

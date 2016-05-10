@@ -62,7 +62,7 @@ public class SecurityUserService implements UserDetailsService {
             List<GrantedAuthority> grantedAuthorities = roles.stream()
                                                              .map(role -> new SimpleGrantedAuthority(role.getName()))
                                                              .collect(Collectors.toList());
-            return new org.springframework.security.core.userdetails.User(lowercaseLogin, user.getPassword(), grantedAuthorities);
+            return new org.springframework.security.core.userdetails.User(lowercaseLogin, "****", grantedAuthorities);
         }).orElseThrow(() -> new UsernameNotFoundException("User " + lowercaseLogin + " was not found in the " + "database"));
     }
 }
