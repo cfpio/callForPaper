@@ -39,13 +39,9 @@ angular.module('CallForPaper', [
         'ui.gravatar',
         'relativeDate',
         'matchMedia',
-        'satellizer',
-        'angular-jwt',
-        'vcRecaptcha',
         'angular-loading-bar',
         'ngFx',
         'offClick',
-        'konami',
         'ngFileUpload',
         'hc.marked',
         'mdPreview',
@@ -53,8 +49,7 @@ angular.module('CallForPaper', [
         'cfp.hotkeys',
         'ngAria',
         'restangular',
-        'dialogs.main',
-        'ngSanitize'
+        'dialogs.main'
     ])
     .config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
         cfpLoadingBarProvider.includeSpinner = false;
@@ -79,7 +74,7 @@ angular.module('CallForPaper', [
 
             .when('/form', '/form/')
 
-            .otherwise('/login');
+            .otherwise('/dashboard');
 
         $stateProvider
             .state('main', {
@@ -108,7 +103,7 @@ angular.module('CallForPaper', [
                         templateUrl: 'views/admin/admin.html',
                         controller: 'AdminCtrl',
                         resolve: {
-                            isAutorizedAdmin: AuthServiceProvider.$get().isAutorizedAdmin,
+                            isAutorizedAdmin: AuthServiceProvider.$get().isAdmin,
                             isConfigured: AppConfigProvider.$get().isConfigured
                         }
                     }
@@ -239,7 +234,6 @@ angular.module('CallForPaper', [
                 parent: 'main',
                 abstract: true,
                 resolve: {
-                    authenticated: AuthServiceProvider.$get().authenticated,
                     currentUser: ['AuthService', function(AuthService) {
                         return AuthService.getCurrentUser();
                     }],
@@ -273,7 +267,6 @@ angular.module('CallForPaper', [
                 url: '/dashboard',
                 resolve: {
                     isProfileComplete: ProfileValidatorProvider.isValid(),
-                    verified: AuthServiceProvider.$get().verified,
                     tracks: function(TalkService) {
                         return TalkService.tracks.findAll().$promise;
                     },
@@ -290,40 +283,6 @@ angular.module('CallForPaper', [
                 controller: 'ProfilCtrl'
             })
 
-            // Auth
-            .state('app.login', {
-                parent: 'main',
-                url: '/login',
-                templateUrl: 'views/login.html',
-                controller: 'LoginCtrl',
-                resolve: {
-                    tracks: function(TalkService) {
-                        return TalkService.tracks.findAll().$promise;
-                    },
-                    talkformats: function(TalkService) {
-                        return TalkService.formats.findAll().$promise;
-                    }
-                }
-            })
-            .state('app.verify', {
-                parent: 'main',
-                url: '/verify?token&id',
-                templateUrl: 'views/verify.html',
-                controller: 'VerifyCtrl'
-            })
-            .state('app.logout', {
-                parent: 'main',
-                url: '/logout',
-                template: null,
-                controller: 'LogoutCtrl'
-            })
-            .state('app.signup', {
-                parent: 'main',
-                url: '/signup',
-                templateUrl: 'views/signup.html',
-                controller: 'SignupCtrl'
-            })
-
             .state('app.sessions', {
                 template: '<ui-view/>',
                 resolve: {
@@ -337,14 +296,12 @@ angular.module('CallForPaper', [
                 }
             })
 
-
             .state('app.talks', {
                 url: '/talks',
                 parent: 'app.sessions',
                 templateUrl: 'views/restricted/talks/talks.html',
                 abstract: true,
                 resolve: {
-                    verified: AuthServiceProvider.$get().verified,
                     isOpen: AppConfigProvider.$get().isOpen
                 }
             })
@@ -373,7 +330,6 @@ angular.module('CallForPaper', [
                 abstract: true,
                 templateUrl: 'views/restricted/talks/talks.html',
                 resolve: {
-                    verified: AuthServiceProvider.$get().verified,
                     isOpen: AppConfigProvider.$get().isOpen
                 }
             })
@@ -407,7 +363,6 @@ angular.module('CallForPaper', [
                         templateUrl: 'views/restricted/form/form.html',
                         controller: 'FormCtrl',
                         resolve: {
-                            verified: AuthServiceProvider.$get().verified,
                             isOpen: AppConfigProvider.$get().isOpen
                         }
                     },
@@ -436,7 +391,6 @@ angular.module('CallForPaper', [
                 templateUrl: 'views/restricted/session.html',
                 controller: 'RestrictedSessionCtrl',
                 resolve: {
-                    verified: AuthServiceProvider.$get().verified,
                     talkformats: function(TalkService) {
                         return TalkService.formats.findAll().$promise;
                     },
@@ -450,7 +404,6 @@ angular.module('CallForPaper', [
                 templateUrl: 'views/restricted/session.html',
                 controller: 'RestrictedSessionCtrl',
                 resolve: {
-                    verified: AuthServiceProvider.$get().verified,
                     talkformats: function(TalkService) {
                         return TalkService.formats.findAll().$promise;
                     },
@@ -485,16 +438,6 @@ angular.module('CallForPaper', [
     }])
     .config(['$translateProvider', function($translateProvider) {
         $translateProvider.useCookieStorage();
-    }])
-    .config(['$authProvider', 'Config', function($authProvider, Config) {
-        $authProvider.google({
-            clientId: Config.googleClientId
-        });
-
-        $authProvider.github({
-            clientId: Config.githubClientId
-        });
-
     }])
     .config(function(NotificationProvider) {
         NotificationProvider.setOptions({

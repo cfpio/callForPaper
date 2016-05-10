@@ -21,230 +21,53 @@
 'use strict';
 
 angular.module('CallForPaper')
-    .factory('AuthService', ['$q', 'AdminUser', '$window', '$state', '$auth', 'jwtHelper', function($q, AdminUser, $window, $state, $auth, jwtHelper) {
+    .factory('AuthService', ['$q', 'AdminUser', '$window', '$location', 'Application', function($q, AdminUser, $window, $location, Application) {
         var authService = {};
         authService.user = null;
+        authService.server = null;
 
         /**
          * Initialise user
          * @return {void}
          */
         authService.init = function() {
-            AdminUser.getCurrentUser(function(userInfo) {
-                authService.user = userInfo;
+        	Application.get(function(config) {
+        		authService.server = config.authServer;
+        		AdminUser.getCurrentUser(function(userInfo) {
+                	authService.user = userInfo;
+                	if (!authService.isAuthenticated()) {
+                		authService.login();
+                	}
+                });
             });
         };
 
-        /**
-         * Get login url with custom redirection url
-         * @param  {"redirection" : "wantedUrl"}
-         * @return {string : url}
-         */
-        authService.getCustomLoginUrl = function(data) {
-            var promise = $q.defer();
-            AdminUser.getLoginUrl(data, function(uri) {
-                promise.resolve(uri);
-            }, function() {
-                promise.reject();
-            });
-            return promise.promise;
-        };
-
-        /**
-         * Get logout url with custom redirection url
-         * @param  {"redirection" : "wantedUrl"}
-         * @return {string : url}
-         */
-        authService.getCustomLogoutUrl = function(data) {
-            var promise = $q.defer();
-            AdminUser.getLogoutUrl(data, function(uri) {
-                promise.resolve(uri);
-            }, function() {
-                promise.reject();
-            });
-            return promise.promise;
-        };
-
-        /**
-         * Get logout url with root url as redirection
-         * @return {string : url}
-         */
-        authService.getLogoutUri = function() {
-            if (authService.user !== null && authService.user.connected === true) {
-                return authService.user.uri;
-            }
-            return null;
-        };
-
-        /**
-         * Get login url with root url as redirection
-         * @return {string : url}
-         */
-        authService.getLogintUri = function() {
-            if (authService.user !== null && authService.user.connected === false) {
-                return authService.user.uri;
-            }
-            return null;
-        };
-
-
-        /**
-         * Redirect user if not admin
-         */
-        authService.isAutorizedAdmin = ['$q', '$window', '$state', function($q, $window, $state) {
-            var deferred = $q.defer();
-            authService.getCurrentUser().then(function(userInfo) {
-                // connected
-                if (userInfo.connected === true) {
-                    // admin
-                    if (userInfo.admin === true) {
-                        deferred.resolve();
-                        // not admin
-                    } else {
-                        // not autorized
-                        $state.go('403');
-                        deferred.reject();
-                    }
-                } else {
-                    // login with admin redirection
-                    authService.getCustomLoginUrl({
-                        redirect: '/#/admin'
-                    }).then(function(login) {
-                        if (login.uri !== null) {
-                            // go to login page
-                            $window.location.href = login.uri;
-                            deferred.reject();
-                        }
-                    }, function() {
-                        // error
-                        $state.go('app.login');
-                        deferred.reject();
-                    });
-                }
-            });
-            return deferred.promise;
-        }];
-
-        /**
-         * Redirect user if not connected to google and can't configure the app
-         */
-        authService.isAutorizedConfig = ['$q', '$window', '$state', function($q, $window, $state) {
-            var deferred = $q.defer();
-            authService.getCurrentUser().then(function(userInfo) {
-                // connected
-                if (userInfo.connected === true) {
-                    if (userInfo.config === true) {
-                        deferred.resolve();
-                    } else {
-                        deferred.reject();
-                        $state.go('config.403');
-                    }
-                } else {
-                    // login with admin redirection
-                    authService.getCustomLoginUrl({
-                        redirect: '/#/config'
-                    }).then(function(login) {
-                        if (login.uri !== null) {
-                            // go to login page
-                            $window.location.href = login.uri;
-                            deferred.reject();
-                        }
-                    }, function() {
-                        // error
-                        $state.go('app.login');
-                        deferred.reject();
-                    });
-                }
-            });
-            return deferred.promise;
-        }];
-
-        /**
-         * Verify if the user is currently logged and has confirmed his email (or logged with provider)
-         */
-        authService.verified = ['$q', '$location', '$auth', 'jwtHelper', function($q, $location, $auth, jwtHelper) {
-            var deferred = $q.defer();
-            if (!$auth.isAuthenticated()) {
-                $location.path('/login');
-            } else {
-                if (jwtHelper.isTokenExpired($auth.getToken())) {
-                    $location.path('/login');
-                } else if ($auth.getPayload().verified === false) {
-                    $location.path('/login');
-                } else {
-                    deferred.resolve();
-                }
-            }
-            return deferred.promise;
-        }];
-
-        /**
-         * Verify if the user is currently logged and has confirmed his email (or logged with provider)
-         */
-        authService.isVerified = function() {
-            if (!$auth.isAuthenticated()) {
-                return false;
-            } else {
-                if (jwtHelper.isTokenExpired($auth.getToken())) {
-                    return false;
-                } else if ($auth.getPayload().verified === false) {
-                    return false;
-                } else {
-                    return true;
-                }
-            }
-        };
         /**
          * Verify if the user is currently logged
          */
-        authService.authenticated = ['$q', '$location', '$auth', 'jwtHelper', function($q, $location, $auth, jwtHelper) {
-            var deferred = $q.defer();
-            if (!$auth.isAuthenticated()) {
-                $location.path('/login');
-            } else {
-                if (jwtHelper.isTokenExpired($auth.getToken())) {
-                    $location.path('/login');
-                } else {
-                    deferred.resolve();
-                }
-            }
-            return deferred.promise;
-        }];
+        authService.isAuthenticated = function() {
+            return authService.user && authService.user.connected;
+        };
+        
+        /**
+         * Verify if the user is currently admin
+         */
+        authService.isAdmin = function() {
+            return authService.user && authService.user.admin;
+        };
 
         /**
          * Login the user and redirect to the given state
-         * @param  {string : stateName}
-         * @param  {string : stateNameIfAdmin}
-         * @return {void}
          */
-        authService.login = function(state, stateAdmin) {
-            authService.getCurrentUser().then(function(user) {
-                if (user.connected === false) {
-                    $window.location.href = user.uri;
-                } else {
-                    if (user.admin === true) {
-                        $state.go(stateAdmin);
-                    } else {
-                        $state.go(state);
-                    }
-                }
-            });
+        authService.login = function() {
+        	$window.location = authService.server + '/?target=' + escape($location.absUrl());
         };
-
 
         /**
          * Logout the user and redirect to the given state
-         * @param  {string : stateName}
-         * @return {void}
          */
-        authService.logout = function(state) {
-            authService.getCurrentUser().then(function(user) {
-                if (user.connected === true) {
-                    $window.location.href = user.uri;
-                } else {
-                    $state.go(state);
-                }
-            });
+        authService.logout = function() {
+        	$window.location = authService.server + '/logout';
         };
 
         /**
@@ -255,6 +78,9 @@ angular.module('CallForPaper')
             var promise = $q.defer();
             AdminUser.getCurrentUser(function(userInfo) {
                 authService.user = userInfo;
+                if (!authService.isAuthenticated()) {
+            		authService.login();
+            	}
                 promise.resolve(userInfo);
             }, function() {
                 promise.reject();

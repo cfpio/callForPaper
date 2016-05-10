@@ -26,7 +26,7 @@ angular.module('CallForPaper').controller('ProfilCtrl', function($scope, Restric
     $scope.formData.imageProfilKey = null;
 
     $scope.$watch(function() {
-        return $scope.form.lastname.$valid && $scope.form.firstname.$valid && ($scope.form.phone.$valid || $scope.formData.phone === '') && $scope.form.company.$valid && $scope.form.bio.$valid && $scope.form.social.$valid && $scope.form.twitter.$valid && $scope.form.googleplus.$valid && $scope.form.github.$valid;
+        return $scope.form && $scope.form.lastname.$valid && $scope.form.firstname.$valid && ($scope.form.phone.$valid || $scope.formData.phone === '') && $scope.form.company.$valid && $scope.form.bio.$valid && $scope.form.social.$valid && $scope.form.twitter.$valid && $scope.form.googleplus.$valid && $scope.form.github.$valid;
     }, function(isValid) {
         $scope.formData.isValid = isValid;
     });

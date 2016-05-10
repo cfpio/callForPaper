@@ -29,9 +29,8 @@
 		">Call For Papers</span>
 		<ul>
             <div ui-view="side-menu"></div>
-            <li ng-switch="header.isAuthenticated" ui-sref-active="active">
-                <a ng-switch-when="true" ui-sref="app.logout">{{'header.logout' | translate}}</a>
-                <a ng-switch-when="false" ui-sref="app.login">{{'header.login' | translate}}</a>
+            <li>
+             	<a href="#" ng-click="logout()">{{'header.logout' | translate}}</a>
             </li>
 			<li>
 				<lang-picker class="lang-picker" supported-languages="['fr-FR', 'en-US']" on-language-change="header.changeLanguage(lang)">{{ ('lang.'+header.language) | translate}}</lang-picker>
@@ -65,9 +64,8 @@
                             <div ui-view="top-menu"></div>
 							<ul class="nav navbar-nav navbar-right">
 								<li ng-if="header.releaseDate !== undefined" class="hidden-sm"><a>{{'header.openUntil' | translate}}{{::header.releaseDate}} - {{'header.decision' | translate}}{{::header.decisionDate}}</a></li>
-                                <li ng-switch="header.isAuthenticated" ui-sref-active="active">
-                                    <a ng-switch-when="true" ui-sref="app.logout">{{'header.logout' | translate}}</a>
-                                    <a ng-switch-when="false" ui-sref="app.login">{{'header.login' | translate}}</a>
+                                <li>
+                                    <a href="#" ng-click="logout()">{{'header.logout' | translate}}</a>
                                 </li>
 								<li>
 									<lang-picker class="lang-picker" supported-languages="['fr-FR', 'en-US']" on-language-change="header.changeLanguage(lang)">{{ ('lang.'+header.language) | translate}}</lang-picker>

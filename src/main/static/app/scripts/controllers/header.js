@@ -20,7 +20,7 @@
 
 'use strict';
 
-angular.module('CallForPaper').controller('HeaderCtrl', function($scope, $rootScope, $translate, $auth, config) {
+angular.module('CallForPaper').controller('HeaderCtrl', function($scope, $rootScope, $translate, AuthService, config) {
     this.language = $translate.use();
 
     this.title = config.eventName;
@@ -36,10 +36,8 @@ angular.module('CallForPaper').controller('HeaderCtrl', function($scope, $rootSc
     $rootScope.$on('$translateChangeEnd', function(event, args) {
         this.language = args.language;
     }.bind(this));
-
-    this.isAuthenticated = $auth.isAuthenticated();
-    $scope.$on('authenticate', function() {
-        this.isAuthenticated = $auth.isAuthenticated();
-    }.bind(this));
-
+    
+    $scope.logout = function() {
+    	AuthService.logout();
+    }
 });

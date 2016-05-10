@@ -20,22 +20,14 @@
 
 package io.cfp.controller.admin;
 
-import com.jayway.restassured.module.mockmvc.RestAssuredMockMvc;
-import com.jayway.restassured.module.mockmvc.response.MockMvcResponse;
-import io.cfp.controller.ScheduleController;
-import io.cfp.dto.TalkUser;
-import io.cfp.dto.user.CospeakerProfil;
-import io.cfp.dto.user.Schedule;
-import io.cfp.dto.user.UserProfil;
-import io.cfp.entity.Talk;
-import io.cfp.service.TalkUserService;
-import io.cfp.service.email.EmailingService;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.given;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.isNull;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -45,12 +37,24 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.given;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.isNull;
-import static org.mockito.Mockito.*;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import com.jayway.restassured.module.mockmvc.RestAssuredMockMvc;
+import com.jayway.restassured.module.mockmvc.response.MockMvcResponse;
+
+import io.cfp.controller.ScheduleController;
+import io.cfp.dto.TalkUser;
+import io.cfp.dto.user.CospeakerProfil;
+import io.cfp.dto.user.Schedule;
+import io.cfp.dto.user.UserProfil;
+import io.cfp.entity.Talk;
+import io.cfp.service.TalkUserService;
+import io.cfp.service.email.EmailingService;
 
 /**
  * Created by Nicolas on 30/01/2016.

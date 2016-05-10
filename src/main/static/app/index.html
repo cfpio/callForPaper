@@ -41,7 +41,7 @@
     <link rel="stylesheet" href="styles/app.css">
     <!-- endbuild -->
 </head>
-<body>
+<body ng-app="CallForPaper">
     <!--[if lt IE 7]>
     <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -81,13 +81,10 @@
     <script src="bower_components/angular-gravatar/build/angular-gravatar.min.js"></script>
     <script src="bower_components/angular-relative-date/angular-relative-date.js"></script>
     <script src="bower_components/angular-media-queries/match-media.js"></script>
-    <script src="bower_components/angular-jwt/dist/angular-jwt.js"></script>
-    <script src="bower_components/angular-recaptcha/release/angular-recaptcha.js"></script>
     <script src="bower_components/angular-loading-bar/build/loading-bar.js"></script>
     <script src="bower_components/gsap/src/uncompressed/TweenMax.js"></script>
     <script src="bower_components/ngFx/dist/ngFx.js"></script>
     <script src="bower_components/angular-off-click/offClick.js"></script>
-    <script src="bower_components/angular-konami/angular-konami.js"></script>
     <script src="bower_components/ng-file-upload/ng-file-upload.js"></script>
     <script src="bower_components/ng-file-upload/ng-file-upload-shim.js"></script>
     <script src="bower_components/marked/lib/marked.js"></script>
@@ -96,7 +93,6 @@
     <script src="bower_components/angular-hotkeys/build/hotkeys.js"></script>
     <script src="bower_components/restangular/dist/restangular.js"></script>
     <script src="bower_components/angular-dialog-service/dist/dialogs.js"></script>
-    <script src="bower_components/satellizer/satellizer.js"></script>
     <script src="bower_components/ng-tags-input/ng-tags-input.js"></script>
     <!-- endbuild -->
     <script src="https://www.google.com/recaptcha/api.js?onload=vcRecaptchaApiLoaded&render=explicit" async defer></script>
@@ -111,13 +107,7 @@
     <script src="scripts/controllers/admin/sessions.js"></script>
     <script src="scripts/controllers/admin/sessions-export.js"></script>
     <script src="scripts/controllers/admin/session.js"></script>
-    <script src="scripts/controllers/admin/login.js"></script>
-    <script src="scripts/controllers/admin/logout.js"></script>
     <script src="scripts/controllers/admin/config.js"></script>
-    <script src="scripts/controllers/login.js"></script>
-    <script src="scripts/controllers/logout.js"></script>
-    <script src="scripts/controllers/signup.js"></script>
-    <script src="scripts/controllers/verify.js"></script>
     <script src="scripts/controllers/header.js"></script>
     <script src="scripts/controllers/restricted/menu.js"></script>
     <script src="scripts/controllers/restricted/dashboard.js"></script>
@@ -132,7 +122,6 @@
 
     <!-- Resources -->
     <script src="scripts/resources/Application.js"></script>
-    <script src="scripts/resources/Verify.js"></script>
     <script src="scripts/resources/admin/AdminUser.js"></script>
     <script src="scripts/resources/admin/AdminSession.js"></script>
     <script src="scripts/resources/admin/AdminComment.js"></script>
@@ -164,8 +153,6 @@
     <script src="scripts/factory/nextPreviousSessionService.js"></script>
     <script src="scripts/factory/ProfileValidator.js"></script>
 
-    <!-- Application bootstrap -->
-    <script src="scripts/bootstrapper.js"></script>
     <!-- endbuild -->
     <script>
       (function(i, s, o, g, r, a, m) {

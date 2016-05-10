@@ -21,7 +21,6 @@
 <div class="row" konami-code="launchKonami()">
   <div class="panel">
     <div class="panel-body">
-      <div ng-if="isVerified">
         <div class="row">
             <div ng-show="submission !== undefined" class="col-md-6">
               <a ng-show="submission === true" ui-sref="app.talks.new" class="btn btn-block btn-primary">
@@ -159,20 +158,6 @@
               </tbody>
             </table>
           </div>
-
-      </div>
-      </div>
-
-
-      <div ng-if="!isVerified">
-        <div class="row">
-          <div class="center-form panel col-md-6 col-md-offset-3">
-            <div class="panel-body">
-              <h2 class="text-center">{{'dashboard.verification' | translate}}</h2>
-              <div class="alert alert-danger">{{'dashboard.verificationNeeded' | translate}}</div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </div>

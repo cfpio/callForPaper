@@ -20,19 +20,20 @@
 
 package io.cfp.controller;
 
-import com.nimbusds.jwt.JWTClaimsSet;
-import io.cfp.domain.exception.NotVerifiedException;
-import io.cfp.entity.User;
-import io.cfp.repository.UserRepo;
-import io.cfp.service.auth.AuthUtils;
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.servlet.http.HttpServletRequest;
+import io.cfp.domain.exception.NotVerifiedException;
+import io.cfp.entity.User;
+import io.cfp.service.auth.AuthUtils;
+import io.cfp.service.auth.AuthUtils.InvalidTokenException;
 
 public abstract class RestrictedController {
 
+    
     @Autowired
-    private UserRepo users;
+    private AuthUtils authUtils;
 
     /**
      * Retrieve user from request token
@@ -41,11 +42,17 @@ public abstract class RestrictedController {
      * @throws NotVerifiedException If token invalid and user id can't be read
      */
     protected User retrieveUser(HttpServletRequest req) throws NotVerifiedException {
-        JWTClaimsSet claimsSet = AuthUtils.getTokenBody(req);
-        if (claimsSet == null) {
+        User user = null;
+        try {
+        	user = authUtils.getAuthUser(req);
+        }
+        catch (InvalidTokenException ex) {
+        	//Nothing?
+        }
+        if (user == null) {
             throw new NotVerifiedException("Claims Set is null");
         }
 
-        return users.findByEmail(claimsSet.getSubject());
+        return user;
     }
 }

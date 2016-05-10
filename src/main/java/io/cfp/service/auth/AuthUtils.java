@@ -20,41 +20,63 @@
 
 package io.cfp.service.auth;
 
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jose.JWSSigner;
-import com.nimbusds.jose.crypto.MACSigner;
-import com.nimbusds.jose.crypto.MACVerifier;
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.ReadOnlyJWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
-import io.cfp.domain.token.Token;
-import org.apache.commons.lang.StringUtils;
-import org.joda.time.DateTime;
-
-import javax.servlet.http.HttpServletRequest;
+import java.sql.Date;
 import java.text.ParseException;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
-/**
- * Created by tmaugin on 15/05/2015.
- */
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import io.cfp.domain.token.Token;
+import io.cfp.entity.User;
+import io.cfp.service.user.UserService;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+
+@Component
 public final class AuthUtils {
+	
+	public static final String AUTH_ERROR_MSG = "Please make sure your request has an Authorization header",
+            EXPIRE_ERROR_MSG = "Token has expired",
+            JWT_ERROR_MSG = "Unable to parse JWT",
+            JWT_INVALID_MSG = "Invalid JWT token";
 
-    private static final JWSHeader JWT_HEADER = new JWSHeader(JWSAlgorithm.HS512);
-    public static final String AUTH_HEADER_KEY = "Authorization";
+    private static final String TOKEN_COOKIE_NAME = "token";
 
-    public static String TOKEN_SECRET;
+    @Autowired
+    private UserService userService;
+    
+    @Value("${token.signing-key}")
+    private String signingKey;
 
     /**
-     * Get sub from JWT header
-     * @param authHeader
-     * @return JWT sub param
-     * @throws ParseException
-     * @throws JOSEException
+     * Get user from JWT token
+     * @param httpRequest
+     * @return User
+     * @throws InvalidTokenException
      */
-    public static String getSubject(String authHeader) throws ParseException, JOSEException {
-        return decodeToken(authHeader).getSubject();
+    public User getAuthUser(HttpServletRequest httpRequest) throws InvalidTokenException {
+        Claims claims = getToken(httpRequest);
+        if (claims != null) {
+        	String email = claims.getSubject();
+        	User user = userService.findByemail(email);
+        	if (user == null) {
+        		user = new User();
+        		user.setEmail(email);
+        		user = userService.save(user);
+        	}
+        	return user;
+        }
+        return null;
     }
 
     /**
@@ -62,19 +84,27 @@ public final class AuthUtils {
      * @param httpRequest
      * @return JWT claims set
      */
-    public static JWTClaimsSet getTokenBody(HttpServletRequest httpRequest)
+    private Claims getToken(HttpServletRequest httpRequest) throws InvalidTokenException
     {
-        String authHeader = httpRequest.getHeader(AuthUtils.AUTH_HEADER_KEY);
-        if (StringUtils.isBlank(authHeader) || authHeader.split(" ").length != 2) {
-        } else {
-            JWTClaimsSet claimSet = null;
-            try {
-                claimSet = (JWTClaimsSet) AuthUtils.decodeToken(authHeader);
-                return claimSet;
-            } catch (ParseException e) {
-                e.printStackTrace();
-            } catch (JOSEException e) {
-                e.printStackTrace();
+    	String tokenValue = null;
+    	if (httpRequest.getCookies() != null) {
+	    	for (Cookie cookie : httpRequest.getCookies()) {
+	    		if (TOKEN_COOKIE_NAME.equals(cookie.getName())) {
+	    			tokenValue = cookie.getValue();
+	    			break;
+	    		}
+	    	}
+    	}
+
+    	if (tokenValue != null) {
+    		try {
+                return decodeToken(tokenValue);
+            } 
+    		catch (ExpiredJwtException ex) {
+    			throw new InvalidTokenException(HttpServletResponse.SC_UNAUTHORIZED, EXPIRE_ERROR_MSG);
+            }
+    		catch (Exception ex) {
+                throw new InvalidTokenException(HttpServletResponse.SC_BAD_REQUEST, JWT_ERROR_MSG);
             }
         }
         return null;
@@ -82,18 +112,12 @@ public final class AuthUtils {
 
     /**
      * Return get JWT claims set from jwt header
-     * @param authHeader
+     * @param tokenValue
      * @return
      * @throws ParseException
-     * @throws JOSEException
      */
-    public static ReadOnlyJWTClaimsSet decodeToken(String authHeader) throws ParseException, JOSEException {
-        SignedJWT signedJWT = SignedJWT.parse(getSerializedToken(authHeader));
-        if (signedJWT.verify(new MACVerifier(TOKEN_SECRET))) {
-            return signedJWT.getJWTClaimsSet();
-        } else {
-            throw new JOSEException("Signature verification failed");
-        }
+    private Claims decodeToken(String tokenValue) throws ExpiredJwtException {
+        return Jwts.parser().setSigningKey(signingKey).parseClaimsJws(tokenValue).getBody();
     }
 
     /**
@@ -101,28 +125,33 @@ public final class AuthUtils {
      * @param host
      * @param sub
      * @return
-     * @throws JOSEException
      */
-    public static Token createToken(String host, String sub) throws JOSEException {
-        JWTClaimsSet claim = new JWTClaimsSet();
-        claim.setSubject(sub);
-        claim.setIssuer(host);
-        claim.setIssueTime(DateTime.now().toDate());
-        claim.setExpirationTime(DateTime.now().plusDays(14).toDate());
+    public Token createToken(String host, String sub) {
+        JwtBuilder builder = Jwts.builder()
+                .setSubject(sub)
+                .setExpiration(Date.from(Instant.now().plus(12, ChronoUnit.HOURS)))
+                .signWith(SignatureAlgorithm.HS512, signingKey);
 
-        JWSSigner signer = new MACSigner(TOKEN_SECRET);
-        SignedJWT jwt = new SignedJWT(JWT_HEADER, claim);
-        jwt.sign(signer);
-
-        return new Token(jwt.serialize());
+        return new Token(builder.compact());
     }
+    
+    /** Thrown if token is invalid */
+    public static class InvalidTokenException extends Exception {
+        private int responseCode;
+        private String message;
 
-    /**
-     * get serialized part of JWT header
-     * @param authHeader
-     * @return Serialized part of JWT header
-     */
-    public static String getSerializedToken(String authHeader) {
-        return authHeader.split(" ")[1];
+        public InvalidTokenException(int responseCode, String message) {
+            this.responseCode = responseCode;
+            this.message = message;
+        }
+
+        public int getResponseCode() {
+            return responseCode;
+        }
+
+        @Override
+        public String getMessage() {
+            return message;
+        }
     }
 }

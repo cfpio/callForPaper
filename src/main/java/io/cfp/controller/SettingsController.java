@@ -20,32 +20,24 @@
 
 package io.cfp.controller;
 
-import io.cfp.config.global.ServiceProviderSettings;
-import io.cfp.domain.exception.NotVerifiedException;
-import io.cfp.dto.TrackDto;
-import io.cfp.entity.Format;
-import io.cfp.service.TalkUserService;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import io.cfp.domain.exception.NotVerifiedException;
+import io.cfp.dto.TrackDto;
+import io.cfp.entity.Format;
+import io.cfp.service.TalkUserService;
 
 @RestController
 @RequestMapping(value="/api/settings", produces = "application/json; charset=utf-8")
 public class SettingsController {
 
     @Autowired
-    private ServiceProviderSettings serviceProviderSettings;
-
-    @Autowired
     private TalkUserService talkService;
-
-    @RequestMapping(value="/serviceproviders", method= RequestMethod.GET)
-    public ServiceProviderSettings getServiceProviderSettings() {
-        return serviceProviderSettings;
-    }
 
     /**
      * Obtain list of talk formats

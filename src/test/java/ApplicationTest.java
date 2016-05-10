@@ -18,34 +18,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import io.cfp.TestConfig;
-import io.cfp.controller.ApplicationController;
-import io.cfp.controller.oauth.AuthControllerTest;
-import io.cfp.dto.ApplicationSettings;
-import io.cfp.repository.EventRepository;
-import io.cfp.service.admin.config.ApplicationConfigService;
+import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.given;
+import static org.hamcrest.core.IsEqual.equalTo;
+
 import org.junit.Before;
-import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.WebIntegrationTest;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.web.context.WebApplicationContext;
 
 import com.jayway.restassured.module.mockmvc.RestAssuredMockMvc;
 
-import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.given;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.mockito.Mockito.when;
+import io.cfp.TestConfig;
+import io.cfp.controller.ApplicationController;
+import io.cfp.repository.EventRepository;
 
 
 /**

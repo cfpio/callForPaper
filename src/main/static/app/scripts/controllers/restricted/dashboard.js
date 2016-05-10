@@ -110,20 +110,11 @@ angular.module('CallForPaper')
             });
         };
 
-        $scope.isVerified = AuthService.isVerified();
-        if ($scope.isVerified) {
-            queryDraft();
-            queryCoDrafts();
-            querySession();
-            queryMeter();
-            queryCoTalks();
-        }
-
-        $scope.konamiCode = false;
-        $scope.launchKonami = function() {
-            $scope.konamiCode = !$scope.konamiCode;
-            $scope.$apply();
-        };
+        queryDraft();
+        queryCoDrafts();
+        querySession();
+        queryMeter();
+        queryCoTalks();
 
         Application.get(function(config) {
             $scope.submission = config.open;

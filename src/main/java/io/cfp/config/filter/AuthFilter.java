@@ -20,36 +20,42 @@
 
 package io.cfp.config.filter;
 
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jwt.JWTClaimsSet;
-import io.cfp.service.auth.AuthUtils;
-import org.apache.commons.lang.StringUtils;
-import org.joda.time.DateTime;
-import org.slf4j.MDC;
+import java.io.IOException;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.text.ParseException;
+
+import org.apache.log4j.MDC;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import io.cfp.entity.User;
+import io.cfp.service.auth.AuthUtils;
+import io.cfp.service.auth.AuthUtils.InvalidTokenException;
 
 /**
  * Filter reading auth token (JWT) to verify if user is correctly logged
  */
 public class AuthFilter implements Filter {
 
-    protected static final String AUTH_ERROR_MSG = "Please make sure your request has an Authorization header",
-            EXPIRE_ERROR_MSG = "Token has expired",
-            JWT_ERROR_MSG = "Unable to parse JWT",
-            JWT_INVALID_MSG = "Invalid JWT token";
-
-    public static final String USER_ID = "user.id";
+    public static final String USER = "user";
+    
+    private AuthUtils authUtils;
+    
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        ServletContext servletContext = filterConfig.getServletContext();
+        WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
+        authUtils = webApplicationContext.getBean(AuthUtils.class);
+    }
 
     /**
      * Do Auth filter according to JWT token
@@ -60,74 +66,23 @@ public class AuthFilter implements Filter {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
-        String authHeader = httpRequest.getHeader(AuthUtils.AUTH_HEADER_KEY);
 
         try {
-            JWTClaimsSet claimsSet = readToken(authHeader);
-
-            if (claimsSet != null) {
-                MDC.put(USER_ID, claimsSet.getSubject());
-            }
+            User user = authUtils.getAuthUser(httpRequest);
+            MDC.put(USER, user);
 
             chain.doFilter(request, response);
-
+            
         } catch (InvalidTokenException e) {
             httpResponse.sendError(e.getResponseCode(), e.getMessage());
-        } finally {
-            MDC.remove(USER_ID);
+
+        }
+        finally {
+            MDC.remove(USER);
         }
     }
 
     @Override
     public void destroy() { /* unused */ }
 
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException { /* unused */ }
-
-    /**
-     * Retrieve auth token from auth header
-     * @param authHeader Auth header to read
-     * @return Token
-     * @throws InvalidTokenException If token is not valid
-     */
-    protected JWTClaimsSet readToken(String authHeader) throws InvalidTokenException {
-        JWTClaimsSet claimSet;
-        if (StringUtils.isBlank(authHeader) || authHeader.split(" ").length != 2) {
-            throw new InvalidTokenException(HttpServletResponse.SC_UNAUTHORIZED, AUTH_ERROR_MSG);
-        }
-
-        try {
-            claimSet = (JWTClaimsSet) AuthUtils.decodeToken(authHeader);
-        } catch (ParseException e) {
-            throw new InvalidTokenException(HttpServletResponse.SC_BAD_REQUEST, JWT_ERROR_MSG);
-        } catch (JOSEException e) {
-            throw new InvalidTokenException(HttpServletResponse.SC_BAD_REQUEST, JWT_INVALID_MSG);
-        }
-
-        // ensure that the token is not expired
-        if (new DateTime(claimSet.getExpirationTime()).isBefore(DateTime.now())) {
-            throw new InvalidTokenException(HttpServletResponse.SC_UNAUTHORIZED, EXPIRE_ERROR_MSG);
-        }
-        return claimSet;
-    }
-
-    /** Thrown if token is invalid */
-    protected class InvalidTokenException extends Exception {
-        private int responseCode;
-        private String message;
-
-        public InvalidTokenException(int responseCode, String message) {
-            this.responseCode = responseCode;
-            this.message = message;
-        }
-
-        public int getResponseCode() {
-            return responseCode;
-        }
-
-        @Override
-        public String getMessage() {
-            return message;
-        }
-    }
 }

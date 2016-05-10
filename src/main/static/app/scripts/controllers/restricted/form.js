@@ -21,7 +21,7 @@
 'use strict';
 
 angular.module('CallForPaper')
-    .controller('FormCtrl', ['$scope', '$filter', '$translate', 'RestrictedSession', 'RestrictedDraft', 'RestrictedUser', '$state', '$stateParams', '$q', 'RestrictedProfilImage', 'Upload', '$auth', 'Application', function($scope, $filter, $translate, RestrictedSession, RestrictedDraft, RestrictedUser, $state, $stateParams, $q, RestrictedProfilImage, Upload, $auth, Application) {
+    .controller('FormCtrl', ['$scope', '$filter', '$translate', 'RestrictedSession', 'RestrictedDraft', 'RestrictedUser', '$state', '$stateParams', '$q', 'RestrictedProfilImage', 'Upload', 'Application', function($scope, $filter, $translate, RestrictedSession, RestrictedDraft, RestrictedUser, $state, $stateParams, $q, RestrictedProfilImage, Upload, Application) {
         // we will store all of our form data in this object
         $scope.formData = {};
         $scope.formData.steps = {};
@@ -289,7 +289,7 @@ angular.module('CallForPaper')
                         Upload.upload({
                             url: url,
                             file: file,
-                            fileName: 'profil-' + $auth.getPayload().sub,
+                            fileName: 'profil-image',
                             sendFieldsAs: 'form'
                         }).progress(function(evt) {
                             var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);

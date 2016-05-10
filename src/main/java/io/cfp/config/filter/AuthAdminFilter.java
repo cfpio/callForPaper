@@ -20,13 +20,7 @@
 
 package io.cfp.config.filter;
 
-import com.nimbusds.jwt.JWTClaimsSet;
-import io.cfp.entity.User;
-import io.cfp.service.admin.user.AdminUserService;
-import io.cfp.service.auth.AuthUtils;
-import org.slf4j.MDC;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
+import java.io.IOException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -37,19 +31,29 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+
+import org.apache.log4j.MDC;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import io.cfp.entity.User;
+import io.cfp.service.admin.user.AdminUserService;
+import io.cfp.service.auth.AuthUtils;
+import io.cfp.service.auth.AuthUtils.InvalidTokenException;
 
 /**
  * Filter reading auth token and check if user is admin
  */
 public class AuthAdminFilter extends AuthFilter {
 
+	private AuthUtils authUtils;
     private AdminUserService adminUserService;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         ServletContext servletContext = filterConfig.getServletContext();
         WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
+        authUtils = webApplicationContext.getBean(AuthUtils.class);
         adminUserService = webApplicationContext.getBean(AdminUserService.class);
     }
 
@@ -57,11 +61,11 @@ public class AuthAdminFilter extends AuthFilter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
-        String authHeader = httpRequest.getHeader(AuthUtils.AUTH_HEADER_KEY);
 
         try {
-            JWTClaimsSet token = readToken(authHeader);
-            String email = token.getSubject();
+        	User user = authUtils.getAuthUser(httpRequest);
+            User admin = adminUserService.findFromEmail(user.getEmail());
+            if (admin == null) throw new InvalidTokenException(HttpServletResponse.SC_UNAUTHORIZED, AuthUtils.AUTH_ERROR_MSG);
 
             User admin = adminUserService.findFromEmail(email);
             if (admin == null) {
@@ -77,7 +81,7 @@ public class AuthAdminFilter extends AuthFilter {
             httpResponse.sendError(e.getResponseCode(), e.getMessage());
 
         } finally {
-            MDC.remove(USER_ID);
+            MDC.remove(USER);
         }
     }
 }
