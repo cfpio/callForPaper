@@ -301,7 +301,10 @@ angular.module('CallForPaper')
             	'admins': 'Admins',
             	'config': 'Configuration',
             	'hintAdmins': 'Ajouter les emails des admins',
-            	'adminsSuccess': 'La liste des admins a été mise à jour'
+            	'adminsSuccess': 'La liste des admins a été mise à jour',
+                'formats': 'Formats',
+                'hintFormats': 'Définissez les formats des sessions de votre événement'
+
             },
             'config': {
                 'logout': 'Se déconnecter',

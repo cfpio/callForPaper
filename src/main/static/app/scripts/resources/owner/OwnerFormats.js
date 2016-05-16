@@ -20,15 +20,15 @@
 
 'use strict';
 
-angular.module('CallForPaper').factory('OwnerAdmins', ['$resource', function($resource) {
-    return $resource('/v0/admins', {},
+angular.module('CallForPaper').factory('OwnerFormats', ['$resource', function($resource) {
+    return $resource('/v0/formats/', {},
         {
             getAll: {
                 method: 'GET',
                 isArray: true
             },
             add: {method: 'POST'},
-            remove: {method: 'DELETE',url: '/v0/admins/:email'}
+            remove: {method: 'DELETE',url: '/v0/formats/:id'}
 
         });
 }]);

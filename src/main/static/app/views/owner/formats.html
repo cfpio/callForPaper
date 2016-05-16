@@ -18,14 +18,29 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<ul class="nav navbar-nav">
-    <li ui-sref-active="active">
-        <a ui-sref="owner.config">{{'owner.config' | translate}}</a>
-    </li>
-    <li ui-sref-active="active">
-        <a ui-sref="owner.admins">{{'owner.admins' | translate}}</a>
-    </li>
-    <li ui-sref-active="active">
-        <a ui-sref="owner.formats">{{'owner.formats' | translate}}</a>
-    </li>
-</ul>
+<div class="row">
+	<div class="panel">
+		<div class="panel-body">
+			<h1>{{'owner.formats' | translate}}</h1>
+            <div>{{'owner.hintFormats' | translate}}</div>
+
+            <table class="table table-striped table-hover table-bordered">
+
+                <tr>
+                    <th>ID</th>
+                    <th>Libellé</th>
+                    <th>Durée (minutes)</th>
+                    <th>Description</th>
+                </tr>
+
+                <tr ng-repeat="format in formats">
+                    <td>{{format.id}}</td>
+                    <td>{{format.name}}</td>
+                    <td>{{format.duration}}</td>
+                    <td>{{format.description}}</td>
+                </tr>
+
+            </table>
+        </form>
+    </div>
+</div>
