@@ -68,7 +68,7 @@ angular.module('CallForPaper', [
 
             .when('/admin', '/admin/sessions')
             .when('/admin/', '/admin/sessions')
-            
+
             .when('/owner', '/owner/config')
             .when('/owner/', '/owner/config')
 
@@ -157,6 +157,12 @@ angular.module('CallForPaper', [
                 url: '/admins',
                 templateUrl: 'views/owner/admins.html',
                 controller: 'OwnerAdminsCtrl'
+            })
+            // Fromats
+            .state('owner.formats', {
+                url: '/formats',
+                templateUrl: 'views/owner/formats.html',
+                controller: 'OwnerFormatsCtrl'
             })
             // Session
             .state('admin.loading', {

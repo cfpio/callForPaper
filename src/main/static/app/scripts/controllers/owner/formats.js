@@ -20,15 +20,13 @@
 
 'use strict';
 
-angular.module('CallForPaper').factory('OwnerAdmins', ['$resource', function($resource) {
-    return $resource('/v0/admins', {},
-        {
-            getAll: {
-                method: 'GET',
-                isArray: true
-            },
-            add: {method: 'POST'},
-            remove: {method: 'DELETE',url: '/v0/admins/:email'}
+angular.module('CallForPaper')
+    .controller('OwnerFormatsCtrl', ['$scope', 'OwnerFormats', 'translateFilter', 'Notification',
+        function($scope, OwnerFormats, translateFilter, Notification) {
 
-        });
-}]);
+            console.log("Getting formats... "+OwnerFormats);
+            OwnerFormats.getAll(function(formats) {
+    			$scope.formats = formats;
+    		});
+        }
+    ]);
