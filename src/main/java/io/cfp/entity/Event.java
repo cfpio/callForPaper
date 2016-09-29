@@ -89,16 +89,18 @@ public class Event {
         return url;
     }
 
-    public void setUrl(String url) {
+    public Event website(String url) {
         this.url = url;
+        return this;
     }
 
     public String getLogoUrl() {
         return logoUrl;
     }
 
-    public void setLogoUrl(String logoUrl) {
+    public Event logo(String logoUrl) {
         this.logoUrl = logoUrl;
+        return this;
     }
 
     public boolean isPublished() {

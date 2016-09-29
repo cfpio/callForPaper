@@ -35,7 +35,8 @@ public class ApplicationSettings {
     private String decisionDate;
     private String authServer;
     private boolean open;
-
+    private String website;
+    private String logo;
 
     public ApplicationSettings() { }
 
@@ -47,6 +48,8 @@ public class ApplicationSettings {
         releaseDate = format.format(event.getReleaseDate());
         decisionDate = format.format(event.getDecisionDate());
         shortDescription = event.getShortDescription();
+        website = event.getUrl();
+        this.logo = event.getLogoUrl() != null ? event.getLogoUrl() : "/images/logo.png";
         open = event.isOpen();
     }
 
@@ -91,12 +94,12 @@ public class ApplicationSettings {
     }
 
     public String getAuthServer() {
-		return authServer;
-	}
+        return authServer;
+    }
 
-	public void setAuthServer(String authServer) {
-		this.authServer = authServer;
-	}
+    public void setAuthServer(String authServer) {
+        this.authServer = authServer;
+    }
 
     public boolean isConfigured() {
         return true;
@@ -108,5 +111,21 @@ public class ApplicationSettings {
 
     public void setOpen(boolean open) {
         this.open = open;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
+    }
+
+    public String getLogo() {
+        return logo;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
     }
 }

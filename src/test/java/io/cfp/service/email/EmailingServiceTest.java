@@ -121,7 +121,7 @@ public class EmailingServiceTest {
         event.setName("Test");
         event.setDate(new Date());
         event.setReleaseDate(new Date());
-        event.setLogoUrl("http://localhost/logo.png");
+        event.logo("http://localhost/logo.png");
         event.setContactMail(CONTACT_MAIL);
         Event.setCurrent("test");
         when(eventRepo.findOne("test")).thenReturn(event);
