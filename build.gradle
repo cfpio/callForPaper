@@ -1,0 +1,81 @@
+buildscript {
+	ext {
+		springBootVersion = '1.3.7.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+        classpath "io.spring.gradle:dependency-management-plugin:0.6.0.RELEASE"
+	}
+}
+
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+
+group= 'io.cfp'
+version = '1.0.0-SNAPSHOT'
+description = 'Backend module for cfp.io'
+
+jar {
+	baseName = 'auth'
+}
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+    compile 'org.springframework.boot:spring-boot-starter-web'
+    compile 'org.springframework.boot:spring-boot-starter-security'
+    compile 'org.springframework.boot:spring-boot-starter-mail'
+    compile 'org.apache.velocity:velocity:1.7'
+    compile('org.apache.velocity:velocity-tools:2.0') {
+        exclude(module: 'commons-logging')
+    }
+    compile 'com.sendgrid:sendgrid-java:2.2.2'
+    compile('org.springframework.boot:spring-boot-starter-data-jpa') {
+        exclude(module: 'tomcat-jdbc')
+    }
+    compile 'org.liquibase:liquibase-core:3.4.2'
+    compile 'mysql:mysql-connector-java:5.1.39'
+    compile 'com.zaxxer:HikariCP:2.4.7'
+    compile 'org.springframework.boot:spring-boot-actuator'
+    compile 'io.jsonwebtoken:jjwt:0.6.0'
+    compile 'com.google.guava:guava:19.0'
+    compile 'joda-time:joda-time:2.8.2'
+    compile 'ma.glasnost.orika:orika-core:1.4.6'
+    compile 'net.minidev:json-smart:2.1.1'
+    compile 'javax.validation:validation-api:1.1.0.Final'
+    compile 'org.hibernate:hibernate-validator-annotation-processor:4.1.0.Final'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.6.7'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.6.7'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.6.7'
+    compile 'org.springframework.boot:spring-boot-devtools'
+    compile 'org.scala-lang:scala-library:2.11.0'
+    compile 'io.springfox:springfox-swagger2:2.4.0'
+    compile 'io.springfox:springfox-swagger-ui:2.4.0'
+    compile 'commons-io:commons-io:2.5'
+    testCompile('org.springframework.boot:spring-boot-starter-test') {
+        exclude(module: 'commons-logging')
+    }
+    testCompile 'com.h2database:h2:1.4.192'
+    testCompile 'com.jayway.jsonpath:json-path:2.0.0'
+    testCompile 'com.jayway.restassured:spring-mock-mvc:2.4.1'
+    testCompile 'net.sourceforge.htmlunit:htmlunit:2.16'
+    testCompile 'com.icegreen:greenmail:1.4.1'
+    testCompile 'org.assertj:assertj-core:3.2.0'
+    testCompile 'org.springframework.security:spring-security-test:4.0.3.RELEASE'
+    testCompile 'org.spockframework:spock-spring:1.0-groovy-2.4'
+}
