@@ -33,6 +33,8 @@ public interface CommentRepo extends JpaRepository<Comment, Integer> {
 
     void deleteByIdAndEventId(int integer, String eventId);
 
+    void deleteByTalkId(int talkId);
+
     /**
      * Retrieve a comment for the user which are visible to user
      * @param commentId Id of the comment to retrieve
