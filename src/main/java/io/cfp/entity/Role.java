@@ -77,6 +77,7 @@ public class Role {
         this.user = user;
     }
 
+    public static final String MAINTAINER = "ROLE_MAINTAINER";
     public static final String OWNER = "ROLE_OWNER";
     public static final String ADMIN = "ROLE_ADMIN";
     public static final String AUTHENTICATED = "ROLE_AUTHENTICATED";

@@ -20,7 +20,13 @@
 
 package io.cfp.config.exception;
 
-import io.cfp.domain.exception.*;
+import io.cfp.domain.exception.BadRequestException;
+import io.cfp.domain.exception.CospeakerNotFoundException;
+import io.cfp.domain.exception.EntityExistsException;
+import io.cfp.domain.exception.ErrorResponse;
+import io.cfp.domain.exception.ForbiddenException;
+import io.cfp.domain.exception.NotFoundException;
+import io.cfp.domain.exception.NotVerifiedException;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -142,5 +148,14 @@ public class GlobalControllerExceptionHandler {
         map.put("errorCodeBody", e.getCospeaker());
 
         return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(EntityExistsException.class)
+    public ResponseEntity<Object> handleException(EntityExistsException e) {
+
+        ErrorResponse resp = new ErrorResponse(e);
+        resp.setStatus(HttpStatus.CONFLICT.value());
+        resp.setError(HttpStatus.CONFLICT.getReasonPhrase());
+        return new ResponseEntity<>(resp, HttpStatus.CONFLICT);
     }
 }
