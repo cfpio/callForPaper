@@ -34,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Service for managing rates by admin
@@ -42,17 +43,21 @@ import java.util.List;
 @Transactional
 public class RateAdminService {
 
-    @Autowired
-    private RateRepo rateRepo;
+    private final RateRepo rateRepo;
+
+    private final TalkRepo talkRepo;
+
+    private final MapperFacade mapper;
+
+    private final EventRepository events;
 
     @Autowired
-    private TalkRepo talkRepo;
-
-    @Autowired
-    private MapperFacade mapper;
-    
-    @Autowired
-    private EventRepository events;
+    public RateAdminService(RateRepo rateRepo, TalkRepo talkRepo, MapperFacade mapper, EventRepository events) {
+        this.rateRepo = rateRepo;
+        this.talkRepo = talkRepo;
+        this.mapper = mapper;
+        this.events = events;
+    }
 
     /**
      * Retrieve all rates
@@ -60,7 +65,9 @@ public class RateAdminService {
      */
     public List<RateAdmin> getAll() {
         List<Rate> rates = rateRepo.findByEventId(Event.current());
-        return mapper.mapAsList(rates, RateAdmin.class);
+        return rates.stream()
+            .map(Rate::toRateAdmin)
+            .collect(Collectors.toList());
     }
 
     /**

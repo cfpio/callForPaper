@@ -20,6 +20,8 @@
 
 package io.cfp.entity;
 
+import io.cfp.dto.RateAdmin;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -124,5 +126,17 @@ public class Rate {
 
     public void setAdminUser(User adminUser) {
         this.adminUser = adminUser;
+    }
+
+    public RateAdmin toRateAdmin() {
+        RateAdmin result = new RateAdmin();
+        result.setId(this.getId());
+        result.setAdded(this.getAdded());
+        result.setHate(this.isHate());
+        result.setLove(this.isLove());
+        result.setRate(this.getRate());
+        result.setTalkId(this.getTalk().getId());
+        result.setUser(this.getAdminUser().toAdminUserDTO());
+        return result;
     }
 }

@@ -20,19 +20,11 @@
 
 package io.cfp.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
+import io.cfp.dto.user.AdminUserDTO;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.Email;
 
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -299,6 +291,13 @@ public class User {
     public User tshirtSize(TshirtSize tshirtSize) {
         this.tshirtSize = tshirtSize;
         return this;
+    }
+
+    public AdminUserDTO toAdminUserDTO() {
+        AdminUserDTO result = new AdminUserDTO();
+        result.setEmail(this.getEmail());
+        result.setName(this.getFirstname()+" "+this.getLastname());
+        return result;
     }
 }
 
