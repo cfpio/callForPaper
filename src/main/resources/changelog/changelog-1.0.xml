@@ -271,7 +271,7 @@
         </addColumn>
     </changeSet>
 
-    <changeSet id="11" author="alex">
+    <changeSet id="11" author="alex" dbms="mysql">
         <sql>
             ALTER TABLE comments CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
             ALTER TABLE config CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
