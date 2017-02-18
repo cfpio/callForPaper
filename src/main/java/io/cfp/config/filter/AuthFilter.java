@@ -83,8 +83,9 @@ public class AuthFilter implements Filter {
             	if (Role.ADMIN.equals(role.getName()) || Role.OWNER.equals(role.getName())) {
             		adminUserService.setCurrentAdmin(user);
             	}
+            	user.addRole(role.getName());
             }
-            SecurityContextHolder.getContext().setAuthentication(new UserAuthentication(user, roles));
+            SecurityContextHolder.getContext().setAuthentication(new UserAuthentication(user));
         }
 
         try {

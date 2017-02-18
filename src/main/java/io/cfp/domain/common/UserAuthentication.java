@@ -16,14 +16,12 @@ public class UserAuthentication implements Authentication {
     private final List<SimpleGrantedAuthority> authorities;
     private boolean authenticated = true;
 
-    public UserAuthentication(User user, Collection<Role> roles) {
+    public UserAuthentication(User user) {
         this.user = user;
-        authorities = roles.stream()
-            .map(role -> {
-                final String name = role.getName();
-                user.addRole(name);
-                return new SimpleGrantedAuthority(name); })
-            .collect(Collectors.toList());
+        authorities =
+            user.getRoles().stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
 
         authorities.add(new SimpleGrantedAuthority(Role.AUTHENTICATED));
     }

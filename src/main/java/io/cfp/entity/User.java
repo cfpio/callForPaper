@@ -25,6 +25,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.Email;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -77,9 +78,23 @@ public class User {
         return roles != null && roles.contains(role);
     }
 
-    public void addRole(String role) {
+    @Transient
+    public Set<String> getRoles() {
+        return roles;
+    }
+
+    public User addRole(String ... role) {
         if (roles == null) roles = new HashSet<>();
-        roles.add(role);
+        for (String r : role) {
+            roles.add(r);
+        }
+        return this;
+    }
+
+    public User addRoles(Collection<String> r) {
+        if (roles == null) roles = new HashSet<>();
+        roles.addAll(r);
+        return this;
     }
 
     @Id
