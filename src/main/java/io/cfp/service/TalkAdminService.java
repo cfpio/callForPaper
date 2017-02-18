@@ -20,22 +20,6 @@
 
 package io.cfp.service;
 
-import static java.util.stream.Collectors.averagingInt;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.toList;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import io.cfp.repository.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import io.cfp.domain.exception.CospeakerNotFoundException;
 import io.cfp.dto.TalkAdmin;
 import io.cfp.dto.user.CospeakerProfil;
@@ -44,8 +28,20 @@ import io.cfp.entity.Event;
 import io.cfp.entity.Rate;
 import io.cfp.entity.Talk;
 import io.cfp.entity.User;
+import io.cfp.repository.*;
 import io.cfp.service.admin.user.AdminUserService;
 import ma.glasnost.orika.MapperFacade;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.*;
 
 /**
  * Service for managing talks by the admins
@@ -188,7 +184,6 @@ public class TalkAdminService {
     public TalkAdmin delete(int talkId) {
         Talk talk = talkRepo.findByIdAndEventId(talkId, Event.current());
         TalkAdmin deleted = mapper.map(talk, TalkAdmin.class);
-        commentRepo.deleteByTalkId(talkId); // fix to issue #122
         talkRepo.delete(talk);
         return deleted;
     }

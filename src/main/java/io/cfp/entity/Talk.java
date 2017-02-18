@@ -22,20 +22,7 @@ package io.cfp.entity;
 
 import org.hibernate.annotations.Type;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.Set;
@@ -66,6 +53,11 @@ public class Talk {
     private String heure;
 
     private Set<User> cospeakers;
+
+    //dependent entity to remove links when deleting talk
+    private Set<Comment> comments;
+    private Set<Rate> rates;
+
 
     @Transient
     public int getDuree() {
@@ -151,6 +143,15 @@ public class Talk {
         return cospeakers;
     }
 
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "talk")
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "talk")
+    public Set<Rate> getRates() {
+        return rates;
+    }
 
     public void setId(int id) {
         this.id = id;
@@ -210,6 +211,14 @@ public class Talk {
 
     public void setCospeakers(Set<User> cospeakers) {
         this.cospeakers = cospeakers;
+    }
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public void setRates(Set<Rate> rates) {
+        this.rates = rates;
     }
 
     public Talk id(int id) {
