@@ -271,4 +271,47 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="11" author="alex">
+        <sql>
+            ALTER TABLE comments CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+            ALTER TABLE config CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+            ALTER TABLE cospeakers CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+            ALTER TABLE events CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+            ALTER TABLE formats CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+            ALTER TABLE formats CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+            ALTER TABLE proposals CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+            ALTER TABLE rates CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+            ALTER TABLE roles CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+            ALTER TABLE tracks CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+            ALTER TABLE users CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+            ALTER TABLE comments CHANGE comment comment TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+            ALTER TABLE events CHANGE short_description short_description VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+            ALTER TABLE events CHANGE name name VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+            ALTER TABLE events CHANGE url url VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+            ALTER TABLE events CHANGE logo_url logo_url VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+            ALTER TABLE events CHANGE videos_url videos_url VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+            ALTER TABLE events CHANGE contact_mail contact_mail VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+            ALTER TABLE formats CHANGE name name VARCHAR(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+            ALTER TABLE formats CHANGE description description TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+            ALTER TABLE proposals CHANGE name name VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+            ALTER TABLE proposals CHANGE description description TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+            ALTER TABLE proposals CHANGE refs refs TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+            ALTER TABLE proposals CHANGE language language VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+            ALTER TABLE tracks CHANGE libelle libelle VARCHAR(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+            ALTER TABLE tracks CHANGE description description TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+            ALTER TABLE users CHANGE lastname lastname VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+            ALTER TABLE users CHANGE firstname firstname VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+            ALTER TABLE users CHANGE company company VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+            ALTER TABLE users CHANGE bio bio TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+            ALTER TABLE users CHANGE image_profil_url image_profil_url VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+            ALTER TABLE users CHANGE language language VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
