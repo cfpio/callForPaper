@@ -32,6 +32,9 @@ public interface RateRepo extends JpaRepository<Rate, Integer> {
 
     List<Rate> findByEventIdAndTalkUserId(String eventId, int userId);
 
+    @Query("SELECT r FROM Rate r JOIN FETCH r.adminUser WHERE r.event.id = :eventId AND r.talk.id = :talkId")
+    List<Rate> findByEventIdAndTalkIdFetchAdmin(String eventId, int talkId);
+
     List<Rate> findByEventIdAndTalkId(String eventId, int talkId);
 
     Rate findByEventIdAndTalkIdAndAdminUserId(String eventId, int talkId, int adminId);
