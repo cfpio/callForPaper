@@ -26,6 +26,7 @@ import org.hibernate.validator.constraints.Email;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -80,7 +81,7 @@ public class User {
 
     @Transient
     public Set<String> getRoles() {
-        return roles;
+        return roles != null ? roles : Collections.EMPTY_SET;
     }
 
     public User addRole(String ... role) {
