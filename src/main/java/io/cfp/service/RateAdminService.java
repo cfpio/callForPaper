@@ -86,8 +86,10 @@ public class RateAdminService {
      * @return Rates
      */
     public List<RateAdmin> findForTalk(int talkId) {
-        List<Rate> rates = rateRepo.findByEventIdAndTalkIdFetchAdmin(Event.current(), talkId);
-        return mapper.mapAsList(rates, RateAdmin.class);
+        return
+            rateRepo.findByEventIdAndTalkIdFetchAdmin(Event.current(), talkId).stream()
+            .map(RateAdmin::new)
+            .collect(Collectors.toList());
     }
 
     /**

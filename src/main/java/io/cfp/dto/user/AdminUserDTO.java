@@ -20,10 +20,20 @@
 
 package io.cfp.dto.user;
 
+import io.cfp.entity.User;
+
 public class AdminUserDTO {
 
     private String name;
     private String email;
+
+    public AdminUserDTO() {
+    }
+
+    public AdminUserDTO(User u) {
+        this.name = u.getFirstname() + " " +u.getLastname();
+        this.email = u.getEmail();
+    }
 
     public String getName() {
         return name;

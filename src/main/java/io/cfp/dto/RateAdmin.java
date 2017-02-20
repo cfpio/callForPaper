@@ -21,6 +21,7 @@
 package io.cfp.dto;
 
 import io.cfp.dto.user.AdminUserDTO;
+import io.cfp.entity.Rate;
 
 import java.util.Date;
 
@@ -37,6 +38,20 @@ public class RateAdmin {
 
     private int talkId;
     private AdminUserDTO user;
+
+    public RateAdmin() {
+    }
+
+    public RateAdmin(Rate e) {
+        this.id = e.getId();
+        this.rate = e.getRate();
+        this.added = e.getAdded();
+        this.love = e.isLove();
+        this.hate = e.isHate();
+        this.talkId = e.getTalk().getId();
+        this.user = new AdminUserDTO(e.getAdminUser());
+    }
+
 
     public int getId() {
         return id;
