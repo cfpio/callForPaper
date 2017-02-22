@@ -22,8 +22,10 @@ package io.cfp.controller;
 
 import io.cfp.domain.exception.CospeakerNotFoundException;
 import io.cfp.dto.TalkAdmin;
+import io.cfp.entity.Event;
 import io.cfp.entity.Role;
 import io.cfp.entity.Talk;
+import io.cfp.repository.TalkRepo;
 import io.cfp.service.TalkAdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -45,6 +47,9 @@ public class AdminSessionController {
 
     @Autowired
     private TalkAdminService talkService;
+
+    @Autowired
+    private TalkRepo talks;
 
     /**
      * Get all sessions
@@ -90,6 +95,19 @@ public class AdminSessionController {
         talkAdmin.setId(talkId);
         return talkService.edit(talkAdmin);
     }
+
+    @RequestMapping(value= "/sessions/{talkId}/accept", method= RequestMethod.PUT)
+    @ResponseBody
+    public void accept(@PathVariable int talkId) throws CospeakerNotFoundException{
+        talks.setState(talkId, Event.current(), Talk.State.ACCEPTED);
+    }
+
+    @RequestMapping(value= "/sessions/{talkId}/reject", method= RequestMethod.PUT)
+    @ResponseBody
+    public void reject(@PathVariable int talkId) throws CospeakerNotFoundException{
+        talks.setState(talkId, Event.current(), Talk.State.REFUSED);
+    }
+
 
     /**
      * Delete a session

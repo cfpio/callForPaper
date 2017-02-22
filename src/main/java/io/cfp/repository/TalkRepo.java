@@ -40,9 +40,9 @@ public interface TalkRepo extends JpaRepository<Talk, Integer> {
     long countByEventIdAndStateIn(String eventId, Collection<Talk.State> states);
 
     int countByEventIdAndUserId(String eventId, int userId);
-    
+
     int countByEventIdAndTrack(String eventId, Track track);
-    
+
     int countByEventIdAndFormat(String eventId, Format format);
 
     Talk findByIdAndEventIdAndUserId(int talkId, String eventId, int userId);
@@ -62,6 +62,7 @@ public interface TalkRepo extends JpaRepository<Talk, Integer> {
         "AND t.state IN (:states)")
     List<Talk> findByEventIdAndStatesFetch(@Param("eventId") String eventId, @Param("states") Collection<Talk.State> states);
 
-	
 
+    @Query("UPDATE Talk t SET t.state = ACCEPTER WHERE t.event.id = :eventId AND t.id = :talkId ")
+    void setState(@Param("talkId") int talkId, @Param("eventId") String eventId, @Param("state") Talk.State state);
 }
