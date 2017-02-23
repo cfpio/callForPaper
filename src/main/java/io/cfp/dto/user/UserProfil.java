@@ -54,6 +54,19 @@ public class UserProfil {
         this.lastname = lastname;
     }
 
+    public String getShortName() {
+        String res = "";
+        if (firstname != null && firstname.length() > 0) {
+            res += firstname.charAt(0) + ". ";
+        }
+
+        if (lastname != null) {
+            res += lastname;
+        }
+
+        return res;
+    }
+
     public String getLastname() {
         return lastname;
     }

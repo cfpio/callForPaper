@@ -59,6 +59,7 @@ public class TalkUser {
         this.language = t.getLanguage();
         this.format = t.getFormat().getId();
         this.trackId = t.getTrack().getId();
+        this.trackLabel = t.getTrack().getLibelle();
         this.description = t.getDescription();
         this.references = t.getReferences();
         this.difficulty = t.getDifficulty();

@@ -20,24 +20,24 @@
 
 package io.cfp.controller;
 
+import com.itextpdf.text.DocumentException;
 import io.cfp.domain.exception.CospeakerNotFoundException;
 import io.cfp.dto.TalkAdmin;
 import io.cfp.entity.Event;
 import io.cfp.entity.Role;
 import io.cfp.entity.Talk;
 import io.cfp.repository.TalkRepo;
+import io.cfp.service.PdfCardService;
 import io.cfp.service.TalkAdminService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -50,6 +50,9 @@ public class AdminSessionController {
 
     @Autowired
     private TalkRepo talks;
+
+    @Autowired
+    private PdfCardService pdfCardService;
 
     /**
      * Get all sessions
@@ -120,7 +123,13 @@ public class AdminSessionController {
      */
     @RequestMapping(value="/sessions/{talkId}", method= RequestMethod.DELETE)
     @ResponseBody
-    public TalkAdmin deleteGoogleSpreadsheet(@PathVariable int talkId) {
+    public TalkAdmin delete(@PathVariable int talkId) {
         return talkService.delete(talkId);
+    }
+
+    @RequestMapping(path = "/sessions/cards.pdf", produces = "application/pdf")
+    public void exportPdf(HttpServletResponse response) throws IOException, DocumentException {
+        response.addHeader(HttpHeaders.CONTENT_TYPE, "application/pdf");
+        pdfCardService.export(response.getOutputStream());
     }
 }
