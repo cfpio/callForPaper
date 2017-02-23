@@ -21,15 +21,12 @@ cp Dockerfile dist/Dockerfile
 #
 # Build production docker image
 #
-docker build -t cfpio/callforpapers dist
+docker build -t cfpio/callforpapers:1.0.${BUILD_NUMBER}  -t cfpio/callforpapers:latest --label "org.label-schema.vcs-ref-commit=$GIT_COMMIT" dist
 
 #
 # Push to Dockerhub
 #
-docker tag cfpio/callforpapers cfpio/callforpapers:1.0.${BUILD_NUMBER}
 docker push cfpio/callforpapers:1.0.${BUILD_NUMBER}
-
-docker tag cfpio/callforpapers cfpio/callforpapers:latest
 docker push cfpio/callforpapers:latest
 
 #
