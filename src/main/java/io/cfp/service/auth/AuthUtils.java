@@ -34,17 +34,16 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 
-import static io.cfp.entity.Role.*;
-
 @Component
 public final class AuthUtils {
 
     private static final String TOKEN_COOKIE_NAME = "token";
 
-    private final boolean auth_hack = Boolean.getBoolean("cfpio.authentication_hack");
-
     @Autowired
     private UserService userService;
+
+    @Value("${cfpio.authentication_hack}")
+    private boolean authHack;
 
     @Value("${token.signing-key}")
     private String signingKey;
@@ -55,31 +54,32 @@ public final class AuthUtils {
      * @return User
      */
     public User getAuthUser(HttpServletRequest httpRequest) {
+        String email;
 
         Claims claims = getToken(httpRequest);
         if (claims != null) {
-        	String email = claims.getSubject();
-        	User user = userService.findByemail(email);
-        	if (user == null) {
-        		user = new User();
-        		user.setEmail(email);
-                try {
-                    user = userService.save(user);
-                } catch (DataIntegrityViolationException e) {
-                    // Handle concurrent insert by parallel requests to API
-                    user = userService.findByemail(email);
-                    if (user == null) throw e; // other error
-                }
-        	}
-        	return user;
+            email = claims.getSubject();
+
+        } else if (authHack) {
+            email = "john@doe.net";
+
+        } else {
+            return null;
         }
 
-        if (auth_hack) {
-            return new User().firstname("John").language("Doe").company("Hack Inc.")
-                .addRole(ADMIN, OWNER, MAINTAINER);
+        User user = userService.findByemail(email);
+        if (user == null) {
+            user = new User();
+            user.setEmail(email);
+            try {
+                user = userService.save(user);
+            } catch (DataIntegrityViolationException e) {
+                // Handle concurrent insert by parallel requests to API
+                user = userService.findByemail(email);
+                if (user == null) throw e; // other error
+            }
         }
-
-        return null;
+        return user;
     }
 
     /**
