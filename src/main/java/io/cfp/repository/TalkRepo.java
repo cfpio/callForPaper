@@ -25,6 +25,7 @@ import io.cfp.entity.Talk;
 import io.cfp.entity.Track;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -63,6 +64,7 @@ public interface TalkRepo extends JpaRepository<Talk, Integer> {
     List<Talk> findByEventIdAndStatesFetch(@Param("eventId") String eventId, @Param("states") Collection<Talk.State> states);
 
 
+    @Modifying
     @Query("UPDATE Talk t SET t.state = :state WHERE t.event.id = :eventId AND t.id = :talkId ")
     void setState(@Param("talkId") int talkId, @Param("eventId") String eventId, @Param("state") Talk.State state);
 }
