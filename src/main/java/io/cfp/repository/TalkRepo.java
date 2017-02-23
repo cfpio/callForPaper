@@ -63,6 +63,6 @@ public interface TalkRepo extends JpaRepository<Talk, Integer> {
     List<Talk> findByEventIdAndStatesFetch(@Param("eventId") String eventId, @Param("states") Collection<Talk.State> states);
 
 
-    @Query("UPDATE Talk t SET t.state = ACCEPTER WHERE t.event.id = :eventId AND t.id = :talkId ")
+    @Query("UPDATE Talk t SET t.state = :state WHERE t.event.id = :eventId AND t.id = :talkId ")
     void setState(@Param("talkId") int talkId, @Param("eventId") String eventId, @Param("state") Talk.State state);
 }
