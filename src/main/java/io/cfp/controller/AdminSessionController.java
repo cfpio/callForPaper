@@ -108,6 +108,12 @@ public class AdminSessionController {
         talks.setState(talkId, Event.current(), Talk.State.REFUSED);
     }
 
+    @RequestMapping(value= "/sessions/{talkId}/retract", method= RequestMethod.PUT)
+    @ResponseBody
+    public void retract(@PathVariable int talkId) throws CospeakerNotFoundException{
+        talks.setState(talkId, Event.current(), Talk.State.CONFIRMED);
+    }
+
 
     /**
      * Delete a session
