@@ -42,7 +42,7 @@ public final class AuthUtils {
     @Autowired
     private UserService userService;
 
-    @Value("${cfpio.authentication_hack}")
+    @Value("${cfpio.authentication_hack:false}")
     private boolean authHack;
 
     @Value("${token.signing-key}")
