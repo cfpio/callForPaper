@@ -20,6 +20,7 @@ import java.util.function.Function;
 import static java.util.Comparator.*;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 import static org.apache.commons.lang3.StringUtils.substring;
 
@@ -87,7 +88,11 @@ public class PdfCardService {
             cellCentrale.setHorizontalAlignment(Element.ALIGN_JUSTIFIED);
             cellCentrale.setFixedHeight(100.0f);
 
-            Paragraph spk = new Paragraph(talk.getSpeaker().getShortName(), font);
+            String speaker = talk.getSpeaker().getShortName();
+            if (isNotEmpty(talk.getCospeakers())) {
+                speaker += " (+" + talk.getCospeakers().size() + ")";
+            }
+            Paragraph spk = new Paragraph(speaker, font);
             spk.setAlignment(Paragraph.ALIGN_CENTER);
             cellCentrale.addElement(spk);
 
