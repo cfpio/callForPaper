@@ -22,6 +22,7 @@ package io.cfp.controller;
 
 import com.itextpdf.text.DocumentException;
 import io.cfp.domain.exception.CospeakerNotFoundException;
+import io.cfp.dto.EventSched;
 import io.cfp.dto.TalkAdmin;
 import io.cfp.entity.Event;
 import io.cfp.entity.Role;
@@ -127,9 +128,18 @@ public class AdminSessionController {
         return talkService.delete(talkId);
     }
 
-    @RequestMapping(path = "/sessions/cards.pdf", produces = "application/pdf")
+    @RequestMapping(path = "/sessions/export/cards.pdf", produces = "application/pdf")
     public void exportPdf(HttpServletResponse response) throws IOException, DocumentException {
         response.addHeader(HttpHeaders.CONTENT_TYPE, "application/pdf");
         pdfCardService.export(response.getOutputStream());
+    }
+
+    @RequestMapping(path = "/sessions/export/sched.json", produces = "application/json")
+    @ResponseBody
+    public List<EventSched> exportSched(@RequestParam(required = false) Talk.State[] states) {
+        if (states == null) {
+            states = new Talk.State[] { Talk.State.ACCEPTED };
+        }
+        return talkService.exportSched(states);
     }
 }

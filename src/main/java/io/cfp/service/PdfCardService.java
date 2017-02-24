@@ -20,8 +20,8 @@ import java.util.function.Function;
 import static java.util.Comparator.*;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-import static org.apache.commons.lang.ObjectUtils.defaultIfNull;
-import static org.apache.commons.lang.StringUtils.substring;
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import static org.apache.commons.lang3.StringUtils.substring;
 
 /**
  * Export talk into cards to build the final schedule

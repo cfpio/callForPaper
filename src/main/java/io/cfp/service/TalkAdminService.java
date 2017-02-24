@@ -21,6 +21,7 @@
 package io.cfp.service;
 
 import io.cfp.domain.exception.CospeakerNotFoundException;
+import io.cfp.dto.EventSched;
 import io.cfp.dto.TalkAdmin;
 import io.cfp.dto.user.CospeakerProfil;
 import io.cfp.dto.user.UserProfil;
@@ -42,6 +43,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.*;
+import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 
 /**
  * Service for managing talks by the admins
@@ -82,7 +84,7 @@ public class TalkAdminService {
      */
     public List<TalkAdmin> findAll(Talk.State... states) {
         List<TalkAdmin> talks = talkRepo.findByEventIdAndStatesFetch(Event.current(), Arrays.asList(states))
-            .stream().map(t -> new TalkAdmin(t))
+            .stream().map(TalkAdmin::new)
             .collect(Collectors.toList());
 
         List<Rate> rates = rateRepo.findAllFetchAdmin(Event.current());
@@ -186,5 +188,41 @@ public class TalkAdminService {
         TalkAdmin deleted = mapper.map(talk, TalkAdmin.class);
         talkRepo.delete(talk);
         return deleted;
+    }
+
+    /**
+     * Export talks list into sched.org format
+     * @param states State list to export
+     * @return DTO in sched format
+     */
+    public List<EventSched> exportSched(Talk.State... states) {
+        return talkRepo.findByEventIdAndStatesFetch(Event.current(), Arrays.asList(states)).stream()
+            .map(t ->
+                new EventSched().toBuilder()
+                    .id(String.valueOf(t.getId()))
+                    .name(t.getName())
+                    .description(t.getDescription())
+                    .speakers(buildSpeakersList(t))
+                    .language(t.getLanguage())
+                    .eventType(t.getTrack().getLibelle())
+                    .format(t.getFormat().getName())
+                    .build()
+            )
+            .collect(toList());
+    }
+
+    /**
+     * Build the name of the speakers as Speaker FirstName Lastname + Cospeakers
+     * @param t Talk to build the speakers
+     * @return Speakers list (ex: John Doe, Jack Bauer)
+     */
+    private String buildSpeakersList(Talk t) {
+        String res = t.getUser().getFirstname() + " " + t.getUser().getLastname();
+        if (isNotEmpty(t.getCospeakers())) {
+            for (User user : t.getCospeakers()) {
+                res += ", " + user.getFirstname() + " " + user.getLastname();
+            }
+        }
+        return res;
     }
 }
