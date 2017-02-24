@@ -57,7 +57,7 @@ public class PdfCardService {
             .collect(toMap(Format::getId, Function.identity()));
 
         List<TalkAdmin> talks = talkAdminService.findAll(Talk.State.CONFIRMED).stream()
-            .sorted(comparing(TalkAdmin::getMean, nullsFirst(naturalOrder())))
+            .sorted(comparing(TalkAdmin::getMean, nullsLast(reverseOrder())))
             .sorted(comparing(TalkAdmin::getFormat))
             .collect(toList());
 
