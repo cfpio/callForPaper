@@ -26,6 +26,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Map;
 
 
 public interface RateRepo extends JpaRepository<Rate, Integer> {
@@ -47,4 +48,8 @@ public interface RateRepo extends JpaRepository<Rate, Integer> {
     List<Rate> findByEventId(String eventId);
 
     void deleteByEventId(String eventId);
+
+    @Query("SELECT r.adminUser.email, COUNT(r) FROM Rate r WHERE r.event.id = :eventId GROUP BY r.adminUser")
+    List<Object[]> findNbRateByAdminUser(@Param("eventId") String eventId);
+
 }

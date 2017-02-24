@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Secured(Role.ADMIN)
@@ -122,5 +123,14 @@ public class AdminRateController {
     @RequestMapping(value= "/{rateId}", method= RequestMethod.DELETE)
     public void deleteRate(@PathVariable int rateId) {
         rateService.delete(rateId);
+    }
+
+
+    /**
+     * Get Rates stats
+     */
+    @RequestMapping(value = "/stats", method = RequestMethod.GET)
+    public Map<String, Long> getRateStats() {
+        return rateService.getRateByEmailUsers();
     }
 }

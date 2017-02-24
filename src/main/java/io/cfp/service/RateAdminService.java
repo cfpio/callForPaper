@@ -27,13 +27,16 @@ import io.cfp.entity.User;
 import io.cfp.repository.EventRepository;
 import io.cfp.repository.RateRepo;
 import io.cfp.repository.TalkRepo;
+import io.cfp.repository.UserRepo;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -51,12 +54,15 @@ public class RateAdminService {
 
     private final EventRepository events;
 
+    private final UserRepo users;
+
     @Autowired
-    public RateAdminService(RateRepo rateRepo, TalkRepo talkRepo, MapperFacade mapper, EventRepository events) {
+    public RateAdminService(RateRepo rateRepo, TalkRepo talkRepo, MapperFacade mapper, EventRepository events, UserRepo users) {
         this.rateRepo = rateRepo;
         this.talkRepo = talkRepo;
         this.mapper = mapper;
         this.events = events;
+        this.users = users;
     }
 
     /**
@@ -161,5 +167,27 @@ public class RateAdminService {
      */
     public void deleteAll() {
         rateRepo.deleteByEventId(Event.current());
+    }
+
+
+    /**
+     * Get rate stats
+     */
+    public Map<String, Long> getRateByEmailUsers() {
+        Map<String, Long> result = new HashMap<>();
+        // First get users admin emails
+        List<String> adminEmails = users.findAdminsEmail(Event.current());
+        // Initialise the result
+        adminEmails.forEach(email -> {
+            result.put(email, 0L);
+        });
+        // Get nbRate for each admin that gives some rates
+        List<Object[]> ratesFromDb = rateRepo.findNbRateByAdminUser(Event.current());
+        // Update First Map that contains all Admin users (and not only the users that give rates)
+        ratesFromDb.forEach(item -> {
+            result.put((String)item[0], (Long)item[1]);
+        });
+
+        return result;
     }
 }

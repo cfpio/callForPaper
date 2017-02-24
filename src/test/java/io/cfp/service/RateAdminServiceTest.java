@@ -7,6 +7,7 @@ import io.cfp.entity.User;
 import io.cfp.repository.EventRepository;
 import io.cfp.repository.RateRepo;
 import io.cfp.repository.TalkRepo;
+import io.cfp.repository.UserRepo;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import org.junit.Before;
@@ -45,11 +46,14 @@ public class RateAdminServiceTest {
     @Mock
     private EventRepository events;
 
+    @Mock
+    private UserRepo users;
+
     private RateAdminService rateAdminService;
 
     @Before
     public void setup() {
-        rateAdminService = new RateAdminService(rateRepo, talkRepo, mapper, events);
+        rateAdminService = new RateAdminService(rateRepo, talkRepo, mapper, events, users);
     }
 
     @Test
