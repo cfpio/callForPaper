@@ -21,6 +21,7 @@ import static java.util.Comparator.*;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang.ObjectUtils.defaultIfNull;
+import static org.apache.commons.lang.StringUtils.substring;
 
 /**
  * Export talk into cards to build the final schedule
@@ -74,7 +75,7 @@ public class PdfCardService {
             PdfPCell format = new PdfPCell(formatPh);
 
             innerTable.addCell(format);
-            PdfPCell track = new PdfPCell(new Phrase(talk.getTrackLabel(), font));
+            PdfPCell track = new PdfPCell(new Phrase(substring(talk.getTrackLabel(), 0, 20), font));
 
             track.setHorizontalAlignment(Element.ALIGN_RIGHT);
             track.setBackgroundColor(bgTracksColor.computeIfAbsent(talk.getTrackId(), id -> getColor(bgTracksColor.size()+1)));
@@ -112,8 +113,6 @@ public class PdfCardService {
             innerTable.addCell(cellCentrale);
 
             // Note sur ligne du bas
-            //innerTable.addCell(new PdfPCell(new Phrase("${it.state}", font)))
-
             BarcodeEAN barcode = new BarcodeEAN();
             barcode.setCodeType(Barcode.EAN8);
             String code = "9" + StringUtils.leftPad(Integer.toString(talk.getId()), 6, "0");
