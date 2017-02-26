@@ -316,7 +316,7 @@
 
     <changeSet id="12" author="ndeloof">
         <createTable tableName="rooms">
-            <column name="id" type="INTEGER">
+            <column name="id" type="VARCHAR(255)">
                 <constraints primaryKey="true"/>
             </column>
             <column name="event_id" type="VARCHAR(255)">
@@ -328,6 +328,9 @@
 
     <changeSet id="13" author="ndeloof">
         <dropTable tableName="rooms"/>
+    </changeSet>
+
+    <changeSet id="14" author="ndeloof">
         <createTable tableName="rooms">
             <column autoIncrement="true" name="id" type="INT">
                 <constraints primaryKey="true"/>
