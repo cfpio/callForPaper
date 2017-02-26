@@ -316,7 +316,20 @@
 
     <changeSet id="12" author="ndeloof">
         <createTable tableName="rooms">
-            <column name="id" type="VARCHAR(255)">
+            <column name="id" type="INTEGER">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="event_id" type="VARCHAR(255)">
+                <constraints foreignKeyName="room_event_fk" referencedTableName="events" referencedColumnNames="id"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="13" author="ndeloof">
+        <dropTable tableName="rooms"/>
+        <createTable tableName="rooms">
+            <column autoIncrement="true" name="id" type="INT">
                 <constraints primaryKey="true"/>
             </column>
             <column name="event_id" type="VARCHAR(255)">
