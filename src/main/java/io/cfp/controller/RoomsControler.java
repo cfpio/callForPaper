@@ -67,7 +67,7 @@ public class RoomsControler {
             rooms.save(
                 new Room()
                     .withEvent(events.findOne(Event.current()))
-                    .withName(room.name)));
+                    .withName(room.getName())));
     }
 
     @RequestMapping(value = "/{id}", method = PUT)
@@ -77,7 +77,7 @@ public class RoomsControler {
     	Room room = rooms.findByIdAndEventId(id, Event.current()); // make sure the track belongs to the current event
     	if (room != null) {
             rooms.save(
-                room.withName(update.name));
+                room.withName(update.getName()));
         }
     }
 
