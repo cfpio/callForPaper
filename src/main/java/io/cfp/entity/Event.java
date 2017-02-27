@@ -69,6 +69,8 @@ public class Event {
     @Type(type="date")
     private Date date;
 
+    private int duration;
+
     @Type(type="date")
     private Date releaseDate;
 
@@ -83,6 +85,14 @@ public class Event {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 
     public String getUrl() {

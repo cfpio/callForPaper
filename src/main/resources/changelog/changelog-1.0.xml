@@ -342,5 +342,12 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="15" author="ndeloof">
+        <addColumn tableName="events">
+            <column name="duration" type="INT" defaultValue="1"/>
+        </addColumn>
+    </changeSet>
+
+
 
 </databaseChangeLog>

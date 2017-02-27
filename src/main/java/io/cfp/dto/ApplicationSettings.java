@@ -31,6 +31,7 @@ public class ApplicationSettings {
     private String eventName;
     private String shortDescription;
     private String date;
+    private int duration;
     private String releaseDate;
     private String decisionDate;
     private String authServer;
@@ -45,6 +46,7 @@ public class ApplicationSettings {
 
         eventName = event.getName();
         date = format.format(event.getDate());
+        this.duration = event.getDuration();
         releaseDate = format.format(event.getReleaseDate());
         decisionDate = format.format(event.getDecisionDate());
         shortDescription = event.getShortDescription();
@@ -71,6 +73,10 @@ public class ApplicationSettings {
 
     public String getDate() {
         return date;
+    }
+
+    public int getDuration() {
+        return duration;
     }
 
     public void setDate(String date) {
