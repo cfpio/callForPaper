@@ -230,4 +230,8 @@ public class Event {
 
     private static final Logger logger = LoggerFactory.getLogger(Event.class);
 
+    public Event duration(int duration) {
+        this.duration = duration;
+        return null;
+    }
 }

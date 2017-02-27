@@ -90,6 +90,7 @@ public class ApplicationController {
 
         try {
             event.date(format.parse(settings.getDate()))
+                .duration(settings.getDuration())
                 .name(settings.getEventName())
                 .logo(settings.getLogo())
                 .website(settings.getWebsite())
