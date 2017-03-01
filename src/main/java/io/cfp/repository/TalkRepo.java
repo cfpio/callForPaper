@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public interface TalkRepo extends JpaRepository<Talk, Integer> {
 
@@ -69,4 +70,7 @@ public interface TalkRepo extends JpaRepository<Talk, Integer> {
     @Modifying
     @Query("UPDATE Talk t SET t.state = :state WHERE t.event.id = :eventId AND t.id = :talkId ")
     void setState(@Param("talkId") int talkId, @Param("eventId") String eventId, @Param("state") Talk.State state);
+
+    @Query("SELECT t.track.libelle, COUNT(t) FROM Talk t WHERE t.event.id = :eventId GROUP BY t.track")
+    Map<String,Long> countByTrack(@Param("eventId") String current);
 }

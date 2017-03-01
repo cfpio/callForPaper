@@ -27,6 +27,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.cfp.dto.TrackDto;
@@ -110,6 +112,13 @@ public class TrackControler {
     		tracks.delete(id);
     	}
     }
+
+    @RequestMapping(value = "/stats", method = RequestMethod.GET)
+    @Secured(Role.ADMIN)
+    public Map<String, Long> getStats() {
+        return talks.countByTrack(Event.current());
+    }
+
 
     private boolean isReferenced(Track track) {
     	return talks.countByEventIdAndTrack(Event.current(), track) > 0;
