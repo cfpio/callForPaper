@@ -232,6 +232,6 @@ public class Event {
 
     public Event duration(int duration) {
         this.duration = duration;
-        return null;
+        return this;
     }
 }

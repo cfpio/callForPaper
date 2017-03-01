@@ -116,7 +116,8 @@ public class TrackControler {
     @RequestMapping(value = "/stats", method = RequestMethod.GET)
     @Secured(Role.ADMIN)
     public Map<String, Long> getStats() {
-        return talks.countByTrack(Event.current());
+        return talks.countByTrack(Event.current()).stream()
+            .collect(Collectors.toMap(t -> (String) t[0], t -> (Long) t[1]));
     }
 
 

@@ -72,5 +72,5 @@ public interface TalkRepo extends JpaRepository<Talk, Integer> {
     void setState(@Param("talkId") int talkId, @Param("eventId") String eventId, @Param("state") Talk.State state);
 
     @Query("SELECT t.track.libelle, COUNT(t) FROM Talk t WHERE t.event.id = :eventId GROUP BY t.track")
-    Map<String,Long> countByTrack(@Param("eventId") String current);
+    List<Object[]> countByTrack(@Param("eventId") String current);
 }
