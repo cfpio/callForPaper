@@ -18,33 +18,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.given;
-import static org.hamcrest.core.IsEqual.equalTo;
-
+import com.jayway.restassured.module.mockmvc.RestAssuredMockMvc;
+import io.cfp.TestConfig;
+import io.cfp.controller.ApplicationController;
+import io.cfp.repository.EventRepository;
 import org.junit.Before;
-import org.junit.FixMethodOrder;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.boot.test.WebIntegrationTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import com.jayway.restassured.module.mockmvc.RestAssuredMockMvc;
-
-import io.cfp.TestConfig;
-import io.cfp.controller.ApplicationController;
-import io.cfp.repository.EventRepository;
+import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.given;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 
 /**
  * Created by tmaugin on 08/04/2015.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {TestConfig.class})
-@WebIntegrationTest("server.port:0")
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = TestConfig.class)
 @Ignore
 public class ApplicationTest {
 

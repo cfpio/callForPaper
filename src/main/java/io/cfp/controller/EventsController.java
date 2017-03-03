@@ -79,18 +79,20 @@ public class EventsController {
         if (events.exists(id)) {
             throw new EntityExistsException();
         }
+        Date now = new Date();
 
-        final Event e = new Event();
-        e.setId(id);
-        e.setName(id);
-        e.setContactMail(owner);
-        e.setPublished(false);
-        e.setOpen(false);
-        e.setShortDescription(id);
-        final Date now = new Date();
-        e.setDate(now);
-        e.setDecisionDate(now);
-        e.setReleaseDate(now);
+        Event e = Event.builder()
+            .id(id)
+            .name(id)
+            .contactMail(owner)
+            .published(false)
+            .open(false)
+            .shortDescription(id)
+            .date(now)
+            .decisionDate(now)
+            .releaseDate(now)
+            .build();
+
         events.saveAndFlush(e);
 
         User user = users.findByEmail(owner);

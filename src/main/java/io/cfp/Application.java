@@ -21,20 +21,18 @@
 package io.cfp;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.EmbeddedDataSourceConfiguration;
+import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = FreeMarkerAutoConfiguration.class)
 @EnableCaching
 @ServletComponentScan(basePackages = "io.cfp.config.filter")
 @EnableJpaRepositories(basePackages = "io.cfp.repository")
-@EnableAutoConfiguration(exclude = { EmbeddedDataSourceConfiguration.class })
 public class Application extends SpringBootServletInitializer {
 
     @Override

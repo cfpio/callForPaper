@@ -21,7 +21,8 @@
 package io.cfp.dto;
 
 import io.cfp.entity.Event;
-import org.apache.commons.lang.time.FastDateFormat;
+
+import java.text.SimpleDateFormat;
 
 /**
  * Public application settings
@@ -39,16 +40,17 @@ public class ApplicationSettings {
     private String website;
     private String logo;
 
+    private static SimpleDateFormat sf = new SimpleDateFormat("dd/MM/yyyy");
+
     public ApplicationSettings() { }
 
     public ApplicationSettings(Event event) {
-        FastDateFormat format = FastDateFormat.getInstance("dd/MM/yyyy");
 
         eventName = event.getName();
-        date = format.format(event.getDate());
+        date = sf.format(event.getDate());
         this.duration = event.getDuration();
-        releaseDate = format.format(event.getReleaseDate());
-        decisionDate = format.format(event.getDecisionDate());
+        releaseDate = sf.format(event.getReleaseDate());
+        decisionDate = sf.format(event.getDecisionDate());
         shortDescription = event.getShortDescription();
         website = event.getUrl();
         this.logo = event.getLogoUrl() != null ? event.getLogoUrl() : "/images/logo.png";

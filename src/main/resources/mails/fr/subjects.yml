@@ -1,0 +1,7 @@
+confirmed: "Confirmation de votre session"
+newMessage: "Nouveau commentaire sur le talk {0}"
+newMessageAdmin: "Speaker {0} a posté un commentaire pour le talk {1}"
+notSelectionned: "Votre proposition a été refusée"
+pending: "Confirmation de votre session"
+selectionned: "Votre proposition a été acceptée"
+test: "Test"

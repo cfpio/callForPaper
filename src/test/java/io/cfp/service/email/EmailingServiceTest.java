@@ -22,6 +22,8 @@ package io.cfp.service.email;
 
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetupTest;
+import freemarker.template.TemplateExceptionHandler;
+import io.cfp.config.MailConfig;
 import io.cfp.dto.ApplicationSettings;
 import io.cfp.dto.TalkAdmin;
 import io.cfp.dto.TalkUser;
@@ -32,7 +34,6 @@ import io.cfp.repository.CfpConfigRepo;
 import io.cfp.repository.EventRepository;
 import io.cfp.repository.UserRepo;
 import io.cfp.service.admin.config.ApplicationConfigService;
-import org.apache.velocity.app.VelocityEngine;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,10 +50,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.io.IOException;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -82,7 +83,7 @@ public class EmailingServiceTest {
     private EventRepository eventRepo;
 
     @Autowired
-    private VelocityEngine velocityEngine;
+    private freemarker.template.Configuration freemarkerCfg;
 
     private String emailSender;
 
@@ -95,8 +96,9 @@ public class EmailingServiceTest {
     private Event event;
 
     @Before
-    public void setup() {
+    public void setup() throws IOException {
         emailingService = new EmailingService();
+        emailingService.loadSubjects();
         emailSender = "sender@cfp.io";
 
         user = new User();
@@ -116,13 +118,15 @@ public class EmailingServiceTest {
         talkAdmin.setId(2);
         talkAdmin.setName("My amazing user talk 2");
 
-        event = new Event();
-        event.setId("test");
-        event.setName("Test");
-        event.setDate(new Date());
-        event.setReleaseDate(new Date());
-        event.logo("http://localhost/logo.png");
-        event.setContactMail(CONTACT_MAIL);
+        event = Event.builder()
+            .id("test")
+            .name("test")
+            .date(new Date())
+            .releaseDate(new Date())
+            .logoUrl("http://localhost/logo.png")
+            .contactMail(CONTACT_MAIL)
+            .build();
+
         Event.setCurrent("test");
         when(eventRepo.findOne("test")).thenReturn(event);
 
@@ -130,8 +134,7 @@ public class EmailingServiceTest {
 
         ReflectionTestUtils.setField(emailingService, "users", users);
         ReflectionTestUtils.setField(emailingService, "eventRepo", eventRepo);
-        ReflectionTestUtils.setField(emailingService, "applicationConfigService", applicationConfigService);
-        ReflectionTestUtils.setField(emailingService, "velocityEngine", velocityEngine);
+        ReflectionTestUtils.setField(emailingService, "freemarker", freemarkerCfg);
         ReflectionTestUtils.setField(emailingService, "emailSender", emailSender);
         ReflectionTestUtils.setField(emailingService, "hostname", "demo.cfp.io");
 
@@ -252,7 +255,6 @@ public class EmailingServiceTest {
 
         // Then
         assertEquals(false, content.contains("$"));
-        assertNotNull(map.get("subject"));
     }
 
     @Test
@@ -270,7 +272,6 @@ public class EmailingServiceTest {
 
         // Then
         assertEquals(false, content.contains("$"));
-        assertNotNull(map.get("subject"));
     }
 
     @Test
@@ -287,7 +288,6 @@ public class EmailingServiceTest {
 
         // Then
         assertEquals(false, content.contains("$"));
-        assertNotNull(map.get("subject"));
     }
 
     @Test
@@ -304,7 +304,6 @@ public class EmailingServiceTest {
 
         // Then
         assertEquals(false, content.contains("$"));
-        assertNotNull(map.get("subject"));
     }
 
     @Test
@@ -322,7 +321,6 @@ public class EmailingServiceTest {
 
         // Then
         assertEquals(false, content.contains("$"));
-        assertNotNull(map.get("subject"));
     }
 
     @Test
@@ -340,7 +338,6 @@ public class EmailingServiceTest {
 
         // Then
         assertEquals(false, content.contains("$"));
-        assertNotNull(map.get("subject"));
     }
 
     @Test
@@ -358,7 +355,6 @@ public class EmailingServiceTest {
 
         // Then
         assertEquals(false, content.contains("$"));
-        assertNotNull(map.get("subject"));
     }
 
     @After
@@ -409,11 +405,12 @@ public class EmailingServiceTest {
         }
 
         @Bean
-        public VelocityEngine velocityEngine() {
-        	Properties props = new Properties();
-            props.setProperty("resource.loader", "class");
-            props.setProperty("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
-            return new VelocityEngine(props);
+        public freemarker.template.Configuration freemarkerCfg() {
+            freemarker.template.Configuration config = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_21);
+            config.setClassForTemplateLoading(MailConfig.class, "/mails/");
+            config.setDefaultEncoding("UTF-8");
+            config.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+            return config;
         }
 
     }
