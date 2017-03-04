@@ -106,6 +106,12 @@ public class AdminSessionController {
         talks.setState(talkId, Event.current(), Talk.State.ACCEPTED);
     }
 
+    @RequestMapping(value= "/sessions/{talkId}/backup", method= RequestMethod.PUT)
+    @ResponseBody
+    public void backup(@PathVariable int talkId) throws CospeakerNotFoundException{
+        talks.setState(talkId, Event.current(), Talk.State.BACKUP);
+    }
+
     @RequestMapping(value= "/sessions/{talkId}/reject", method= RequestMethod.PUT)
     @ResponseBody
     public void reject(@PathVariable int talkId) throws CospeakerNotFoundException{
