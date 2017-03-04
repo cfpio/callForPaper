@@ -21,11 +21,14 @@
 package io.cfp.controller;
 
 import io.cfp.dto.Speaker;
+import io.cfp.entity.Role;
 import io.cfp.entity.Talk;
 import io.cfp.service.TalkUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,7 +41,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
  */
 
 @RestController
-@RequestMapping(value = { "/v0/tracks", "/api/tracks" }, produces = APPLICATION_JSON_UTF8_VALUE)
+@Secured(Role.ADMIN)
+@RequestMapping(value = { "/v0/speakers", "/api/speakers" }, produces = APPLICATION_JSON_UTF8_VALUE)
 public class SpeakersController {
 
     @Autowired
@@ -47,9 +51,9 @@ public class SpeakersController {
     /**
      * Get all sessions
      */
-    @RequestMapping(value="/speakers", method= RequestMethod.GET)
     @ResponseBody
-    public List<Speaker> getAllSpeakers() {
-        return talks.findAllSpeaker(Talk.State.CONFIRMED, Talk.State.ACCEPTED);
+    public List<Speaker> getSpeakers(@RequestParam(required = false) Talk.State[] state) {
+        return talks.findAllSpeaker(state);
     }
+
 }
