@@ -41,7 +41,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
  */
 
 @RestController
-@Secured(Role.ADMIN)
 @RequestMapping(value = { "/v0/speakers", "/api/speakers" }, produces = APPLICATION_JSON_UTF8_VALUE)
 public class SpeakersController {
 
@@ -52,8 +51,15 @@ public class SpeakersController {
      * Get all sessions
      */
     @ResponseBody
+    @Secured(Role.ADMIN)
     public List<Speaker> getSpeakers(@RequestParam(required = false) Talk.State[] state) {
         return talks.findAllSpeaker(state);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/accepted")
+    public List<Speaker> getAccepted() {
+        return talks.findAllSpeaker(Talk.State.ACCEPTED);
     }
 
 }
