@@ -46,7 +46,7 @@ public class AdminStatsService {
     public AdminMeter getAdminMeter() {
         AdminMeter meter = new AdminMeter();
         meter.setSpeakers(submissions.countByEventId(Event.current()));
-        meter.setTalks((int) talks.countByEventIdAndStateIn(Event.current(), Arrays.asList(CONFIRMED, ACCEPTED, REFUSED)));
+        meter.setTalks((int) talks.countByEventIdAndStateIn(Event.current(), Arrays.asList(CONFIRMED, ACCEPTED, REFUSED, BACKUP)));
         meter.setDrafts((int) talks.countByEventIdAndStateIn(Event.current(), Collections.singletonList(DRAFT)));
         meter.setSubmitted((int) talks.countByEventIdAndStateIn(Event.current(), Collections.singletonList(CONFIRMED)));
         meter.setAccepted((int) talks.countByEventIdAndStateIn(Event.current(), Collections.singletonList(ACCEPTED)));

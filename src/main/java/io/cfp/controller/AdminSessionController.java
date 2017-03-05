@@ -64,7 +64,7 @@ public class AdminSessionController {
 
         Talk.State[] accept;
         if (status == null) {
-            accept = new Talk.State[] { Talk.State.CONFIRMED, Talk.State.ACCEPTED, Talk.State.REFUSED };
+            accept = new Talk.State[] { Talk.State.CONFIRMED, Talk.State.ACCEPTED, Talk.State.REFUSED, Talk.State.BACKUP };
         } else {
             accept = new Talk.State[] { Talk.State.valueOf(status) };
         }
