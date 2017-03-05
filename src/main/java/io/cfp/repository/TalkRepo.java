@@ -73,7 +73,7 @@ public interface TalkRepo extends JpaRepository<Talk, Integer> {
 
     @Transactional
     @Modifying
-    @Query("UPDATE Talk t SET t.state = :targetState WHERE t.event.id = :eventId AND t.state = :initial ")
+    @Query("UPDATE Talk t SET t.state = :targetState WHERE t.event.id = :eventId AND t.state = :initialState ")
     void setStateWhere(@Param("eventId") String current, @Param("targetState") Talk.State targetState, @Param("initialState") Talk.State initialState);
 
     @Query("SELECT t.track.libelle, COUNT(t) FROM Talk t WHERE t.event.id = :eventId GROUP BY t.track")
