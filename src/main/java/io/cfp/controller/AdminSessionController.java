@@ -118,6 +118,12 @@ public class AdminSessionController {
         talks.setState(talkId, Event.current(), Talk.State.REFUSED);
     }
 
+    @RequestMapping(value= "/sessions/rejectOthers", method= RequestMethod.PUT)
+    @ResponseBody
+    public void rejectOthers() throws CospeakerNotFoundException{
+        talks.setStateWhere(Event.current(), Talk.State.REFUSED, Talk.State.CONFIRMED);
+    }
+
     @RequestMapping(value= "/sessions/{talkId}/retract", method= RequestMethod.PUT)
     @ResponseBody
     public void retract(@PathVariable int talkId) throws CospeakerNotFoundException{
