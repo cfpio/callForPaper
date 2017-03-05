@@ -20,6 +20,7 @@
 
 package io.cfp.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cfp.dto.TalkUser;
 import io.cfp.dto.user.Schedule;
 import io.cfp.dto.user.UserProfil;
@@ -30,14 +31,18 @@ import io.cfp.service.email.EmailingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -125,6 +130,18 @@ public class ScheduleController {
         }).collect(toList());
     }
 
+    @RequestMapping(value = "", method = RequestMethod.POST, consumes = {"multipart/form-data", "multipart/mixed"})
+    @Secured(Role.ADMIN)
+    public ResponseEntity uploadSchedule(@RequestParam("file") MultipartFile file) throws IOException {
+
+        final Schedule[] schedules = new ObjectMapper().readValue(file.getBytes(), Schedule[].class);
+        for (Schedule talk : schedules) {
+            talkUserService.updateConfirmedTalk(talk.getId(), LocalDateTime.parse(talk.getEventStart(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
     /**
      * Update talks with schedule data.
      *
@@ -132,7 +149,7 @@ public class ScheduleController {
      */
     @RequestMapping(value = "", method = RequestMethod.PUT)
     @Secured(Role.ADMIN)
-    public Map<String, List<TalkUser>> putScheduleList(@RequestBody List<Schedule> scheduleList, @RequestParam(defaultValue = "false", required = false) boolean sendMail) {
+    public Map<String, List<TalkUser>> putSchedule(@RequestBody List<Schedule> scheduleList, @RequestParam(defaultValue = "false", required = false) boolean sendMail) {
         scheduleList.forEach(s -> {
             LocalDateTime dateEventStart = LocalDateTime.parse(s.getEventStart(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
             // update database
