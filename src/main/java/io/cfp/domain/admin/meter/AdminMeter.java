@@ -79,12 +79,17 @@ public class AdminMeter implements Serializable {
         meter.rejected = rejected;
     }
 
+    public void setBackup(Integer backup) {
+        meter.backup = backup;
+    }
+
     private class Counts  implements Serializable{
         private Integer speakers;
         private Integer drafts;
         private Integer submitted;
         private Integer accepted;
         private Integer rejected;
+        private Integer backup;
         private Integer talks;
 
 
@@ -104,10 +109,13 @@ public class AdminMeter implements Serializable {
             return accepted;
         }
 
+        public Integer getBackup() {
+            return backup;
+        }
+
         public Integer getRejected() {
             return rejected;
         }
-
         public Integer getTalks() {
             return talks;
         }

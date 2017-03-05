@@ -51,6 +51,7 @@ public class AdminStatsService {
         meter.setSubmitted((int) talks.countByEventIdAndStateIn(Event.current(), Collections.singletonList(CONFIRMED)));
         meter.setAccepted((int) talks.countByEventIdAndStateIn(Event.current(), Collections.singletonList(ACCEPTED)));
         meter.setRejected((int) talks.countByEventIdAndStateIn(Event.current(), Collections.singletonList(REFUSED)));
+        meter.setBackup((int) talks.countByEventIdAndStateIn(Event.current(), Collections.singletonList(BACKUP)));
         return meter;
     }
 }
