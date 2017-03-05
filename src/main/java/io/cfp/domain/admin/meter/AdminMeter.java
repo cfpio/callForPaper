@@ -67,10 +67,26 @@ public class AdminMeter implements Serializable {
         this.meter.talks = talks;
     }
 
+    public void setSubmitted(Integer submitted) {
+        meter.submitted = submitted;
+    }
+
+    public void setAccepted(Integer accepted) {
+        meter.accepted = accepted;
+    }
+
+    public void setRejected(Integer rejected) {
+        meter.rejected = rejected;
+    }
+
     private class Counts  implements Serializable{
         private Integer speakers;
         private Integer drafts;
+        private Integer submitted;
+        private Integer accepted;
+        private Integer rejected;
         private Integer talks;
+
 
         public Integer getSpeakers() {
             return speakers;
@@ -80,11 +96,24 @@ public class AdminMeter implements Serializable {
             return drafts;
         }
 
+        public Integer getSubmitted() {
+            return submitted;
+        }
+
+        public Integer getAccepted() {
+            return accepted;
+        }
+
+        public Integer getRejected() {
+            return rejected;
+        }
+
         public Integer getTalks() {
             return talks;
         }
 
         public Counts() {
         }
+
     }
 }
