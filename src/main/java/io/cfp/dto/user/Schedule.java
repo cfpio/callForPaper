@@ -164,6 +164,14 @@ public class Schedule {
         return eventStart;
     }
 
+
+    @JsonProperty("start")
+    public String getStart() { return eventStart; }
+
+    @JsonProperty("end")
+    public String getEnd() { return eventEnd; }
+
+
     /**
      * @param eventStart The event_start
      */
