@@ -80,5 +80,6 @@ public class Role {
     public static final String MAINTAINER = "ROLE_MAINTAINER";
     public static final String OWNER = "ROLE_OWNER";
     public static final String ADMIN = "ROLE_ADMIN";
+    public static final String REVIEWER = "ROLE_REVIEWER";
     public static final String AUTHENTICATED = "ROLE_AUTHENTICATED";
 }

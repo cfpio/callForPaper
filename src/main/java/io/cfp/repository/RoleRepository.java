@@ -40,4 +40,6 @@ public interface RoleRepository extends JpaRepository<Role, Integer> {
 
     List<Role> findByUserIdAndEventId(int userId, String eventId);
 
+    void deleteByUserIdAndEventIdAndName(int userId, String eventId, String role);
+
 }
