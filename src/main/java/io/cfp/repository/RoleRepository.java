@@ -30,6 +30,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import io.cfp.entity.Role;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author <a href="mailto:nicolas.deloof@gmail.com">Nicolas De Loof</a>
@@ -40,6 +41,7 @@ public interface RoleRepository extends JpaRepository<Role, Integer> {
 
     List<Role> findByUserIdAndEventId(int userId, String eventId);
 
+    @Transactional
     void deleteByUserIdAndEventIdAndName(int userId, String eventId, String role);
 
 }
