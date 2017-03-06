@@ -350,7 +350,7 @@
 
     <changeSet id="16" author="ndeloof" dbms="mysql">
         <!-- as we introduce REVIEWER role, make sure all admins are also reviewers -->
-        <sql>INSERT INTO roles (name, user_id, event_id) SELECT ('ROLE_REVIEWER', user_id, event_id) FROM roles WHERE name='ROLE_ADMIN';</sql>
+        <sql>INSERT INTO roles (name, user_id, event_id) SELECT 'ROLE_REVIEWER', user_id, event_id FROM roles WHERE name='ROLE_ADMIN';</sql>
     </changeSet>
 
 
