@@ -33,7 +33,6 @@ import io.cfp.entity.User;
 import io.cfp.repository.EventRepository;
 import io.cfp.repository.UserRepo;
 import org.apache.commons.io.FileUtils;
-import org.apache.velocity.tools.generic.DateTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +53,8 @@ import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class EmailingService {
@@ -89,11 +90,15 @@ public class EmailingService {
     public void loadSubjects() throws IOException {
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         Resource[] yamls = resolver.getResources("classpath:mails/*/subjects.yml");
+        Pattern langPattern = Pattern.compile(".*/mails/([^/]+)/subjects\\.yml");
 
         Yaml parser = new Yaml();
         for (Resource yaml : yamls) {
             Map<String, String> subs = (Map<String, String>) parser.load(yaml.getInputStream());
-            subjects.put(yaml.getFile().getParentFile().getName(), subs);
+            Matcher matcher = langPattern.matcher(yaml.getURL().getPath());
+            if (matcher.matches()) { //forced to call matches() to execute regex...
+                subjects.put(matcher.group(1), subs);
+            }
         }
     }
 
@@ -264,7 +269,6 @@ public class EmailingService {
 
         // adds global params
         parameters.put("hostname", StringUtils.replace(hostname, "{{event}}", Event.current()));
-        parameters.put("date", new DateTool());
         Event curEvent = eventRepo.findOne(Event.current());
         parameters.put("event", curEvent);
         parameters.put("contactMail", curEvent.getContactMail() != null ? curEvent.getContactMail() : "contact@cfp.io");
