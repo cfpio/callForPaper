@@ -1,0 +1,7 @@
+confirmed: "Confirmation of your session"
+newMessage: "New comment about talk {}"
+newMessageAdmin: "Speaker {} posted a new comment on talk {}"
+notSelectionned: "Your proposal has been refused"
+pending: "Confirmation of your session"
+selectionned: "Your proposal has been accepted"
+test: "Test"

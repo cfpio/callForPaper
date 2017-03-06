@@ -89,15 +89,16 @@ public class ApplicationController {
         DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 
         try {
-            event.date(format.parse(settings.getDate()))
+            event = event.toBuilder().date(format.parse(settings.getDate()))
                 .duration(settings.getDuration())
                 .name(settings.getEventName())
-                .logo(settings.getLogo())
-                .website(settings.getWebsite())
+                .logoUrl(settings.getLogo())
+                .url(settings.getWebsite())
                 .shortDescription(settings.getShortDescription())
                 .decisionDate(format.parse(settings.getDecisionDate()))
                 .releaseDate(format.parse(settings.getReleaseDate()))
-                .open(settings.isOpen());
+                .open(settings.isOpen())
+                .build();
         } catch (ParseException e) {
             throw new BadRequestException("Invalid data "+e.getMessage());
         }

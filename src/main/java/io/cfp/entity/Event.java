@@ -20,6 +20,10 @@
 
 package io.cfp.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +39,9 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "events")
+@Data @Builder(toBuilder = true) @NoArgsConstructor @AllArgsConstructor
 public class Event {
+    private static final Logger logger = LoggerFactory.getLogger(Event.class);
 
     private static ThreadLocal<String> current = new ThreadLocal<String>();
 
@@ -79,104 +85,6 @@ public class Event {
 
     private boolean open = true;
 
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public int getDuration() {
-        return duration;
-    }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public Event website(String url) {
-        this.url = url;
-        return this;
-    }
-
-    public String getLogoUrl() {
-        return logoUrl;
-    }
-
-    public Event logo(String logoUrl) {
-        this.logoUrl = logoUrl;
-        return this;
-    }
-
-    public boolean isPublished() {
-        return published;
-    }
-
-    public void setPublished(boolean published) {
-        this.published = published;
-    }
-
-    public String getVideosUrl() {
-        return videosUrl;
-    }
-
-    public void setVideosUrl(String videosUrl) {
-        this.videosUrl = videosUrl;
-    }
-
-    public String getContactMail() {
-        return contactMail;
-    }
-
-    public void setContactMail(String contactMail) {
-        this.contactMail = contactMail;
-    }
-
-    public Date getDecisionDate() {
-        return decisionDate;
-    }
-
-    public void setDecisionDate(Date decisionDate) {
-        this.decisionDate = decisionDate;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public boolean isOpen() {
-        return open;
-    }
-
-    public void setOpen(boolean open) {
-        this.open = open;
-    }
-
-    public Date getReleaseDate() {
-        return releaseDate;
-    }
-
-    public void setReleaseDate(Date releaseDate) {
-        this.releaseDate = releaseDate;
-    }
-
-    public String getShortDescription() {
-        return shortDescription;
-    }
-
-    public void setShortDescription(String shortDescription) {
-        this.shortDescription = shortDescription;
-    }
-
     public static void setCurrent(String tenant) {
         current.set(tenant);
     }
@@ -185,53 +93,5 @@ public class Event {
         current.remove();
     }
 
-    public String getName() {
-        return name != null ? name : id;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Event id(String id) {
-        this.id = id;
-        return this;
-    }
-
-    public Event name(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public Event shortDescription(String shortDescription) {
-        this.shortDescription = shortDescription;
-        return this;
-    }
-
-    public Event date(Date date) {
-        this.date = date;
-        return this;
-    }
-
-    public Event releaseDate(Date releaseDate) {
-        this.releaseDate = releaseDate;
-        return this;
-    }
-
-    public Event decisionDate(Date decisionDate) {
-        this.decisionDate = decisionDate;
-        return this;
-    }
-
-    public Event open(boolean open) {
-        this.open = open;
-        return this;
-    }
-
-    private static final Logger logger = LoggerFactory.getLogger(Event.class);
-
-    public Event duration(int duration) {
-        this.duration = duration;
-        return this;
-    }
 }

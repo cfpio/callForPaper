@@ -22,6 +22,8 @@ package io.cfp.service.email;
 
 import com.sendgrid.SendGrid;
 import com.sendgrid.SendGridException;
+import freemarker.template.Configuration;
+import freemarker.template.TemplateException;
 import io.cfp.dto.TalkAdmin;
 import io.cfp.dto.TalkUser;
 import io.cfp.dto.user.CospeakerProfil;
@@ -30,25 +32,27 @@ import io.cfp.entity.Event;
 import io.cfp.entity.User;
 import io.cfp.repository.EventRepository;
 import io.cfp.repository.UserRepo;
-import io.cfp.service.admin.config.ApplicationConfigService;
 import org.apache.commons.io.FileUtils;
-import org.apache.velocity.Template;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.tools.generic.DateTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.yaml.snakeyaml.Yaml;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
+import java.text.MessageFormat;
 import java.util.*;
 
 @Service
@@ -57,16 +61,14 @@ public class EmailingService {
     private final Logger log = LoggerFactory.getLogger(EmailingService.class);
 
     @Autowired
-    private ApplicationConfigService applicationConfigService;
-
-    @Autowired
     private UserRepo users;
 
     @Autowired
     private EventRepository eventRepo;
 
     @Autowired
-    private VelocityEngine velocityEngine;
+    @Qualifier("mailTemplate")
+    private Configuration freemarker;
 
     @Value("${cfp.email.sendgrid.apikey}")
     private String sendgridApiKey;
@@ -80,6 +82,20 @@ public class EmailingService {
     @Value("${cfp.email.send}")
     private boolean send;
 
+    private Map<String, Map<String, String>> subjects = new HashMap<>();
+
+    @PostConstruct
+    @SuppressWarnings("unchecked")
+    public void loadSubjects() throws IOException {
+        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        Resource[] yamls = resolver.getResources("classpath:mails/*/subjects.yml");
+
+        Yaml parser = new Yaml();
+        for (Resource yaml : yamls) {
+            Map<String, String> subs = (Map<String, String>) parser.load(yaml.getInputStream());
+            subjects.put(yaml.getFile().getParentFile().getName(), subs);
+        }
+    }
 
     /**
      * Send Confirmation of your session.
@@ -97,6 +113,7 @@ public class EmailingService {
         params.put("name", user.getFirstname());
         params.put("talk", talk.getName());
         params.put("id", String.valueOf(talk.getId()));
+        params.put("subject", getSubject("confirmed", locale));
 
         createAndSendEmail("confirmed.html", user.getEmail(), params, null, null, locale);
     }
@@ -122,6 +139,7 @@ public class EmailingService {
         params.put("name", speaker.getFirstname());
         params.put("talk", talk.getName());
         params.put("id", String.valueOf(talk.getId()));
+        params.put("subject", getSubject("newMessage", locale, talk.getName()));
 
         createAndSendEmail("newMessage.html", speaker.getEmail(), params, cc, null, locale);
     }
@@ -142,11 +160,13 @@ public class EmailingService {
         log.debug("Sending new comment email to admins for talk '{}'", talk.getName());
 
         List<String> bcc = users.findAdminsEmail(Event.current());
+        String speakerName = speaker.getFirstname() + " " + speaker.getLastname();
 
         Map<String, Object> params = new HashMap<>();
-        params.put("name", speaker.getFirstname());
+        params.put("name", speakerName);
         params.put("talk", talk.getName());
         params.put("id", String.valueOf(talk.getId()));
+        params.put("subject", getSubject("newMessageAdmin", locale, speakerName, talk.getName()));
 
         createAndSendEmail("newMessageAdmin.html", emailSender, params, null, bcc, locale);
     }
@@ -174,6 +194,7 @@ public class EmailingService {
         Map<String, Object> params = new HashMap<>();
         params.put("name", user.getFirstname());
         params.put("talk", talk.getName());
+        params.put("subject", getSubject("notSelectionned", locale));
 
         createAndSendEmail("notSelectionned.html", user.getEmail(), params, cc, null, locale);
     }
@@ -195,6 +216,7 @@ public class EmailingService {
         Map<String, Object> params = new HashMap<>();
         params.put("name", user.getFirstname());
         params.put("talk", talk.getName());
+        params.put("subject", getSubject("pending", locale));
 
         createAndSendEmail("pending.html", user.getEmail(), params, cc, null, locale);
     }
@@ -216,6 +238,7 @@ public class EmailingService {
         Map<String, Object> params = new HashMap<>();
         params.put("name", user.getFirstname());
         params.put("talk", talk.getName());
+        params.put("subject", getSubject("selectionned", locale));
 
         createAndSendEmail("selectionned.html", user.getEmail(), params, cc, null, locale);
     }
@@ -234,7 +257,7 @@ public class EmailingService {
     	if (!"fr".equals(language)) {
     		language = "en";
     	}
-        return "mails/" + language + "/" + emailTemplate;
+        return language + "/" + emailTemplate;
     }
 
     protected String processTemplate(String templatePath, Map<String, Object> parameters) {
@@ -246,12 +269,19 @@ public class EmailingService {
         parameters.put("event", curEvent);
         parameters.put("contactMail", curEvent.getContactMail() != null ? curEvent.getContactMail() : "contact@cfp.io");
 
-        VelocityContext context = new VelocityContext(parameters);
+        StringWriter writer;
+        try {
+            freemarker.template.Template tpl = freemarker.getTemplate(templatePath);
+            writer = new StringWriter();
+            tpl.process(parameters, writer);
+        } catch (IOException e) {
+            log.error("Unable to find or parse the template [{}]", templatePath, e);
+            return null;
+        } catch (TemplateException e) {
+            log.error("Unable to process the template [{}]", templatePath, e);
+            return null;
+        }
 
-        Template template = velocityEngine.getTemplate(templatePath, "UTF-8");
-
-        StringWriter writer = new StringWriter();
-        template.merge(context, writer);
         return writer.toString();
     }
 
@@ -259,6 +289,11 @@ public class EmailingService {
         if (!send) {
             String fileName = saveLocally(content);
             log.warn("Mail [{}] to [{}] not sent as mail is disabled but can be found at [{}]", subject, to, fileName);
+            return;
+        }
+
+        if (content == null) {
+            log.error("Mail content is null, don't send it to [{}] with subject [{}]", to, subject);
             return;
         }
 
@@ -299,5 +334,20 @@ public class EmailingService {
             log.error("Unable to save temp mail file", e);
             return null;
         }
+    }
+
+    private String getSubject(String template, Locale locale, Object... args) {
+        String language = locale.getLanguage();
+        if (!"fr".equals(language)) {
+            language = "en";
+        }
+
+        String subject = subjects.get(language).get(template);
+
+        if (subject == null) {
+            return null;
+        }
+        MessageFormat msg = new MessageFormat(subject);
+        return msg.format(args);
     }
 }

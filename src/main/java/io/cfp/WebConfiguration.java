@@ -23,7 +23,7 @@ package io.cfp;
 import io.cfp.config.filter.AuthFilter;
 import io.cfp.config.filter.CorsFilter;
 import io.cfp.config.filter.TenantFilter;
-import org.springframework.boot.context.embedded.FilterRegistrationBean;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
