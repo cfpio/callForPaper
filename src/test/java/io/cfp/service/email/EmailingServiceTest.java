@@ -29,6 +29,7 @@ import io.cfp.dto.TalkAdmin;
 import io.cfp.dto.TalkUser;
 import io.cfp.dto.user.UserProfil;
 import io.cfp.entity.Event;
+import io.cfp.entity.Talk;
 import io.cfp.entity.User;
 import io.cfp.repository.CfpConfigRepo;
 import io.cfp.repository.EventRepository;
@@ -89,6 +90,8 @@ public class EmailingServiceTest {
 
     private User user;
 
+    private Talk talk;
+
     private TalkAdmin talkAdmin;
 
     private TalkUser talkUser;
@@ -105,6 +108,9 @@ public class EmailingServiceTest {
         user.setId(1);
         user.setEmail(JOHN_DOE_EMAIL);
         user.setFirstname("john");
+
+        talk = new Talk();
+        talk.user(user).name("Awesome talk");
 
         talkUser = new TalkUser();
         talkUser.setId(1);
@@ -191,7 +197,7 @@ public class EmailingServiceTest {
     	String templatePath = emailingService.getTemplatePath("notSelectionned.html", Locale.FRENCH);
 
         // When
-        emailingService.sendNotSelectionned(talkUser, Locale.FRENCH);
+        emailingService.sendNotSelectionned(talk, Locale.FRENCH);
 
         // Then
         verify(emailingService).processTemplate(eq(templatePath), anyMap());
@@ -217,7 +223,7 @@ public class EmailingServiceTest {
     	String templatePath = emailingService.getTemplatePath("selectionned.html", Locale.FRENCH);
 
         // When
-        emailingService.sendSelectionned(talkUser, Locale.FRENCH);
+        emailingService.sendSelectionned(talk, Locale.FRENCH);
 
         // Then
         verify(emailingService).processTemplate(eq(templatePath), anyMap());

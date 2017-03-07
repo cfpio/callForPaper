@@ -28,6 +28,7 @@ import io.cfp.dto.user.CospeakerProfil;
 import io.cfp.dto.user.Schedule;
 import io.cfp.dto.user.UserProfil;
 import io.cfp.entity.Talk;
+import io.cfp.repository.TalkRepo;
 import io.cfp.service.TalkUserService;
 import io.cfp.service.email.EmailingService;
 import org.junit.Before;
@@ -60,6 +61,10 @@ public class ScheduleControllerTest {
 
     @Mock
     private EmailingService emailingService;
+
+    @Mock
+    private TalkRepo talks;
+
 
     private ScheduleController scheduleController;
 
@@ -179,119 +184,6 @@ public class ScheduleControllerTest {
         System.out.println(mockMvcResponse.asString());
 
         mockMvcResponse.then().statusCode(200).body("size()", equalTo(1));
-    }
-
-    @Test
-    public void testPutScheduleListWithSendMail() {
-        // Given
-        UserProfil userProfil = new UserProfil("John", "Doe");
-        // TalkUser 1
-        TalkUser talkUser1 = new TalkUser();
-        talkUser1.setId(1);
-        talkUser1.setName("A talk 1");
-        talkUser1.setDescription("A description");
-        talkUser1.setSpeaker(userProfil);
-
-        CospeakerProfil cospeakerProfil1 = new CospeakerProfil();
-        cospeakerProfil1.setId(1);
-        cospeakerProfil1.setFirstname("Johnny");
-        cospeakerProfil1.setLastname("Deep");
-
-        Set<CospeakerProfil> cospeakerProfils = new HashSet<>();
-        cospeakerProfils.add(cospeakerProfil1);
-        talkUser1.setCospeaker(cospeakerProfils);
-
-        List<TalkUser> talkList = new ArrayList<>();
-        talkList.add(talkUser1);
-
-        List<Schedule> scheduleList = new ArrayList<>();
-        Schedule schedule = new Schedule(1, "John", "Doe");
-        schedule.setEventStart("2016-02-19T19:35:45.977");
-        scheduleList.add(schedule);
-
-        LocalDateTime dateEventStart = LocalDateTime.parse(schedule.getEventStart(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-
-        when(talkUserService.findAll(Talk.State.ACCEPTED, Talk.State.CONFIRMED, Talk.State.REFUSED)).thenReturn(talkList);
-        when(talkUserService.updateConfirmedTalk(1, dateEventStart)).thenReturn(talkUser1);
-        Mockito.doNothing().when(emailingService).sendEmail(anyString(), anyString(), anyString(), anyString(), isNull(List.class), isNull(List.class));
-
-        MockMvcResponse mockMvcResponse = given().body(scheduleList).contentType("application/json").put("/api/schedule?sendMail=true");
-
-        mockMvcResponse.then().statusCode(200);
-    }
-
-    @Test
-    public void testPutScheduleListWithoutSendMail() {
-        // Given
-        UserProfil userProfil = new UserProfil("John", "Doe");
-        // TalkUser 1
-        TalkUser talkUser1 = new TalkUser();
-        talkUser1.setId(1);
-        talkUser1.setName("A talk 1");
-        talkUser1.setDescription("A description");
-        talkUser1.setSpeaker(userProfil);
-
-        CospeakerProfil cospeakerProfil1 = new CospeakerProfil();
-        cospeakerProfil1.setId(1);
-        cospeakerProfil1.setFirstname("Johnny");
-        cospeakerProfil1.setLastname("Deep");
-
-        Set<CospeakerProfil> cospeakerProfils = new HashSet<>();
-        cospeakerProfils.add(cospeakerProfil1);
-        talkUser1.setCospeaker(cospeakerProfils);
-
-        List<TalkUser> talkList = new ArrayList<>();
-        talkList.add(talkUser1);
-
-        List<Schedule> scheduleList = new ArrayList<>();
-        Schedule schedule = new Schedule(1, "John", "Doe");
-        schedule.setEventStart("2016-02-19T19:35:45.977");
-        scheduleList.add(schedule);
-
-        LocalDateTime dateEventStart = LocalDateTime.parse(schedule.getEventStart(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-
-        when(talkUserService.findAll(Talk.State.ACCEPTED, Talk.State.CONFIRMED, Talk.State.REFUSED)).thenReturn(talkList);
-        when(talkUserService.updateConfirmedTalk(1, dateEventStart)).thenReturn(talkUser1);
-        Mockito.doNothing().when(emailingService).sendEmail(anyString(), anyString(), anyString(), anyString(), isNull(List.class), isNull(List.class));
-
-        MockMvcResponse mockMvcResponse = given().body(scheduleList).contentType("application/json").put("/api/schedule");
-
-        mockMvcResponse.then().statusCode(200);
-
-        verifyZeroInteractions(emailingService);
-    }
-
-    @Test
-    public void testNotifyScheduling() {
-        // Given
-        UserProfil userProfil = new UserProfil("John", "Doe");
-        // TalkUser 1
-        TalkUser talkUser1 = new TalkUser();
-        talkUser1.setId(1);
-        talkUser1.setName("A talk 1");
-        talkUser1.setDescription("A description");
-        talkUser1.setSpeaker(userProfil);
-
-        CospeakerProfil cospeakerProfil1 = new CospeakerProfil();
-        cospeakerProfil1.setId(1);
-        cospeakerProfil1.setFirstname("Johnny");
-        cospeakerProfil1.setLastname("Deep");
-
-        Set<CospeakerProfil> cospeakerProfils = new HashSet<>();
-        cospeakerProfils.add(cospeakerProfil1);
-        talkUser1.setCospeaker(cospeakerProfils);
-
-        List<TalkUser> talkList = new ArrayList<>();
-        talkList.add(talkUser1);
-
-        when(talkUserService.findAll(Talk.State.ACCEPTED)).thenReturn(talkList);
-        Mockito.doNothing().when(emailingService).sendEmail(anyString(), anyString(), anyString(), anyString(), isNull(List.class), isNull(List.class));
-
-        MockMvcResponse mockMvcResponse = given().contentType("application/json").post("/api/schedule/notification");
-
-        mockMvcResponse.then().statusCode(200);
-
-        verify(emailingService).sendSelectionned(talkUser1, Locale.FRENCH);
     }
 
 }
