@@ -65,7 +65,7 @@ public class ScheduleControllerTest {
 
     @Before
     public void setup() {
-        scheduleController = new ScheduleController(talkUserService, emailingService);
+        scheduleController = new ScheduleController(talkUserService, talks, emailingService);
         RestAssuredMockMvc.standaloneSetup(scheduleController);
     }
 

@@ -24,8 +24,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cfp.dto.TalkUser;
 import io.cfp.dto.user.Schedule;
 import io.cfp.dto.user.UserProfil;
+import io.cfp.entity.Event;
 import io.cfp.entity.Role;
 import io.cfp.entity.Talk;
+import io.cfp.repository.TalkRepo;
 import io.cfp.service.TalkUserService;
 import io.cfp.service.email.EmailingService;
 import org.slf4j.Logger;
@@ -45,6 +47,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -67,12 +70,15 @@ public class ScheduleController {
 
     private final TalkUserService talkUserService;
 
+    private final TalkRepo talks;
+
     private final EmailingService emailingService;
 
     @Autowired
-    public ScheduleController(TalkUserService talkUserService, EmailingService emailingService) {
+    public ScheduleController(TalkUserService talkUserService, TalkRepo talks, EmailingService emailingService) {
         super();
         this.talkUserService = talkUserService;
+        this.talks = talks;
         this.emailingService = emailingService;
     }
 
@@ -180,27 +186,20 @@ public class ScheduleController {
      */
     @RequestMapping(value = "/notification", method = RequestMethod.POST)
     @Secured(Role.ADMIN)
-    public Map<String, List<TalkUser>> notifyScheduling() {
-        Map<String, List<TalkUser>> result = new HashMap<>();
+    public void notifyScheduling() {
 
-        List<TalkUser> refused = talkUserService.findAll(Talk.State.REFUSED);
-        List<TalkUser> accepted = talkUserService.findAll(Talk.State.ACCEPTED);
-
-        result.put("confirmed", talkUserService.findAll(Talk.State.CONFIRMED));
-        result.put("draft", talkUserService.findAll(Talk.State.DRAFT));
-        result.put("accepted", accepted);
-        result.put("refused", refused);
-        result.put("backup", talkUserService.findAll(Talk.State.BACKUP));
+        List<Talk> refused = talks.findByEventIdAndStatesFetch(Event.current(), Collections.singleton(Talk.State.REFUSED));
+        List<Talk> accepted = talks.findByEventIdAndStatesFetch(Event.current(), Collections.singleton(Talk.State.ACCEPTED));
 
         sendMailsWithTempo(accepted, refused);
-
-        return result;
     }
 
     /**
      * To help Google Compute Engine we wait 2 s between 2 mails.
+     * @param accepted
+     * @param refused
      */
-    private void sendMailsWithTempo(List<TalkUser> accepted, List<TalkUser> refused) {
+    private void sendMailsWithTempo(List<Talk> accepted, List<Talk> refused) {
         accepted.forEach(t -> {
                     try {
                         Thread.sleep(2000);

@@ -21,9 +21,11 @@
 package io.cfp.service.admin.stats;
 
 import io.cfp.domain.admin.meter.AdminMeter;
+import io.cfp.dto.Speaker;
 import io.cfp.entity.Event;
 import io.cfp.repository.SubmissionRepository;
 import io.cfp.repository.TalkRepo;
+import io.cfp.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

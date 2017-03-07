@@ -29,6 +29,7 @@ import io.cfp.dto.TalkUser;
 import io.cfp.dto.user.CospeakerProfil;
 import io.cfp.dto.user.UserProfil;
 import io.cfp.entity.Event;
+import io.cfp.entity.Talk;
 import io.cfp.entity.User;
 import io.cfp.repository.EventRepository;
 import io.cfp.repository.UserRepo;
@@ -178,21 +179,20 @@ public class EmailingService {
 
     /**
      * Send Confirmation of selection.
-     *
-     * @param talk
+     *  @param talk
      * @param locale
      */
     @Async
     @Transactional
-    public void sendNotSelectionned(TalkUser talk, Locale locale) {
-        UserProfil user = talk.getSpeaker();
+    public void sendNotSelectionned(Talk talk, Locale locale) {
+        User user = talk.getUser();
 
         log.debug("Sending not selectionned e-mail to '{}'", user.getEmail());
 
         List<String> cc = new ArrayList<>();
         if (talk.getCospeakers() != null) {
-            for (CospeakerProfil cospeakerProfil : talk.getCospeakers()) {
-                cc.add(cospeakerProfil.getEmail());
+            for (User cospeaker : talk.getCospeakers()) {
+                cc.add(cospeaker.getEmail());
             }
         }
 
@@ -228,14 +228,13 @@ public class EmailingService {
 
     @Async
     @Transactional
-    public void sendSelectionned(TalkUser talk, Locale locale) {
-        UserProfil user = talk.getSpeaker();
-
+    public void sendSelectionned(Talk talk, Locale locale) {
+        final User user = talk.getUser();
         log.debug("Sending selectionned e-mail to '{}'", user.getEmail());
 
         List<String> cc = new ArrayList<>();
         if (talk.getCospeakers() != null) {
-            for (CospeakerProfil cospeakerProfil : talk.getCospeakers()) {
+            for (User cospeakerProfil : talk.getCospeakers()) {
                 cc.add(cospeakerProfil.getEmail());
             }
         }
