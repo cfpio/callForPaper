@@ -37,7 +37,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -48,10 +47,8 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -148,40 +145,7 @@ public class ScheduleController {
     }
 
 
-    /**
-     * Update talks with schedule data.
-     *
-     * @param scheduleList Accepted talks in "LikeBox" format.
-     */
-    @RequestMapping(value = "", method = RequestMethod.PUT)
-    @Secured(Role.ADMIN)
-    public Map<String, List<TalkUser>> putSchedule(@RequestBody List<Schedule> scheduleList, @RequestParam(defaultValue = "false", required = false) boolean sendMail) {
-        scheduleList.forEach(s -> {
-            LocalDateTime dateEventStart = LocalDateTime.parse(s.getEventStart(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-            // update database
-            talkUserService.updateConfirmedTalk(s.getId(), dateEventStart);
-        });
-
-        Map<String, List<TalkUser>> result = new HashMap<>();
-
-        List<TalkUser> refused = talkUserService.findAll(Talk.State.REFUSED);
-        List<TalkUser> accepted = talkUserService.findAll(Talk.State.ACCEPTED);
-
-        result.put("confirmed", talkUserService.findAll(Talk.State.CONFIRMED));
-        result.put("draft", talkUserService.findAll(Talk.State.DRAFT));
-        result.put("accepted", accepted);
-        result.put("refused", refused);
-        result.put("backup", talkUserService.findAll(Talk.State.BACKUP));
-
-        if (sendMail) {
-            sendMailsWithTempo(accepted, refused);
-        }
-
-        return result;
-    }
-
-
-    /**
+        /**
      * Notify by mails scheduling result.
      */
     @RequestMapping(value = "/notification", method = RequestMethod.POST)
