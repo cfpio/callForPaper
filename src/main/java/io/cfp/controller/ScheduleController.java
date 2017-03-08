@@ -81,7 +81,7 @@ public class ScheduleController {
         this.emailingService = emailingService;
     }
 
-    @RequestMapping(value = ".json", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public List<Schedule> getSchedule() {
         final List<Talk> all = talks.findByEventIdAndStatesFetch(Event.current(), Collections.singleton(Talk.State.ACCEPTED));
 
