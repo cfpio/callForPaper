@@ -55,9 +55,9 @@ import java.util.Map;
 public class Schedule {
 
     @JsonProperty("event_key")
-    private String eventKey;
+    private String eventKey = "tobedefined";
     @JsonProperty("active")
-    private String active;
+    private String active = "Y";
     @JsonProperty("name")
     private String name;
     @JsonProperty("event_start")
@@ -67,11 +67,11 @@ public class Schedule {
     @JsonProperty("event_type")
     private String eventType;
     @JsonProperty("seats")
-    private String seats;
+    private String seats = "tobedefined";
     @JsonProperty("goers")
-    private String goers;
+    private String goers = "tobedefined";
     @JsonProperty("invite_only")
-    private String inviteOnly;
+    private String inviteOnly = "N";
     @JsonProperty("venue")
     private String venue;
     @JsonProperty("id")

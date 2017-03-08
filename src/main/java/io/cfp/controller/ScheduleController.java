@@ -46,6 +46,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -78,6 +80,32 @@ public class ScheduleController {
         this.talks = talks;
         this.emailingService = emailingService;
     }
+
+    @RequestMapping(value = ".json", method = RequestMethod.GET)
+    public List<Schedule> getSchedule() {
+        final List<Talk> all = talks.findByEventIdAndStatesFetch(Event.current(), Collections.singleton(Talk.State.ACCEPTED));
+
+        return all.stream().map(t -> {
+            Schedule schedule = new Schedule(t.getId(), t.getName(), t.getDescription());
+
+            // speakers
+            String spreakers = t.getUser().getFirstname() + " " + t.getUser().getLastname();
+            if (t.getCospeakers() != null) {
+                spreakers += ", " + t.getCospeakers().stream().map(c -> c.getFirstname() + " " + c.getLastname()).collect(Collectors.joining(", "));
+            }
+            schedule.setSpeakers(spreakers);
+
+            // event_type
+            schedule.setEventType(t.getTrack().getLibelle());
+
+            schedule.setEventStart(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(t.getDate().toInstant()));
+            schedule.setEventEnd(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(t.getDate().toInstant().plus(t.getDuree(), ChronoUnit.MINUTES)));
+            schedule.setVenue("TBD");
+
+            return schedule;
+        }).collect(toList());
+    }
+
 
     /**
      * Get all All talks.
