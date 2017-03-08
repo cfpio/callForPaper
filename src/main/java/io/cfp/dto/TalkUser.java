@@ -47,6 +47,9 @@ public class TalkUser {
     private UserProfil speaker;
     private Set<CospeakerProfil> cospeakers;
 
+    private Date schedule;
+    private Integer room;
+
 
     public TalkUser() {
 
@@ -66,6 +69,8 @@ public class TalkUser {
         this.added = t.getAdded();
         this.speaker = new UserProfil(t.getUser().getFirstname(), t.getUser().getLastname());
         this.cospeakers = t.getCospeakers().stream().map( u -> new CospeakerProfil(u.getEmail()) ).collect(Collectors.toSet());
+        this.room = t.getRoom() != null ? t.getRoom().getId() : null;
+        this.schedule = t.getDate();
     }
 
 
@@ -175,6 +180,14 @@ public class TalkUser {
 
     public void setLanguage(String language) {
         this.language = language;
+    }
+
+    public Date getSchedule() {
+        return schedule;
+    }
+
+    public int getRoom() {
+        return room;
     }
 
     @Override
