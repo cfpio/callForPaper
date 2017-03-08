@@ -20,6 +20,7 @@
 
 package io.cfp.service;
 
+import io.cfp.controller.AdminSessionController;
 import io.cfp.domain.exception.CospeakerNotFoundException;
 import io.cfp.dto.EventSched;
 import io.cfp.dto.TalkAdmin;
@@ -29,9 +30,17 @@ import io.cfp.entity.Event;
 import io.cfp.entity.Rate;
 import io.cfp.entity.Talk;
 import io.cfp.entity.User;
-import io.cfp.repository.*;
+import io.cfp.repository.CommentRepo;
+import io.cfp.repository.FormatRepo;
+import io.cfp.repository.RateRepo;
+import io.cfp.repository.RoomRepo;
+import io.cfp.repository.TalkRepo;
+import io.cfp.repository.TrackRepo;
+import io.cfp.repository.UserRepo;
 import io.cfp.service.admin.user.AdminUserService;
 import ma.glasnost.orika.MapperFacade;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,6 +60,9 @@ import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 @Service
 @Transactional
 public class TalkAdminService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AdminSessionController.class);
+
 
     @Autowired
     private TalkRepo talkRepo;
@@ -153,9 +165,11 @@ public class TalkAdminService {
 
         if (talkAdmin.getRoom() != null) {
             talk.room(rooms.findByIdAndEventId(talkAdmin.getRoom(), Event.current()));
+            LOG.debug("Talk {} set on room {}", talkAdmin.getId(), talkAdmin.getRoom());
         }
         if (talkAdmin.getSchedule() != null) {
             talk.date(talkAdmin.getSchedule());
+            LOG.debug("Talk {} set at {}", talkAdmin.getId(), talkAdmin.getSchedule());
         }
 
         setCoSpeaker(talkAdmin, talk);
@@ -163,7 +177,7 @@ public class TalkAdminService {
         talkRepo.save(talk);
         talkRepo.flush();
 
-        return mapper.map(talk, TalkAdmin.class);
+        return new TalkAdmin(talk);
     }
 
     /**
