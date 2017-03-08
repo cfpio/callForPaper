@@ -71,6 +71,9 @@ public class TalkAdminService {
     private CommentRepo commentRepo;
 
     @Autowired
+    private RoomRepo rooms;
+
+    @Autowired
     private AdminUserService adminUserService;
 
     @Autowired
@@ -147,6 +150,14 @@ public class TalkAdminService {
             .difficulty(talkAdmin.getDifficulty())
             .format(formatRepo.findByIdAndEventId(talkAdmin.getFormat(), Event.current()))
             .track(trackRepo.findByIdAndEventId(talkAdmin.getTrackId(), Event.current()));
+
+        if (talkAdmin.getRoom() != null) {
+            talk.room(rooms.findByIdAndEventId(talkAdmin.getRoom(), Event.current()));
+        }
+        if (talkAdmin.getSchedule() != null) {
+            talk.date(talkAdmin.getSchedule());
+        }
+
         setCoSpeaker(talkAdmin, talk);
 
         talkRepo.save(talk);
