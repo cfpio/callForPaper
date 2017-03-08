@@ -98,8 +98,8 @@ public class ScheduleController {
             // event_type
             schedule.setEventType(t.getTrack().getLibelle());
 
-            schedule.setEventStart(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(t.getDate().toInstant()));
-            schedule.setEventEnd(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(t.getDate().toInstant().plus(t.getDuree(), ChronoUnit.MINUTES)));
+            schedule.setEventStart(DateTimeFormatter.ISO_INSTANT.format(t.getDate().toInstant()));
+            schedule.setEventEnd(DateTimeFormatter.ISO_INSTANT.format(t.getDate().toInstant().plus(t.getDuree(), ChronoUnit.MINUTES)));
             schedule.setVenue(t.getRoom() != null ? t.getRoom().getName() : "TBD");
 
             return schedule;
