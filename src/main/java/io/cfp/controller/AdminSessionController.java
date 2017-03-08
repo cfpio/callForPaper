@@ -44,6 +44,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 
 @Controller
@@ -100,7 +101,7 @@ public class AdminSessionController {
      */
     @RequestMapping(value= "/sessions/{talkId}", method= RequestMethod.PUT)
     @ResponseBody
-    public TalkAdmin editTalk(@PathVariable int talkId, @RequestBody TalkAdmin talkAdmin) throws CospeakerNotFoundException{
+    public TalkAdmin editTalk(@PathVariable int talkId, @RequestBody TalkAdmin talkAdmin) throws CospeakerNotFoundException, ParseException {
         talkAdmin.setId(talkId);
         return talkService.edit(talkAdmin);
     }

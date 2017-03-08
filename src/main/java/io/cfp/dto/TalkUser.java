@@ -24,6 +24,7 @@ import io.cfp.dto.user.CospeakerProfil;
 import io.cfp.dto.user.UserProfil;
 import io.cfp.entity.Talk;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -47,7 +48,7 @@ public class TalkUser {
     private UserProfil speaker;
     private Set<CospeakerProfil> cospeakers;
 
-    private Date schedule;
+    private String schedule;
     private Integer room;
 
 
@@ -70,7 +71,9 @@ public class TalkUser {
         this.speaker = new UserProfil(t.getUser().getFirstname(), t.getUser().getLastname());
         this.cospeakers = t.getCospeakers().stream().map( u -> new CospeakerProfil(u.getEmail()) ).collect(Collectors.toSet());
         this.room = t.getRoom() != null ? t.getRoom().getId() : null;
-        this.schedule = t.getDate();
+        if (t.getDate() != null) {
+            this.schedule = DateTimeFormatter.ISO_INSTANT.format(t.getDate().toInstant());
+        }
     }
 
 
@@ -182,8 +185,16 @@ public class TalkUser {
         this.language = language;
     }
 
-    public Date getSchedule() {
+    public String getSchedule() {
         return schedule;
+    }
+
+    public void setSchedule(String schedule) {
+        this.schedule = schedule;
+    }
+
+    public void setRoom(Integer room) {
+        this.room = room;
     }
 
     public Integer getRoom() {

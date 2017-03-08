@@ -45,7 +45,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -148,7 +153,7 @@ public class TalkAdminService {
      * @param talkAdmin Talk to edit
      * @return Edited talk
      */
-    public TalkAdmin edit(TalkAdmin talkAdmin) throws CospeakerNotFoundException {
+    public TalkAdmin edit(TalkAdmin talkAdmin) throws CospeakerNotFoundException, ParseException {
         Talk talk = talkRepo.findByIdAndEventId(talkAdmin.getId(), Event.current());
         if (talk == null) {
             return null;
@@ -168,7 +173,7 @@ public class TalkAdminService {
             LOG.debug("Talk {} set on room {}", talkAdmin.getId(), talkAdmin.getRoom());
         }
         if (talkAdmin.getSchedule() != null) {
-            talk.date(talkAdmin.getSchedule());
+            talk.date(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").parse(talkAdmin.getSchedule()));
             LOG.debug("Talk {} set at {}", talkAdmin.getId(), talkAdmin.getSchedule());
         }
 
