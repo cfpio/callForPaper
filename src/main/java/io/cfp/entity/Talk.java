@@ -51,6 +51,7 @@ public class Talk {
     //schedule data
     private Date date;
     private String heure;
+    public Room room;
 
     private Set<User> cospeakers;
 
@@ -137,6 +138,12 @@ public class Talk {
         return heure;
     }
 
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    public Room getRoom() {
+        return room;
+    }
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "cospeakers", joinColumns = @JoinColumn(name = "proposal_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     public Set<User> getCospeakers() {
@@ -221,6 +228,10 @@ public class Talk {
         this.rates = rates;
     }
 
+    public void setRoom(Room room) {
+        this.room = room;
+    }
+
     public Talk id(int id) {
         this.id = id;
         return this;
@@ -293,6 +304,11 @@ public class Talk {
 
     public Talk cospeakers(Set<User> cospeakers) {
         this.cospeakers = cospeakers;
+        return this;
+    }
+
+    public Talk room(Room room) {
+        this.room = room;
         return this;
     }
 }

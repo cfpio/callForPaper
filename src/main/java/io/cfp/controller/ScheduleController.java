@@ -100,7 +100,7 @@ public class ScheduleController {
 
             schedule.setEventStart(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(t.getDate().toInstant()));
             schedule.setEventEnd(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(t.getDate().toInstant().plus(t.getDuree(), ChronoUnit.MINUTES)));
-            schedule.setVenue("TBD");
+            schedule.setVenue(t.getRoom() != null ? t.getRoom().getName() : "TBD");
 
             return schedule;
         }).collect(toList());

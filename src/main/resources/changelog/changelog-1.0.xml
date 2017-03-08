@@ -353,5 +353,13 @@
         <sql>INSERT INTO roles (name, user_id, event_id) SELECT 'ROLE_REVIEWER', user_id, event_id FROM roles WHERE name='ROLE_ADMIN';</sql>
     </changeSet>
 
+    <changeSet id="17" author="ndeloof">
+        <addColumn tableName="proposals">
+            <column name="room_id" type="INT">
+                <constraints foreignKeyName="talk_room_fk" referencedTableName="rooms" referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 
 </databaseChangeLog>
