@@ -62,7 +62,8 @@ public interface TalkRepo extends JpaRepository<Talk, Integer> {
         "JOIN FETCH t.track " +
         "LEFT JOIN FETCH t.cospeakers " +
         "WHERE  t.event.id = :eventId " +
-        "AND t.state IN (:states)")
+        "AND t.state IN (:states) " +
+        "order by t.id")
     List<Talk> findByEventIdAndStatesFetch(@Param("eventId") String eventId, @Param("states") Collection<Talk.State> states);
 
 

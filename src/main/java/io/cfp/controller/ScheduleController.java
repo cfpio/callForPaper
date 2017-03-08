@@ -97,12 +97,13 @@ public class ScheduleController {
                 }
                 schedule.setSpeakers(spreakers);
 
-                // event_type
                 schedule.setEventType(t.getTrack().getLibelle());
+                schedule.setFormat(t.getFormat().getName());
 
                 schedule.setEventStart(DateTimeFormatter.ISO_INSTANT.format(t.getDate().toInstant()));
                 schedule.setEventEnd(DateTimeFormatter.ISO_INSTANT.format(t.getDate().toInstant().plus(t.getDuree(), ChronoUnit.MINUTES)));
                 schedule.setVenue(t.getRoom() != null ? t.getRoom().getName() : "TBD");
+                schedule.setVenueId(t.getRoom() != null ? String.valueOf(t.getRoom().getId()) : null);
 
                 return schedule;
             }).collect(toList());

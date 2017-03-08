@@ -35,27 +35,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-    "event_key",
-    "active",
-    "name",
-    "event_start",
-    "event_end",
-    "event_type",
-    "seats",
-    "goers",
-    "invite_only",
-    "venue",
-    "id",
-    "venue_id",
-    "speakers",
-    "description",
-    "media_url"
-})
 public class Schedule {
 
-    @JsonProperty("event_key")
-    private String eventKey = "tobedefined";
     @JsonProperty("active")
     private String active = "Y";
     @JsonProperty("name")
@@ -66,12 +47,8 @@ public class Schedule {
     private String eventEnd;
     @JsonProperty("event_type")
     private String eventType;
-    @JsonProperty("seats")
-    private String seats = "tobedefined";
-    @JsonProperty("goers")
-    private String goers = "tobedefined";
-    @JsonProperty("invite_only")
-    private String inviteOnly = "N";
+    @JsonProperty("format")
+    private String format;
     @JsonProperty("venue")
     private String venue;
     @JsonProperty("id")
@@ -82,8 +59,7 @@ public class Schedule {
     private String speakers;
     @JsonProperty("description")
     private String description;
-    @JsonProperty("media_url")
-    private String mediaUrl;
+
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -97,31 +73,11 @@ public class Schedule {
         this.description = description;
 
         // default values
-        this.eventKey = "tobedefined";
         this.active = "Y";
         this.eventStart = "tobedefined";
         this.eventEnd = "tobedefined";
-        this.seats = "tobedefined";
-        this.goers = "tobedefined";
-        this.inviteOnly = "N";
         this.venue = "tobedefined";
         this.venueId = "tobedefined";
-    }
-
-    /**
-     * @return The eventKey
-     */
-    @JsonProperty("event_key")
-    public String getEventKey() {
-        return eventKey;
-    }
-
-    /**
-     * @param eventKey The event_key
-     */
-    @JsonProperty("event_key")
-    public void setEventKey(String eventKey) {
-        this.eventKey = eventKey;
     }
 
     /**
@@ -164,14 +120,6 @@ public class Schedule {
         return eventStart;
     }
 
-
-    @JsonProperty("start")
-    public String getStart() { return eventStart; }
-
-    @JsonProperty("end")
-    public String getEnd() { return eventEnd; }
-
-
     /**
      * @param eventStart The event_start
      */
@@ -212,52 +160,12 @@ public class Schedule {
         this.eventType = eventType;
     }
 
-    /**
-     * @return The seats
-     */
-    @JsonProperty("seats")
-    public String getSeats() {
-        return seats;
+    public String getFormat() {
+        return format;
     }
 
-    /**
-     * @param seats The seats
-     */
-    @JsonProperty("seats")
-    public void setSeats(String seats) {
-        this.seats = seats;
-    }
-
-    /**
-     * @return The goers
-     */
-    @JsonProperty("goers")
-    public String getGoers() {
-        return goers;
-    }
-
-    /**
-     * @param goers The goers
-     */
-    @JsonProperty("goers")
-    public void setGoers(String goers) {
-        this.goers = goers;
-    }
-
-    /**
-     * @return The inviteOnly
-     */
-    @JsonProperty("invite_only")
-    public String getInviteOnly() {
-        return inviteOnly;
-    }
-
-    /**
-     * @param inviteOnly The invite_only
-     */
-    @JsonProperty("invite_only")
-    public void setInviteOnly(String inviteOnly) {
-        this.inviteOnly = inviteOnly;
+    public void setFormat(String format) {
+        this.format = format;
     }
 
     /**
@@ -338,22 +246,6 @@ public class Schedule {
     @JsonProperty("description")
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    /**
-     * @return The mediaUrl
-     */
-    @JsonProperty("media_url")
-    public String getMediaUrl() {
-        return mediaUrl;
-    }
-
-    /**
-     * @param mediaUrl The media_url
-     */
-    @JsonProperty("media_url")
-    public void setMediaUrl(String mediaUrl) {
-        this.mediaUrl = mediaUrl;
     }
 
     @JsonAnyGetter
