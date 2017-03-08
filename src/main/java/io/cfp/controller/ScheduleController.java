@@ -85,25 +85,27 @@ public class ScheduleController {
     public List<Schedule> getSchedule() {
         final List<Talk> all = talks.findByEventIdAndStatesFetch(Event.current(), Collections.singleton(Talk.State.ACCEPTED));
 
-        return all.stream().map(t -> {
-            Schedule schedule = new Schedule(t.getId(), t.getName(), t.getDescription());
+        return all.stream().
+            filter(t -> t.getDate() != null)
+            .map(t -> {
+                Schedule schedule = new Schedule(t.getId(), t.getName(), t.getDescription());
 
-            // speakers
-            String spreakers = t.getUser().getFirstname() + " " + t.getUser().getLastname();
-            if (t.getCospeakers() != null) {
-                spreakers += ", " + t.getCospeakers().stream().map(c -> c.getFirstname() + " " + c.getLastname()).collect(Collectors.joining(", "));
-            }
-            schedule.setSpeakers(spreakers);
+                // speakers
+                String spreakers = t.getUser().getFirstname() + " " + t.getUser().getLastname();
+                if (t.getCospeakers() != null) {
+                    spreakers += ", " + t.getCospeakers().stream().map(c -> c.getFirstname() + " " + c.getLastname()).collect(Collectors.joining(", "));
+                }
+                schedule.setSpeakers(spreakers);
 
-            // event_type
-            schedule.setEventType(t.getTrack().getLibelle());
+                // event_type
+                schedule.setEventType(t.getTrack().getLibelle());
 
-            schedule.setEventStart(DateTimeFormatter.ISO_INSTANT.format(t.getDate().toInstant()));
-            schedule.setEventEnd(DateTimeFormatter.ISO_INSTANT.format(t.getDate().toInstant().plus(t.getDuree(), ChronoUnit.MINUTES)));
-            schedule.setVenue(t.getRoom() != null ? t.getRoom().getName() : "TBD");
+                schedule.setEventStart(DateTimeFormatter.ISO_INSTANT.format(t.getDate().toInstant()));
+                schedule.setEventEnd(DateTimeFormatter.ISO_INSTANT.format(t.getDate().toInstant().plus(t.getDuree(), ChronoUnit.MINUTES)));
+                schedule.setVenue(t.getRoom() != null ? t.getRoom().getName() : "TBD");
 
-            return schedule;
-        }).collect(toList());
+                return schedule;
+            }).collect(toList());
     }
 
 
