@@ -186,7 +186,7 @@ public class TalkUser {
         return schedule;
     }
 
-    public int getRoom() {
+    public Integer getRoom() {
         return room;
     }
 
