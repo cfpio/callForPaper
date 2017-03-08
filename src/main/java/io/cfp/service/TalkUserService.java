@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import io.cfp.repository.RoomRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,6 +68,9 @@ public class TalkUserService {
 
     @Autowired
     private TrackRepo trackRepo;
+
+    @Autowired
+    private RoomRepo rooms;
 
     @Autowired
     private EventRepository events;
@@ -188,7 +192,7 @@ public class TalkUserService {
      * @param eventStart
      * @return updated talk
      */
-    public TalkUser updateConfirmedTalk(int talkId, LocalDateTime eventStart) {
+    public TalkUser updateConfirmedTalk(int talkId, LocalDateTime eventStart, String room) {
 
         Date eventDate = Date.from(eventStart.atZone(ZoneId.systemDefault()).toInstant());
         String hour = eventStart.format(DateTimeFormatter.ofPattern("HH:mm"));
@@ -197,6 +201,9 @@ public class TalkUserService {
         talk.setState(Talk.State.ACCEPTED);
         talk.setDate(eventDate);
         talk.setHeure(hour);
+        if (room != null) {
+            talk.setRoom(rooms.getOne(Integer.parseInt(room)));
+        }
         talk = talkRepo.saveAndFlush(talk);
 
         return new TalkUser(talk);

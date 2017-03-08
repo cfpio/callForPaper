@@ -170,7 +170,7 @@ public class ScheduleController {
 
         final Schedule[] schedules = new ObjectMapper().readValue(file.getBytes(), Schedule[].class);
         for (Schedule talk : schedules) {
-            talkUserService.updateConfirmedTalk(talk.getId(), LocalDateTime.parse(talk.getEventStart(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+            talkUserService.updateConfirmedTalk(talk.getId(), LocalDateTime.parse(talk.getEventStart(), DateTimeFormatter.ISO_LOCAL_DATE_TIME), talk.getVenueId());
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
