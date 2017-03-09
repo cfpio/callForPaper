@@ -21,12 +21,15 @@
 package io.cfp.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.cfp.dto.FullCalendar;
 import io.cfp.dto.TalkUser;
 import io.cfp.dto.user.Schedule;
 import io.cfp.dto.user.UserProfil;
 import io.cfp.entity.Event;
 import io.cfp.entity.Role;
+import io.cfp.entity.Room;
 import io.cfp.entity.Talk;
+import io.cfp.repository.RoomRepo;
 import io.cfp.repository.TalkRepo;
 import io.cfp.service.TalkUserService;
 import io.cfp.service.email.EmailingService;
@@ -47,7 +50,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -71,13 +73,16 @@ public class ScheduleController {
 
     private final TalkRepo talks;
 
+    private final RoomRepo rooms;
+
     private final EmailingService emailingService;
 
     @Autowired
-    public ScheduleController(TalkUserService talkUserService, TalkRepo talks, EmailingService emailingService) {
+    public ScheduleController(TalkUserService talkUserService, TalkRepo talks, RoomRepo rooms, EmailingService emailingService) {
         super();
         this.talkUserService = talkUserService;
         this.talks = talks;
+        this.rooms = rooms;
         this.emailingService = emailingService;
     }
 
@@ -107,6 +112,25 @@ public class ScheduleController {
 
                 return schedule;
             }).collect(toList());
+    }
+
+
+    @RequestMapping(value = "fullcalendar", method = RequestMethod.GET)
+    public FullCalendar getFullCalendar() {
+        final List<Room> roomList = rooms.findByEventId(Event.current());
+        final List<Talk> all = talks.findByEventIdAndStatesFetch(Event.current(), Collections.singleton(Talk.State.ACCEPTED));
+        return new FullCalendar(all, roomList);
+    }
+
+    @RequestMapping(value = "fullcalendar", method = RequestMethod.PUT)
+    public void getFullCalendar(FullCalendar calendar) {
+        calendar.getEvents().forEach(
+            e -> {
+                talkUserService.updateConfirmedTalk(
+                    Integer.parseInt(e.getId()),
+                    LocalDateTime.parse(e.getStart(), DateTimeFormatter.ISO_LOCAL_DATE_TIME),
+                    e.getResourceId());
+            });
     }
 
 

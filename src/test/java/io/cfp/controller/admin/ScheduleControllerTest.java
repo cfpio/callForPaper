@@ -25,7 +25,6 @@ import com.jayway.restassured.module.mockmvc.response.MockMvcResponse;
 import io.cfp.controller.ScheduleController;
 import io.cfp.dto.TalkUser;
 import io.cfp.dto.user.CospeakerProfil;
-import io.cfp.dto.user.Schedule;
 import io.cfp.dto.user.UserProfil;
 import io.cfp.entity.Talk;
 import io.cfp.repository.TalkRepo;
@@ -35,17 +34,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.*;
 
@@ -70,7 +65,7 @@ public class ScheduleControllerTest {
 
     @Before
     public void setup() {
-        scheduleController = new ScheduleController(talkUserService, talks, emailingService);
+        scheduleController = new ScheduleController(talkUserService, talks, rooms, emailingService);
         RestAssuredMockMvc.standaloneSetup(scheduleController);
     }
 
