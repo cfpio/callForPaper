@@ -200,41 +200,54 @@ public class ScheduleController {
     }
 
 
-        /**
+
+
+    /**
      * Notify by mails scheduling result.
+     * @param filter , can be "accepted" or "declined", default is "all"
+     *
      */
     @RequestMapping(value = "/notification", method = RequestMethod.POST)
     @Secured(Role.ADMIN)
-    public void notifyScheduling() {
+    public void notifyScheduling(@RequestParam(defaultValue = "all", name = "filter") String filter) {
+        switch (filter) {
+           case  "declined" :
+               List<Talk> refused = talks.findByEventIdAndStatesFetch(Event.current(), Collections.singleton(Talk.State.REFUSED));
+               sendDeclinedMailsWithTempo(refused);
+            case "accepted"  :
+               List<Talk> accepted = talks.findByEventIdAndStatesFetch(Event.current(), Collections.singleton(Talk.State.ACCEPTED));
+               sendAcceptedMailsWithTempo(accepted);
+            case "all"  :
+               sendAcceptedMailsWithTempo(talks.findByEventIdAndStatesFetch(Event.current(), Collections.singleton(Talk.State.ACCEPTED)));
+               sendDeclinedMailsWithTempo(talks.findByEventIdAndStatesFetch(Event.current(), Collections.singleton(Talk.State.REFUSED)));
 
-        List<Talk> refused = talks.findByEventIdAndStatesFetch(Event.current(), Collections.singleton(Talk.State.REFUSED));
-        List<Talk> accepted = talks.findByEventIdAndStatesFetch(Event.current(), Collections.singleton(Talk.State.ACCEPTED));
-
-        sendMailsWithTempo(accepted, refused);
+        }
     }
 
     /**
      * To help Google Compute Engine we wait 2 s between 2 mails.
      * @param accepted
-     * @param refused
      */
-    private void sendMailsWithTempo(List<Talk> accepted, List<Talk> refused) {
+    private void sendAcceptedMailsWithTempo(List<Talk> accepted) {
         accepted.forEach(t -> {
                     try {
                         Thread.sleep(2000);
                     } catch (InterruptedException e) {
                         LOG.warn("Thread Interrupted Exception", e);
                     }
-                    emailingService.sendSelectionned(t, Locale.FRENCH);
+                    emailingService.sendSelectionned(t, Locale.forLanguageTag(t.getLanguage()));
                 }
         );
+    }
+
+    private void sendDeclinedMailsWithTempo(List<Talk> refused) {
         refused.forEach(t -> {
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
                 LOG.warn("Thread Interrupted Exception", e);
             }
-            emailingService.sendNotSelectionned(t, Locale.FRENCH);
+            emailingService.sendNotSelectionned(t, Locale.forLanguageTag(t.getLanguage()));
         });
     }
 
