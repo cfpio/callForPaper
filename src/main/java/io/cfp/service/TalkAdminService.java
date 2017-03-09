@@ -173,8 +173,9 @@ public class TalkAdminService {
             LOG.debug("Talk {} set on room {}", talkAdmin.getId(), talkAdmin.getRoom());
         }
         if (talkAdmin.getSchedule() != null) {
-            talk.date(new SimpleDateFormat("yyyy-dd-MM'T'HH:mm:ssX").parse(talkAdmin.getSchedule()));
-            LOG.debug("Talk {} set at {}", talkAdmin.getId(), talkAdmin.getSchedule());
+            final Date start = new SimpleDateFormat("yyyy-dd-MM'T'HH:mm:ssX").parse(talkAdmin.getSchedule());
+            talk.date(start);
+            LOG.debug("Talk {} set at {}", talkAdmin.getId(), start);
         }
 
         setCoSpeaker(talkAdmin, talk);
