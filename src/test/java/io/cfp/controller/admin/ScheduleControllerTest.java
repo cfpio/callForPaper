@@ -27,6 +27,7 @@ import io.cfp.dto.TalkUser;
 import io.cfp.dto.user.CospeakerProfil;
 import io.cfp.dto.user.UserProfil;
 import io.cfp.entity.Talk;
+import io.cfp.repository.RoomRepo;
 import io.cfp.repository.TalkRepo;
 import io.cfp.service.TalkUserService;
 import io.cfp.service.email.EmailingService;
@@ -60,6 +61,8 @@ public class ScheduleControllerTest {
     @Mock
     private TalkRepo talks;
 
+    @Mock
+    private RoomRepo rooms;
 
     private ScheduleController scheduleController;
 
