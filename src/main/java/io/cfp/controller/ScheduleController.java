@@ -142,6 +142,17 @@ public class ScheduleController {
     }
 
 
+    @RequestMapping(value= "/sessions/{talkId}", method= RequestMethod.PUT)
+    @Secured(Role.ADMIN)
+    @ResponseBody
+    public void scheduleTalk(@PathVariable int id, @RequestBody FullCalendar.Event e) throws CospeakerNotFoundException, ParseException {
+        talkUserService.updateConfirmedTalk(
+            Integer.parseInt(e.getId()),
+            LocalDateTime.parse(e.getStart(), DateTimeFormatter.ISO_OFFSET_DATE_TIME),
+            e.getResourceId());
+    }
+
+
     /**
      * Get all All talks.
      *
