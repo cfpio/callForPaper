@@ -204,22 +204,25 @@ public class ScheduleController {
 
     /**
      * Notify by mails scheduling result.
-     * @param filter , can be "accepted" or "declined", default is "all"
+     * @param filter , can be "accepted" or "refused", default is "all"
      *
      */
     @RequestMapping(value = "/notification", method = RequestMethod.POST)
     @Secured(Role.ADMIN)
     public void notifyScheduling(@RequestParam(defaultValue = "all", name = "filter") String filter) {
         switch (filter) {
-           case  "declined" :
+           case  "refused" :
                List<Talk> refused = talks.findByEventIdAndStatesFetch(Event.current(), Collections.singleton(Talk.State.REFUSED));
-               sendDeclinedMailsWithTempo(refused);
+               sendRefusedMailsWithTempo(refused);
+               break;
             case "accepted"  :
                List<Talk> accepted = talks.findByEventIdAndStatesFetch(Event.current(), Collections.singleton(Talk.State.ACCEPTED));
                sendAcceptedMailsWithTempo(accepted);
+               break;
             case "all"  :
                sendAcceptedMailsWithTempo(talks.findByEventIdAndStatesFetch(Event.current(), Collections.singleton(Talk.State.ACCEPTED)));
-               sendDeclinedMailsWithTempo(talks.findByEventIdAndStatesFetch(Event.current(), Collections.singleton(Talk.State.REFUSED)));
+               sendRefusedMailsWithTempo(talks.findByEventIdAndStatesFetch(Event.current(), Collections.singleton(Talk.State.REFUSED)));
+               break;
 
         }
     }
@@ -235,19 +238,19 @@ public class ScheduleController {
                     } catch (InterruptedException e) {
                         LOG.warn("Thread Interrupted Exception", e);
                     }
-                    emailingService.sendSelectionned(t, Locale.forLanguageTag(t.getLanguage()));
+                    emailingService.sendSelectionned(t, t.getUser().getLocale());
                 }
         );
     }
 
-    private void sendDeclinedMailsWithTempo(List<Talk> refused) {
+    private void sendRefusedMailsWithTempo(List<Talk> refused) {
         refused.forEach(t -> {
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
                 LOG.warn("Thread Interrupted Exception", e);
             }
-            emailingService.sendNotSelectionned(t, Locale.forLanguageTag(t.getLanguage()));
+            emailingService.sendNotSelectionned(t, t.getUser().getLocale());
         });
     }
 
