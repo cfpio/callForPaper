@@ -128,7 +128,7 @@ public class ScheduleController {
             e -> {
                 talkUserService.updateConfirmedTalk(
                     Integer.parseInt(e.getId()),
-                    LocalDateTime.parse(e.getStart(), DateTimeFormatter.ISO_LOCAL_DATE_TIME),
+                    LocalDateTime.parse(e.getStart(), DateTimeFormatter.ISO_OFFSET_DATE_TIME),
                     e.getResourceId());
             });
     }
@@ -194,7 +194,7 @@ public class ScheduleController {
 
         final Schedule[] schedules = new ObjectMapper().readValue(file.getBytes(), Schedule[].class);
         for (Schedule talk : schedules) {
-            talkUserService.updateConfirmedTalk(talk.getId(), LocalDateTime.parse(talk.getEventStart(), DateTimeFormatter.ISO_LOCAL_DATE_TIME), talk.getVenueId());
+            talkUserService.updateConfirmedTalk(talk.getId(), LocalDateTime.parse(talk.getEventStart(), DateTimeFormatter.ISO_OFFSET_DATE_TIME), talk.getVenueId());
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
