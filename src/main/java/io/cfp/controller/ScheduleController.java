@@ -122,6 +122,14 @@ public class ScheduleController {
             }).collect(toList());
     }
 
+    @RequestMapping(value = "fullcalendar/unscheduled", method = RequestMethod.GET)
+    public List<FullCalendar.Event> getUnscheduledEvents() {
+        final List<Talk> all = talks.findByEventIdAndStatesFetch(Event.current(), Collections.singleton(Talk.State.ACCEPTED));
+        return all.stream()
+            .filter(t -> t.getRoom() == null || t.getDate() == null)
+            .map(FullCalendar.Event::new)
+            .collect(Collectors.toList());
+    }
 
     @RequestMapping(value = "fullcalendar", method = RequestMethod.GET)
     public FullCalendar getFullCalendar() {
@@ -150,7 +158,7 @@ public class ScheduleController {
         if (!String.valueOf(talkId).equals(e.getId())) throw new IllegalArgumentException("wrong event ID "+e.getId());
 
         talkUserService.updateConfirmedTalk(
-            talkId,
+            Integer.parseInt(e.getId()),
             LocalDateTime.parse(e.getStart(), DateTimeFormatter.ISO_OFFSET_DATE_TIME),
             e.getResourceId());
     }
