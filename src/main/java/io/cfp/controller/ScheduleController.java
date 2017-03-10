@@ -145,9 +145,12 @@ public class ScheduleController {
     @RequestMapping(value= "/sessions/{talkId}", method= RequestMethod.PUT)
     @Secured(Role.ADMIN)
     @ResponseBody
-    public void scheduleTalk(@PathVariable int id, @RequestBody FullCalendar.Event e) throws CospeakerNotFoundException, ParseException {
+    public void scheduleTalk(@PathVariable int talkId, @RequestBody FullCalendar.Event e) throws CospeakerNotFoundException, ParseException {
+        // sanity check
+        if (!String.valueOf(talkId).equals(e.getId())) throw new IllegalArgumentException("wrong event ID "+e.getId());
+
         talkUserService.updateConfirmedTalk(
-            Integer.parseInt(e.getId()),
+            talkId,
             LocalDateTime.parse(e.getStart(), DateTimeFormatter.ISO_OFFSET_DATE_TIME),
             e.getResourceId());
     }
