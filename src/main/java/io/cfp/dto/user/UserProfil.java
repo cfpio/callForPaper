@@ -20,6 +20,7 @@
 
 package io.cfp.dto.user;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.cfp.entity.User;
 import io.cfp.entity.User.Gender;
 import io.cfp.entity.User.TshirtSize;
@@ -28,6 +29,7 @@ import io.cfp.entity.User.TshirtSize;
  * Created by tmaugin on 05/06/2015.
  * SII
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserProfil {
     private int id;
     private String lastname;
@@ -63,6 +65,7 @@ public class UserProfil {
         this.bio = user.getBio();
         if (includePrivateData) {
             this.email = user.getEmail();
+            this.phone = user.getPhone();
             this.gender = user.getGender();
             this.tshirtSize = user.getTshirtSize();
         }
