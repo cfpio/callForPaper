@@ -32,6 +32,7 @@ import io.cfp.entity.Talk;
 import io.cfp.repository.RoomRepo;
 import io.cfp.repository.TalkRepo;
 import io.cfp.service.TalkUserService;
+import io.cfp.service.admin.user.AdminUserService;
 import io.cfp.service.email.EmailingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -146,16 +147,20 @@ public class ScheduleController {
         return getSchedules(talkUserList);
     }
 
+    @Autowired
+    AdminUserService adminUserService;
+
     /**
      * Get all ACCEPTED talks'speakers .
      *
      * @return Speakers Set
      */
-    @RequestMapping(value = "/accepted/speakers", method = RequestMethod.GET)
-    @Secured(Role.ADMIN)
+    @RequestMapping(value = "/speakers", method = RequestMethod.GET)
     public Set<UserProfil> getSpeakerList() {
-        List<TalkUser> talkUserList = talkUserService.findAll(Talk.State.ACCEPTED);
-        return talkUserList.stream().map(t -> t.getSpeaker()).collect(toSet());
+        final List<Talk> all = talks.findByEventIdAndStatesFetch(Event.current(), Collections.singleton(Talk.State.ACCEPTED));
+        // FIXME we miss cospeakers with this
+        boolean isAdmin = adminUserService.getCurrentUser() != null;
+        return all.stream().map(t -> new UserProfil(t.getUser(), isAdmin)).collect(toSet());
     }
 
     /**

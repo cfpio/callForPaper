@@ -20,6 +20,7 @@
 
 package io.cfp.dto.user;
 
+import io.cfp.entity.User;
 import io.cfp.entity.User.Gender;
 import io.cfp.entity.User.TshirtSize;
 
@@ -52,6 +53,19 @@ public class UserProfil {
         super();
         this.firstname = firstname;
         this.lastname = lastname;
+    }
+
+    public UserProfil(User user, boolean includePrivateData) {
+        this.firstname = user.getFirstname();
+        this.lastname = user.getLastname();
+        this.company = user.getCompany();
+        this.twitter = user.getTwitter();
+        this.bio = user.getBio();
+        if (includePrivateData) {
+            this.email = user.getEmail();
+            this.gender = user.getGender();
+            this.tshirtSize = user.getTshirtSize();
+        }
     }
 
     public String getShortName() {
