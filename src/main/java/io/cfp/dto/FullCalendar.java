@@ -49,15 +49,21 @@ public class FullCalendar {
         private String id;
         private String resourceId;
         private String start;
+        private int duration;
         private String end;
         private String title;
 
         public Event(Talk talk) {
             this.id = String.valueOf(talk.getId());
             this.title = talk.getName();
-            this.resourceId = String.valueOf(talk.getRoom().getId());
-            this.start = DateTimeFormatter.ISO_INSTANT.format(talk.getDate().toInstant());
-            this.end = DateTimeFormatter.ISO_INSTANT.format(talk.getDate().toInstant().plus(talk.getDuree(), ChronoUnit.MINUTES));
+            if (talk.getRoom() != null) {
+                this.resourceId = String.valueOf(talk.getRoom().getId());
+            }
+            if (talk.getDate() != null) {
+                this.start = DateTimeFormatter.ISO_INSTANT.format(talk.getDate().toInstant());
+                this.end = DateTimeFormatter.ISO_INSTANT.format(talk.getDate().toInstant().plus(talk.getDuree(), ChronoUnit.MINUTES));
+            }
+            this.duration = talk.getDuree();
         }
     }
 
