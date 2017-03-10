@@ -21,6 +21,7 @@
 package io.cfp.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.cfp.domain.exception.CospeakerNotFoundException;
 import io.cfp.dto.FullCalendar;
 import io.cfp.dto.TalkUser;
 import io.cfp.dto.user.Schedule;
@@ -41,19 +42,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -78,13 +82,16 @@ public class ScheduleController {
 
     private final EmailingService emailingService;
 
+    private final AdminUserService adminUserService;
+
     @Autowired
-    public ScheduleController(TalkUserService talkUserService, TalkRepo talks, RoomRepo rooms, EmailingService emailingService) {
+    public ScheduleController(TalkUserService talkUserService, TalkRepo talks, RoomRepo rooms, EmailingService emailingService, AdminUserService adminUserService) {
         super();
         this.talkUserService = talkUserService;
         this.talks = talks;
         this.rooms = rooms;
         this.emailingService = emailingService;
+        this.adminUserService = adminUserService;
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -146,9 +153,6 @@ public class ScheduleController {
         List<TalkUser> talkUserList = talkUserService.findAll(Talk.State.CONFIRMED);
         return getSchedules(talkUserList);
     }
-
-    @Autowired
-    AdminUserService adminUserService;
 
     /**
      * Get all ACCEPTED talks'speakers .

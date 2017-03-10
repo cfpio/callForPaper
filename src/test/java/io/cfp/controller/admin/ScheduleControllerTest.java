@@ -30,6 +30,7 @@ import io.cfp.entity.Talk;
 import io.cfp.repository.RoomRepo;
 import io.cfp.repository.TalkRepo;
 import io.cfp.service.TalkUserService;
+import io.cfp.service.admin.user.AdminUserService;
 import io.cfp.service.email.EmailingService;
 import org.junit.Before;
 import org.junit.Test;
@@ -66,9 +67,13 @@ public class ScheduleControllerTest {
 
     private ScheduleController scheduleController;
 
+    @Mock
+    private AdminUserService adminUserService;
+
+
     @Before
     public void setup() {
-        scheduleController = new ScheduleController(talkUserService, talks, rooms, emailingService);
+        scheduleController = new ScheduleController(talkUserService, talks, rooms, emailingService, adminUserService);
         RestAssuredMockMvc.standaloneSetup(scheduleController);
     }
 
@@ -177,7 +182,7 @@ public class ScheduleControllerTest {
 
         when(talkUserService.findAll(Talk.State.ACCEPTED)).thenReturn(talkList);
 
-        MockMvcResponse mockMvcResponse = given().when().get("/api/schedule/accepted/speakers");
+        MockMvcResponse mockMvcResponse = given().when().get("/api/schedule/speakers");
 
         System.out.println(mockMvcResponse.asString());
 
