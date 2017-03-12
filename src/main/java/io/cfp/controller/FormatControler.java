@@ -80,10 +80,10 @@ public class FormatControler {
         return new FormatDto(
             formats.save(
                 new Format()
-                    .withEvent(events.findOne(Event.current()))
-                    .withName(format.getName())
-                    .withDuration(format.getDuration())
-                    .withDescription(format.getDescription())
+                    .event(events.findOne(Event.current()))
+                    .name(format.getName())
+                    .duration(format.getDuration())
+                    .description(format.getDescription())
             ), false);
     }
 
@@ -95,9 +95,9 @@ public class FormatControler {
     	if (format != null) {
 	        formats.save(
 	            format
-	                .withName(update.getName())
-	                .withDuration(update.getDuration())
-	                .withDescription(update.getDescription())
+	                .name(update.getName())
+	                .duration(update.getDuration())
+	                .description(update.getDescription())
 	        );
     	}
     }
