@@ -41,6 +41,7 @@ public class Format {
     private String name;
     private int duration;
     private String description;
+    private String icon;
     private Event event;
 
     @Id
@@ -88,23 +89,41 @@ public class Format {
         this.description = description;
     }
 
-    public Format withEvent(Event event) {
-        this.event = event;
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    public Format id(int id) {
+        this.id = id;
         return this;
     }
 
-    public Format withName(String name) {
+    public Format name(String name) {
         this.name = name;
         return this;
     }
 
-    public Format withDuration(int duration) {
+    public Format duration(int duration) {
         this.duration = duration;
         return this;
     }
 
-    public Format withDescription(String description) {
+    public Format description(String description) {
         this.description = description;
+        return this;
+    }
+
+    public Format icon(String icon) {
+        this.icon = icon;
+        return this;
+    }
+
+    public Format event(Event event) {
+        this.event = event;
         return this;
     }
 }

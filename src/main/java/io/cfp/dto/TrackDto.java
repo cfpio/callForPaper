@@ -27,6 +27,7 @@ public class TrackDto {
     private String libelle;
     private String description;
     private boolean referenced;
+    private String color;
 
     public TrackDto() {
     }
@@ -35,6 +36,7 @@ public class TrackDto {
         this.id = track.getId();
         this.libelle = track.getLibelle();
         this.description = track.getDescription();
+        this.color = track.getColor();
         this.referenced = referenced;
     }
 
@@ -69,4 +71,12 @@ public class TrackDto {
 	public void setReferenced(boolean referenced) {
 		this.referenced = referenced;
 	}
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
 }

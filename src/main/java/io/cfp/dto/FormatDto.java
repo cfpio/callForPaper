@@ -28,6 +28,7 @@ public class FormatDto {
     private String name;
     private int duration;
     private String description;
+    private String icon;
     private boolean referenced;
 
     public FormatDto() {
@@ -38,6 +39,7 @@ public class FormatDto {
         this.name = format.getName();
         this.duration = format.getDuration();
         this.description = format.getDescription();
+        this.icon = format.getIcon();
         this.referenced = referenced;
     }
 
@@ -73,7 +75,15 @@ public class FormatDto {
         this.name = name;
     }
 
-	public boolean isReferenced() {
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    public boolean isReferenced() {
 		return referenced;
 	}
 

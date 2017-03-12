@@ -361,5 +361,17 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="18" author="ndeloof">
+        <addColumn tableName="tracks">
+            <column name="color" type="VARCHAR(255)" defaultValue="#337ab7"/>
+        </addColumn>
+
+        <addColumn tableName="formats">
+            <column name="icon" type="VARCHAR(255)" defaultValue="slideshare"/>
+        </addColumn>
+
+    </changeSet>
+
+
 
 </databaseChangeLog>

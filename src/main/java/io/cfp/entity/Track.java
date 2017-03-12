@@ -40,6 +40,7 @@ public class Track {
     private int id;
     private String libelle;
     private String description;
+    private String color;
     private Event event;
 
     @Id
@@ -79,6 +80,13 @@ public class Track {
         this.description = description;
     }
 
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
 
     public Track withEvent(Event event) {
         this.event = event;
@@ -92,6 +100,31 @@ public class Track {
 
     public Track withDescription(String description) {
         this.description = description;
+        return this;
+    }
+
+    public Track id(int id) {
+        this.id = id;
+        return this;
+    }
+
+    public Track libelle(String libelle) {
+        this.libelle = libelle;
+        return this;
+    }
+
+    public Track description(String description) {
+        this.description = description;
+        return this;
+    }
+
+    public Track color(String color) {
+        this.color = color;
+        return this;
+    }
+
+    public Track event(Event event) {
+        this.event = event;
         return this;
     }
 }
