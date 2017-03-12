@@ -54,6 +54,9 @@ public class FullCalendar {
         private String start;
         private int duration;
         private String end;
+        private String color;
+        private String format;
+        private String icon;
         private String title;
 
         public Event(Talk talk) {
@@ -66,6 +69,9 @@ public class FullCalendar {
                 this.start = DateTimeFormatter.ISO_INSTANT.format(talk.getDate().toInstant());
                 this.end = DateTimeFormatter.ISO_INSTANT.format(talk.getDate().toInstant().plus(talk.getDuree(), ChronoUnit.MINUTES));
             }
+            this.color = talk.getTrack().getColor();
+            this.format = talk.getFormat().getName();
+            this.icon = talk.getFormat().getIcon();
             this.duration = talk.getDuree();
         }
     }
