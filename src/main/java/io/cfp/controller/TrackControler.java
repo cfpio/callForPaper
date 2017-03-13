@@ -98,7 +98,7 @@ public class TrackControler {
 	        tracks.save(
 	            track
 	                .libelle(update.getLibelle())
-                    .color(track.getColor())
+                    .color(update.getColor())
 	                .description(update.getDescription())
 
 	        );

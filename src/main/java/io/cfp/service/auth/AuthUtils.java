@@ -20,6 +20,7 @@
 
 package io.cfp.service.auth;
 
+import io.cfp.entity.Role;
 import io.cfp.entity.User;
 import io.cfp.service.user.UserService;
 import io.jsonwebtoken.Claims;
@@ -62,7 +63,10 @@ public final class AuthUtils {
 
         } else if (authHack) {
             email = "john@doe.net";
-
+            User user = new User();
+            user.setEmail(email);
+            user.addRole(Role.OWNER, Role.ADMIN, Role.REVIEWER);
+            return user;
         } else {
             return null;
         }
