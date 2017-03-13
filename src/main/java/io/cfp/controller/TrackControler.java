@@ -82,9 +82,10 @@ public class TrackControler {
         return new TrackDto(
             tracks.save(
                 new Track()
-                    .withEvent(events.findOne(Event.current()))
-                    .withLibelle(track.getLibelle())
-                    .withDescription(track.getDescription())
+                    .event(events.findOne(Event.current()))
+                    .libelle(track.getLibelle())
+                    .color(track.getColor())
+                    .description(track.getDescription())
             ), false);
     }
 
@@ -96,8 +97,9 @@ public class TrackControler {
     	if (track != null) {
 	        tracks.save(
 	            track
-	                .withLibelle(update.getLibelle())
-	                .withDescription(update.getDescription())
+	                .libelle(update.getLibelle())
+                    .color(track.getColor())
+	                .description(update.getDescription())
 
 	        );
     	}

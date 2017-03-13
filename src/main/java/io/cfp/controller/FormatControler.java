@@ -84,6 +84,7 @@ public class FormatControler {
                     .name(format.getName())
                     .duration(format.getDuration())
                     .description(format.getDescription())
+                    .icon(format.getIcon())
             ), false);
     }
 
@@ -98,6 +99,7 @@ public class FormatControler {
 	                .name(update.getName())
 	                .duration(update.getDuration())
 	                .description(update.getDescription())
+                    .icon(format.getIcon())
 	        );
     	}
     }

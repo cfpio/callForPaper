@@ -88,21 +88,6 @@ public class Track {
         this.color = color;
     }
 
-    public Track withEvent(Event event) {
-        this.event = event;
-        return this;
-    }
-
-    public Track withLibelle(String libelle) {
-        this.libelle = libelle;
-        return this;
-    }
-
-    public Track withDescription(String description) {
-        this.description = description;
-        return this;
-    }
-
     public Track id(int id) {
         this.id = id;
         return this;
