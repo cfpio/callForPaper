@@ -99,7 +99,7 @@ public class FormatControler {
 	                .name(update.getName())
 	                .duration(update.getDuration())
 	                .description(update.getDescription())
-                    .icon(format.getIcon())
+                    .icon(update.getIcon())
 	        );
     	}
     }
