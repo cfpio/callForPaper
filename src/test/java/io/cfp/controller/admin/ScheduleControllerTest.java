@@ -29,6 +29,7 @@ import io.cfp.dto.user.UserProfil;
 import io.cfp.entity.Talk;
 import io.cfp.repository.RoomRepo;
 import io.cfp.repository.TalkRepo;
+import io.cfp.repository.UserRepo;
 import io.cfp.service.TalkUserService;
 import io.cfp.service.admin.user.AdminUserService;
 import io.cfp.service.email.EmailingService;
@@ -65,6 +66,9 @@ public class ScheduleControllerTest {
     @Mock
     private RoomRepo rooms;
 
+    @Mock
+    private UserRepo users;
+
     private ScheduleController scheduleController;
 
     @Mock
@@ -73,7 +77,7 @@ public class ScheduleControllerTest {
 
     @Before
     public void setup() {
-        scheduleController = new ScheduleController(talkUserService, talks, rooms, emailingService, adminUserService);
+        scheduleController = new ScheduleController(talkUserService, talks, rooms, users, emailingService, adminUserService);
         RestAssuredMockMvc.standaloneSetup(scheduleController);
     }
 

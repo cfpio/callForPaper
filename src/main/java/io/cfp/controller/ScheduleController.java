@@ -32,6 +32,7 @@ import io.cfp.entity.Room;
 import io.cfp.entity.Talk;
 import io.cfp.repository.RoomRepo;
 import io.cfp.repository.TalkRepo;
+import io.cfp.repository.UserRepo;
 import io.cfp.service.TalkUserService;
 import io.cfp.service.admin.user.AdminUserService;
 import io.cfp.service.email.EmailingService;
@@ -80,16 +81,19 @@ public class ScheduleController {
 
     private final RoomRepo rooms;
 
+    private final UserRepo users;
+
     private final EmailingService emailingService;
 
     private final AdminUserService adminUserService;
 
     @Autowired
-    public ScheduleController(TalkUserService talkUserService, TalkRepo talks, RoomRepo rooms, EmailingService emailingService, AdminUserService adminUserService) {
+    public ScheduleController(TalkUserService talkUserService, TalkRepo talks, RoomRepo rooms, UserRepo users, EmailingService emailingService, AdminUserService adminUserService) {
         super();
         this.talkUserService = talkUserService;
         this.talks = talks;
         this.rooms = rooms;
+        this.users = users;
         this.emailingService = emailingService;
         this.adminUserService = adminUserService;
     }
@@ -182,11 +186,11 @@ public class ScheduleController {
      * @return Speakers Set
      */
     @RequestMapping(value = "/speakers", method = RequestMethod.GET)
-    public Set<UserProfil> getSpeakerList() {
-        final List<Talk> all = talks.findByEventIdAndStatesFetch(Event.current(), Collections.singleton(Talk.State.ACCEPTED));
-        // FIXME we miss cospeakers with this
+    public List<UserProfil> getSpeakerList() {
         boolean isAdmin = adminUserService.getCurrentUser() != null;
-        return all.stream().map(t -> new UserProfil(t.getUser(), isAdmin)).collect(toSet());
+        return users.findUserWithAcceptedProposal(Event.current()).stream()
+            .map(u -> new UserProfil(u, isAdmin))
+            .collect(Collectors.toList());
     }
 
     /**
