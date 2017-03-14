@@ -58,6 +58,7 @@ public class UserProfil {
     }
 
     public UserProfil(User user, boolean includePrivateData) {
+        this.id = user.getId();
         this.firstname = user.getFirstname();
         this.lastname = user.getLastname();
         this.company = user.getCompany();
