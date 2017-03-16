@@ -20,6 +20,25 @@
 
 package io.cfp.service;
 
+import io.cfp.domain.exception.CospeakerNotFoundException;
+import io.cfp.dto.TalkUser;
+import io.cfp.dto.user.CospeakerProfil;
+import io.cfp.dto.user.UserProfil;
+import io.cfp.entity.Event;
+import io.cfp.entity.Format;
+import io.cfp.entity.Talk;
+import io.cfp.entity.User;
+import io.cfp.repository.EventRepository;
+import io.cfp.repository.FormatRepo;
+import io.cfp.repository.RoomRepo;
+import io.cfp.repository.TalkRepo;
+import io.cfp.repository.TrackRepo;
+import io.cfp.repository.UserRepo;
+import io.cfp.service.admin.user.AdminUserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -30,25 +49,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import io.cfp.repository.RoomRepo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import io.cfp.domain.exception.CospeakerNotFoundException;
-import io.cfp.dto.Speaker;
-import io.cfp.dto.TalkUser;
-import io.cfp.dto.user.CospeakerProfil;
-import io.cfp.entity.Event;
-import io.cfp.entity.Format;
-import io.cfp.entity.Talk;
-import io.cfp.entity.User;
-import io.cfp.repository.EventRepository;
-import io.cfp.repository.FormatRepo;
-import io.cfp.repository.TalkRepo;
-import io.cfp.repository.TrackRepo;
-import io.cfp.repository.UserRepo;
 
 /**
  * Service for managing talks by the user
@@ -86,30 +86,6 @@ public class TalkUserService {
         return talkRepo.findByEventIdAndStatesFetch(Event.current(), Arrays.asList(states))
             .stream().map(t -> new TalkUser(t))
             .collect(Collectors.toList());
-    }
-
-    public  List<Speaker> findAllSpeaker(Talk.State... states) {
-        List<Talk> talks = talkRepo.findByEventIdAndStatesFetch(Event.current(), Arrays.asList(states));
-        Set<Speaker> speakers = new HashSet<>();
-        for(Talk talk : talks){
-            if(talk.getUser() != null) {
-                Speaker speaker = new Speaker(talk.getUser());
-                if (speaker != null && !speakers.contains(speaker)) {
-                    speakers.add(speaker);
-                }
-            }
-
-            if(talk.getCospeakers() != null && !talk.getCospeakers().isEmpty()) {
-                List<Speaker> coSpeaker = talk.getCospeakers().stream()
-                    .map( u -> new Speaker(u) )
-                    .collect(Collectors.toList());
-                if (coSpeaker != null ) {
-                    speakers.addAll(coSpeaker);
-                }
-            }
-        }
-
-        return new ArrayList<Speaker>(speakers);
     }
 
     /**

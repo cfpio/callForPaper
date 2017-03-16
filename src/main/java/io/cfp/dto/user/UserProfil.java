@@ -64,6 +64,7 @@ public class UserProfil {
         this.company = user.getCompany();
         this.twitter = user.getTwitter();
         this.bio = user.getBio();
+        this.imageProfilURL = user.getImageProfilURL();
         if (includePrivateData) {
             this.email = user.getEmail();
             this.phone = user.getPhone();

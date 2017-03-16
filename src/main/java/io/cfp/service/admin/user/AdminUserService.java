@@ -48,18 +48,6 @@ public class AdminUserService {
     }
 
     /**
-     * Retrieve an admin if the user e-mail match an admin e-mail
-     * @param email Email of the connected user
-     * @return AdminUser if existing, null otherwise
-     */
-    public User findFromEmail(String email) {
-        User u = userRepo.findByEmail(email);
-        Role role = roles.findByUserIdAndEventIdAndName(u.getId(), Event.current(), Role.ADMIN);
-        if (role == null) return null;
-        return u;
-    }
-
-    /**
      * Set connected admin for the current request
      * @param admin Admin to set
      */
