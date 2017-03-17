@@ -48,7 +48,6 @@ import java.text.ParseException;
 import java.util.List;
 
 @Controller
-@Secured(Role.ADMIN)
 @RequestMapping(value = { "/v0/admin", "/api/admin" }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class AdminSessionController {
 
@@ -66,6 +65,7 @@ public class AdminSessionController {
      */
     @RequestMapping(value="/sessions", method= RequestMethod.GET)
     @ResponseBody
+    @Secured(Role.REVIEWER)
     public List<TalkAdmin> getAllSessions(@RequestParam(name = "status", required = false) String status) {
 
         Talk.State[] accept;
@@ -83,6 +83,7 @@ public class AdminSessionController {
      */
     @RequestMapping(value="/drafts", method= RequestMethod.GET)
     @ResponseBody
+    @Secured(Role.ADMIN)
     public List<TalkAdmin> getAllDrafts() {
         return talkService.findAll(Talk.State.DRAFT);
     }
@@ -92,6 +93,7 @@ public class AdminSessionController {
      */
     @RequestMapping(value= "/sessions/{talkId}", method= RequestMethod.GET)
     @ResponseBody
+    @Secured(Role.REVIEWER)
     public TalkAdmin getTalk(@PathVariable int talkId) {
         return talkService.getOne(talkId);
     }
@@ -101,6 +103,7 @@ public class AdminSessionController {
      */
     @RequestMapping(value= "/sessions/{talkId}", method= RequestMethod.PUT)
     @ResponseBody
+    @Secured(Role.ADMIN)
     public TalkAdmin editTalk(@PathVariable int talkId, @RequestBody TalkAdmin talkAdmin) throws CospeakerNotFoundException, ParseException {
         talkAdmin.setId(talkId);
         return talkService.edit(talkAdmin);
@@ -108,30 +111,35 @@ public class AdminSessionController {
 
     @RequestMapping(value= "/sessions/{talkId}/accept", method= RequestMethod.PUT)
     @ResponseBody
+    @Secured(Role.ADMIN)
     public void accept(@PathVariable int talkId) throws CospeakerNotFoundException{
         talks.setState(talkId, Event.current(), Talk.State.ACCEPTED);
     }
 
     @RequestMapping(value= "/sessions/{talkId}/backup", method= RequestMethod.PUT)
     @ResponseBody
+    @Secured(Role.ADMIN)
     public void backup(@PathVariable int talkId) throws CospeakerNotFoundException{
         talks.setState(talkId, Event.current(), Talk.State.BACKUP);
     }
 
     @RequestMapping(value= "/sessions/{talkId}/reject", method= RequestMethod.PUT)
     @ResponseBody
+    @Secured(Role.ADMIN)
     public void reject(@PathVariable int talkId) throws CospeakerNotFoundException{
         talks.setState(talkId, Event.current(), Talk.State.REFUSED);
     }
 
     @RequestMapping(value= "/sessions/rejectOthers", method= RequestMethod.PUT)
     @ResponseBody
+    @Secured(Role.ADMIN)
     public void rejectOthers() throws CospeakerNotFoundException{
         talks.setStateWhere(Event.current(), Talk.State.REFUSED, Talk.State.CONFIRMED);
     }
 
     @RequestMapping(value= "/sessions/{talkId}/retract", method= RequestMethod.PUT)
     @ResponseBody
+    @Secured(Role.ADMIN)
     public void retract(@PathVariable int talkId) throws CospeakerNotFoundException{
         talks.setState(talkId, Event.current(), Talk.State.CONFIRMED);
     }
@@ -142,11 +150,13 @@ public class AdminSessionController {
      */
     @RequestMapping(value="/sessions/{talkId}", method= RequestMethod.DELETE)
     @ResponseBody
+    @Secured(Role.ADMIN)
     public TalkAdmin delete(@PathVariable int talkId) {
         return talkService.delete(talkId);
     }
 
     @RequestMapping(path = "/sessions/export/cards.pdf", produces = "application/pdf")
+    @Secured(Role.ADMIN)
     public void exportPdf(HttpServletResponse response) throws IOException, DocumentException {
         response.addHeader(HttpHeaders.CONTENT_TYPE, "application/pdf");
         pdfCardService.export(response.getOutputStream());
@@ -154,6 +164,7 @@ public class AdminSessionController {
 
     @RequestMapping(path = "/sessions/export/sched.json", produces = "application/json")
     @ResponseBody
+    @Secured(Role.ADMIN)
     public List<EventSched> exportSched(@RequestParam(required = false) Talk.State[] states) {
         if (states == null) {
             states = new Talk.State[] { Talk.State.ACCEPTED };

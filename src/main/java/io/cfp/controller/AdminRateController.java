@@ -39,12 +39,11 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@Secured(Role.ADMIN)
 @RequestMapping(value = {"/v0/rates", "/api/rates" }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class AdminRateController {
 
     @Autowired
-    private AdminUserService adminUserServiceCustom;
+    private AdminUserService adminUserService;
 
     @Autowired
     private RateAdminService rateService;
@@ -53,6 +52,7 @@ public class AdminRateController {
      * Get all ratings
      */
     @RequestMapping(method = RequestMethod.GET)
+    @Secured(Role.ADMIN)
     public List<RateAdmin> getRates() {
         return rateService.getAll();
     }
@@ -61,6 +61,7 @@ public class AdminRateController {
      * Delete all ratings
      */
     @RequestMapping(method = RequestMethod.DELETE)
+    @Secured(Role.ADMIN)
     public void deleteRates() {
         rateService.deleteAll();
     }
@@ -69,14 +70,16 @@ public class AdminRateController {
      * Add a new rating
      */
     @RequestMapping(method=RequestMethod.POST)
+    @Secured(Role.REVIEWER)
     public RateAdmin postRate(@Valid @RequestBody RateAdmin rate) throws NotFoundException {
-        return rateService.add(rate, adminUserServiceCustom.getCurrentUser(), rate.getTalkId());
+        return rateService.add(rate, adminUserService.getCurrentUser(), rate.getTalkId());
     }
 
     /**
      * Edit a rating
      */
     @RequestMapping(value= "/{rateId}", method=RequestMethod.PUT)
+    @Secured(Role.REVIEWER)
     public RateAdmin putRate(@PathVariable int rateId, @Valid @RequestBody RateAdmin rate) {
         rate.setId(rateId);
         return rateService.edit(rate);
@@ -86,6 +89,8 @@ public class AdminRateController {
      * Get a specific rating
      */
     @RequestMapping(value= "/{rateId}", method= RequestMethod.GET)
+    @Secured(Role.REVIEWER)
+    // FIXME only return owned rate for reviewer
     public RateAdmin getRate(@PathVariable int rateId) {
         return rateService.get(rateId);
     }
@@ -96,6 +101,7 @@ public class AdminRateController {
      * @return
      */
     @RequestMapping(value= "/user/{userId}", method= RequestMethod.GET)
+    @Secured(Role.ADMIN)
     public List<RateAdmin> getRateByUserId(@PathVariable int userId) {
         return rateService.findForUser(userId);
     }
@@ -104,6 +110,7 @@ public class AdminRateController {
      * Get all ratings for a given session
      */
     @RequestMapping(value= "/proposals/{talkId}", method= RequestMethod.GET)
+    @Secured(Role.ADMIN)
     public List<RateAdmin> getRatesByTalkId(@PathVariable int talkId) {
         return rateService.findForTalk(talkId);
     }
@@ -112,8 +119,9 @@ public class AdminRateController {
      * Get rating for current user and a session
      */
     @RequestMapping(value= "/proposals/{talkId}/me", method = RequestMethod.GET)
+    @Secured(Role.REVIEWER)
     public RateAdmin getRateByRowIdAndUserId(@PathVariable int talkId) throws NotFoundException {
-        int adminId = adminUserServiceCustom.getCurrentUser().getId();
+        int adminId = adminUserService.getCurrentUser().getId();
         return rateService.findForTalkAndAdmin(talkId, adminId);
     }
 
@@ -121,6 +129,8 @@ public class AdminRateController {
      * Delete specific rating
      */
     @RequestMapping(value= "/{rateId}", method= RequestMethod.DELETE)
+    @Secured(Role.REVIEWER)
+    // FIXME only return owned rate for reviewer
     public void deleteRate(@PathVariable int rateId) {
         rateService.delete(rateId);
     }
@@ -130,6 +140,7 @@ public class AdminRateController {
      * Get Rates stats
      */
     @RequestMapping(value = "/stats", method = RequestMethod.GET)
+    @Secured(Role.ADMIN)
     public Map<String, Long> getRateStats() {
         return rateService.getRateByEmailUsers();
     }

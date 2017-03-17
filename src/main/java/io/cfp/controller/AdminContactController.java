@@ -50,7 +50,6 @@ import java.util.Locale;
  * Manages comments sent by administrators to speakers about a talk
  */
 @RestController
-@Secured(Role.ADMIN)
 @RequestMapping(value = { "/v0/admin/sessions/{talkId}/contacts", "/api/admin/sessions/{talkId}/contacts" }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class AdminContactController {
 
@@ -73,6 +72,7 @@ public class AdminContactController {
      * Get all contact message for a given session
      */
     @RequestMapping(method = RequestMethod.GET)
+    @Secured(Role.ADMIN)
     public List<CommentUser> getAll(@PathVariable int talkId) {
         return commentService.findAll(talkId, false);
     }
@@ -81,6 +81,7 @@ public class AdminContactController {
      * Add new contact message to a session
      */
     @RequestMapping(method = RequestMethod.POST)
+    @Secured(Role.REVIEWER)
     public CommentUser postContact(@Valid @RequestBody CommentUser comment, @PathVariable int talkId, HttpServletRequest httpServletRequest) throws NotFoundException, IOException {
 
         User admin = adminUserServiceCustom.getCurrentUser();
@@ -102,6 +103,7 @@ public class AdminContactController {
      * Edit contact message
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    @Secured(Role.ADMIN)
     public CommentUser putContact(@PathVariable int id, @Valid @RequestBody CommentUser comment) throws NotFoundException, ForbiddenException {
         comment.setId(id);
         return commentService.editComment(comment);

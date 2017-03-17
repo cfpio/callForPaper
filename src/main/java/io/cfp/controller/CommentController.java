@@ -38,12 +38,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 
 @RestController
-@Secured(Role.ADMIN)
 @RequestMapping(value = { "/v0/admin/sessions/{talkId}/comments", "/api/admin/sessions/{talkId}/comments" }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-public class AdminCommentController {
+public class CommentController {
 
     @Autowired
     private AdminUserService adminUserServiceCustom;
@@ -55,6 +55,7 @@ public class AdminCommentController {
      * Get all comment message for a given session
      */
     @RequestMapping(method = RequestMethod.GET)
+    @Secured(Role.ADMIN)
     public List<CommentUser> getAll(@PathVariable int talkId) {
         return commentService.findAll(talkId, true);
     }
@@ -63,6 +64,7 @@ public class AdminCommentController {
      * Add new comment message to a session
      */
     @RequestMapping(method=RequestMethod.POST)
+    @Secured(Role.REVIEWER)
     public CommentUser postComment(@Valid @RequestBody CommentUser comment, @PathVariable int talkId) throws NotFoundException, IOException {
         User admin = adminUserServiceCustom.getCurrentUser();
         return commentService.addComment(admin, talkId, comment, true);
@@ -72,7 +74,9 @@ public class AdminCommentController {
      * Edit comment message
      */
     @RequestMapping(value="/{id}", method=RequestMethod.PUT)
+    @Secured(Role.ADMIN)
     public CommentUser putComment(@PathVariable int id, @Valid @RequestBody CommentUser comment) throws NotFoundException, ForbiddenException {
+        // FIXME allow reviewer to PUT his own comments
         comment.setId(id);
         return commentService.editComment(comment);
     }
@@ -81,7 +85,9 @@ public class AdminCommentController {
      * Delete comment message
      */
     @RequestMapping(value="/{id}", method=RequestMethod.DELETE)
+    @Secured(Role.ADMIN)
     public void deleteComment(@PathVariable int id) throws NotFoundException, ForbiddenException {
+        // FIXME allow reviewer to DELETE his own comments
         commentService.delete(id);
     }
 
