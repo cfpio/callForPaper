@@ -28,6 +28,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -62,11 +63,20 @@ public class TenantFilter extends OncePerRequestFilter {
         String referer = request.getHeader(HttpHeaders.REFERER);
         String header = request.getHeader(TENANT_HEADER);
         final String path = request.getPathInfo();
+        String param = request.getParameter("event");
+
+        if (!StringUtils.isEmpty(param)) {
+            // Explicit event request
+            return param;
+        }
 
         int i;
         if (path != null && path.startsWith("/events/") && (i = path.indexOf('/', 8)) > 0) {
+            // Explicit event URL
             return path.substring(8, i);
-        } else if (origin != null && origin.endsWith(".cfp.io")) {
+        }
+
+        if (origin != null && origin.endsWith(".cfp.io")) {
             // Origin: https://foo-bar.cfp.io
             return origin.substring(8, origin.indexOf('.'));
         } else if (referer != null && referer.endsWith(".cfp.io/")) {
