@@ -146,6 +146,16 @@ public class AdminSessionController {
         return talkService.delete(talkId);
     }
 
+    /**
+     * Delete all sessions (aka reset CFP)
+     */
+    @RequestMapping(value="/sessions", method= RequestMethod.DELETE)
+    @ResponseBody
+    public void deleteAll() {
+        talks.deleteAllByEventId(Event.current());
+    }
+
+
     @RequestMapping(path = "/sessions/export/cards.pdf", produces = "application/pdf")
     public void exportPdf(HttpServletResponse response) throws IOException, DocumentException {
         response.addHeader(HttpHeaders.CONTENT_TYPE, "application/pdf");

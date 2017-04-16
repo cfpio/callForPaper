@@ -23,7 +23,6 @@ package io.cfp.repository;
 import io.cfp.entity.Format;
 import io.cfp.entity.Talk;
 import io.cfp.entity.Track;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -32,7 +31,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 public interface TalkRepo extends JpaRepository<Talk, Integer> {
 
@@ -78,5 +76,10 @@ public interface TalkRepo extends JpaRepository<Talk, Integer> {
     void setStateWhere(@Param("eventId") String current, @Param("targetState") Talk.State targetState, @Param("initialState") Talk.State initialState);
 
     @Query("SELECT t.track.libelle, COUNT(t) FROM Talk t WHERE t.event.id = :eventId GROUP BY t.track")
-    List<Object[]> countByTrack(@Param("eventId") String current);
+    List<Object[]> countByTrack(@Param("eventId") String eventId);
+
+    @Transactional
+    @Modifying
+    @Query("delete from Talk t where t.event.id = :eventId")
+    void deleteAllByEventId(@Param("eventId") String eventId);
 }
