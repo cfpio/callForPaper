@@ -369,6 +369,21 @@
         <addColumn tableName="formats">
             <column name="icon" type="VARCHAR(255)" defaultValue="slideshare"/>
         </addColumn>
+    </changeSet>
+
+    <!-- cascade delete -->
+    <changeSet id="19" author="ndeloof">
+        <dropForeignKeyConstraint baseTableName="rates" constraintName="rate_proposal_fk"/>
+        <addForeignKeyConstraint baseTableName="rates" baseColumnNames="proposal" constraintName="rate_proposal_fk"
+                                 referencedTableName="proposals" referencedColumnNames="id" onDelete="CASCADE"/>
+
+        <dropForeignKeyConstraint baseTableName="comments" constraintName="comment_proposal_fk"/>
+        <addForeignKeyConstraint baseTableName="comments" baseColumnNames="proposal" constraintName="comment_proposal_fk"
+                                 referencedTableName="proposals" referencedColumnNames="id" onDelete="CASCADE"/>
+
+        <dropForeignKeyConstraint baseTableName="cospeakers" constraintName="cospeaker_proposal_fk"/>
+        <addForeignKeyConstraint baseTableName="cospeakers" baseColumnNames="proposal_id" constraintName="cospeaker_proposal_fk"
+                                 referencedTableName="proposals" referencedColumnNames="id" onDelete="CASCADE"/>
 
     </changeSet>
 
