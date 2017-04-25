@@ -20,62 +20,30 @@
 
 package io.cfp.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * Created by tmaugin on 05/05/2015.
  */
+@Data
+@NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AdminUserInfo {
+
     private boolean connected;
+    private boolean reviewer;
     private boolean admin;
     private boolean owner;
-    
+
     private String uri;
     private String email;
 
-    public boolean isConnected() {
-        return connected;
-    }
-
-    public void setConnected(boolean connected) {
-        this.connected = connected;
-    }
-
-    public boolean isAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
-    }
-
-    public boolean isOwner() {
-        return owner;
-    }
-
-    public void setOwner(boolean owner) {
-        this.owner = owner;
-    }
-
-    public String getUri() {
-        return uri;
-    }
-
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
+    public AdminUserInfo(String email, String logout) {
+        this.uri = logout;
         this.email = email;
-    }
-
-    public AdminUserInfo(String uri, boolean connected, boolean admin, boolean owner, String email) {
-        this.uri = uri;
-        this.connected = connected;
-        this.admin = admin;
-        this.owner = owner;
-        this.email= email;
+        this.connected = StringUtils.isNotEmpty(email);
     }
 }

@@ -56,10 +56,10 @@ public class AdminUserController {
     	User user = authUtils.getAuthUser(req);
 
         if (user == null) {
-            return new AdminUserInfo("./", false, false, false, "");
+            return new AdminUserInfo("./", null);
         }
 
-        AdminUserInfo infos = new AdminUserInfo("./logout", true, false, false, user.getEmail());
+        AdminUserInfo infos = new AdminUserInfo("./logout", user.getEmail());
         List<Role> userRoles = roles.findByUserIdAndEventId(user.getId(), Event.current());
         for (Role role : userRoles) {
         	if (Role.ADMIN.equals(role.getName())) {
@@ -68,6 +68,9 @@ public class AdminUserController {
         	if (Role.OWNER.equals(role.getName())) {
         		infos.setOwner(true);
         	}
+            if (Role.REVIEWER.equals(role.getName())) {
+                infos.setReviewer(true);
+            }
          }
 
         return infos;
