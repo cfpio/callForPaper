@@ -113,7 +113,7 @@ public class ScheduleControllerTest {
         Set<CospeakerProfil> cospeakerProfils = new HashSet<>();
         cospeakerProfils.add(cospeakerProfil1);
         cospeakerProfils.add(cospeakerProfil2);
-        talkUser2.setCospeaker(cospeakerProfils);
+        talkUser2.setCospeakers(cospeakerProfils);
 
         // TalkUser 3
         TalkUser talkUser3 = new TalkUser();
