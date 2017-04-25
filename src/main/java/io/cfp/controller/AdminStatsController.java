@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@Secured(Role.ADMIN)
+@Secured({Role.REVIEWER, Role.ADMIN})
 @RequestMapping(value = { "/v0/admin/stats", "/api/admin/stats" }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class AdminStatsController {
 

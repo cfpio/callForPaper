@@ -48,7 +48,6 @@ import java.text.ParseException;
 import java.util.List;
 
 @Controller
-@Secured(Role.ADMIN)
 @RequestMapping(value = { "/v0/admin", "/api/admin" }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class AdminSessionController {
 
@@ -65,6 +64,7 @@ public class AdminSessionController {
      * Get all sessions
      */
     @RequestMapping(value="/sessions", method= RequestMethod.GET)
+    @Secured({Role.REVIEWER, Role.ADMIN})
     @ResponseBody
     public List<TalkAdmin> getAllSessions(@RequestParam(name = "status", required = false) String status) {
 
@@ -82,6 +82,7 @@ public class AdminSessionController {
      * Get all drafts
      */
     @RequestMapping(value="/drafts", method= RequestMethod.GET)
+    @Secured(Role.ADMIN)
     @ResponseBody
     public List<TalkAdmin> getAllDrafts() {
         return talkService.findAll(Talk.State.DRAFT);
@@ -91,6 +92,7 @@ public class AdminSessionController {
      * Get a specific session
      */
     @RequestMapping(value= "/sessions/{talkId}", method= RequestMethod.GET)
+    @Secured({Role.REVIEWER, Role.ADMIN})
     @ResponseBody
     public TalkAdmin getTalk(@PathVariable int talkId) {
         return talkService.getOne(talkId);
@@ -100,6 +102,7 @@ public class AdminSessionController {
      * Edit a specific session
      */
     @RequestMapping(value= "/sessions/{talkId}", method= RequestMethod.PUT)
+    @Secured(Role.ADMIN)
     @ResponseBody
     public TalkAdmin editTalk(@PathVariable int talkId, @RequestBody TalkAdmin talkAdmin) throws CospeakerNotFoundException, ParseException {
         talkAdmin.setId(talkId);
@@ -107,30 +110,35 @@ public class AdminSessionController {
     }
 
     @RequestMapping(value= "/sessions/{talkId}/accept", method= RequestMethod.PUT)
+    @Secured(Role.ADMIN)
     @ResponseBody
     public void accept(@PathVariable int talkId) throws CospeakerNotFoundException{
         talks.setState(talkId, Event.current(), Talk.State.ACCEPTED);
     }
 
     @RequestMapping(value= "/sessions/{talkId}/backup", method= RequestMethod.PUT)
+    @Secured(Role.ADMIN)
     @ResponseBody
     public void backup(@PathVariable int talkId) throws CospeakerNotFoundException{
         talks.setState(talkId, Event.current(), Talk.State.BACKUP);
     }
 
     @RequestMapping(value= "/sessions/{talkId}/reject", method= RequestMethod.PUT)
+    @Secured(Role.ADMIN)
     @ResponseBody
     public void reject(@PathVariable int talkId) throws CospeakerNotFoundException{
         talks.setState(talkId, Event.current(), Talk.State.REFUSED);
     }
 
     @RequestMapping(value= "/sessions/rejectOthers", method= RequestMethod.PUT)
+    @Secured(Role.ADMIN)
     @ResponseBody
     public void rejectOthers() throws CospeakerNotFoundException{
         talks.setStateWhere(Event.current(), Talk.State.REFUSED, Talk.State.CONFIRMED);
     }
 
     @RequestMapping(value= "/sessions/{talkId}/retract", method= RequestMethod.PUT)
+    @Secured(Role.ADMIN)
     @ResponseBody
     public void retract(@PathVariable int talkId) throws CospeakerNotFoundException{
         talks.setState(talkId, Event.current(), Talk.State.CONFIRMED);
@@ -141,6 +149,7 @@ public class AdminSessionController {
      * Delete a session
      */
     @RequestMapping(value="/sessions/{talkId}", method= RequestMethod.DELETE)
+    @Secured(Role.ADMIN)
     @ResponseBody
     public TalkAdmin delete(@PathVariable int talkId) {
         return talkService.delete(talkId);
@@ -150,6 +159,7 @@ public class AdminSessionController {
      * Delete all sessions (aka reset CFP)
      */
     @RequestMapping(value="/sessions", method= RequestMethod.DELETE)
+    @Secured(Role.ADMIN)
     @ResponseBody
     public void deleteAll() {
         talks.deleteAllByEventId(Event.current());
@@ -157,12 +167,14 @@ public class AdminSessionController {
 
 
     @RequestMapping(path = "/sessions/export/cards.pdf", produces = "application/pdf")
+    @Secured(Role.ADMIN)
     public void exportPdf(HttpServletResponse response) throws IOException, DocumentException {
         response.addHeader(HttpHeaders.CONTENT_TYPE, "application/pdf");
         pdfCardService.export(response.getOutputStream());
     }
 
     @RequestMapping(path = "/sessions/export/sched.json", produces = "application/json")
+    @Secured(Role.ADMIN)
     @ResponseBody
     public List<EventSched> exportSched(@RequestParam(required = false) Talk.State[] states) {
         if (states == null) {
