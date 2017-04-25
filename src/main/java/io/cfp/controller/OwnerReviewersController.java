@@ -70,7 +70,7 @@ public class OwnerReviewersController {
     	List<Role> userRoles = roles.findByUserIdAndEventId(user.getId(), Event.current());
     	boolean alreadyAdmin = false;
     	for (Role role : userRoles) {
-    		if (Role.REVIEWER.equals(role.getName())) {
+    		if (Role.ADMIN.equals(role.getName())) {
     			alreadyAdmin = true;
     			break;
     		}
