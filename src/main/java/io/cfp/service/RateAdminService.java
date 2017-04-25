@@ -23,6 +23,7 @@ package io.cfp.service;
 import io.cfp.dto.RateAdmin;
 import io.cfp.entity.Event;
 import io.cfp.entity.Rate;
+import io.cfp.entity.Role;
 import io.cfp.entity.User;
 import io.cfp.repository.EventRepository;
 import io.cfp.repository.RateRepo;
@@ -176,7 +177,7 @@ public class RateAdminService {
     public Map<String, Long> getRateByEmailUsers() {
         Map<String, Long> result = new HashMap<>();
         // First get users admin emails
-        List<String> adminEmails = users.findAdminsEmail(Event.current());
+        List<String> adminEmails = users.findEmailByRole(Role.ADMIN, Event.current());
         // Initialise the result
         adminEmails.forEach(email -> {
             result.put(email, 0L);

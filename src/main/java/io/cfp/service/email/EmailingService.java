@@ -29,6 +29,7 @@ import io.cfp.dto.TalkUser;
 import io.cfp.dto.user.CospeakerProfil;
 import io.cfp.dto.user.UserProfil;
 import io.cfp.entity.Event;
+import io.cfp.entity.Role;
 import io.cfp.entity.Talk;
 import io.cfp.entity.User;
 import io.cfp.repository.EventRepository;
@@ -139,7 +140,7 @@ public class EmailingService {
     public void sendNewCommentToSpeaker(User speaker, TalkAdmin talk, Locale locale) {
         log.debug("Sending new comment email to speaker '{}' for talk '{}'", speaker.getEmail(), talk.getName());
 
-        List<String> cc = users.findAdminsEmail(Event.current());
+        List<String> cc = users.findEmailByRole(Role.ADMIN, Event.current());
 
         Map<String, Object> params = new HashMap<>();
         params.put("name", speaker.getFirstname());
@@ -165,7 +166,7 @@ public class EmailingService {
     public void sendNewCommentToAdmins(User speaker, TalkUser talk, Locale locale) {
         log.debug("Sending new comment email to admins for talk '{}'", talk.getName());
 
-        List<String> bcc = users.findAdminsEmail(Event.current());
+        List<String> bcc = users.findEmailByRole(Role.ADMIN, Event.current());
         String speakerName = speaker.getFirstname() + " " + speaker.getLastname();
 
         Map<String, Object> params = new HashMap<>();
