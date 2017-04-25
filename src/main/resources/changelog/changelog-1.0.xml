@@ -388,5 +388,12 @@
     </changeSet>
 
 
+    <changeSet id="20" author="ndeloof">
+        <addColumn tableName="proposals">
+            <column name="video" type="VARCHAR(255)"/>
+            <column name="slides" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+
 
 </databaseChangeLog>

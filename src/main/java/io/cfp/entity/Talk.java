@@ -59,6 +59,8 @@ public class Talk {
     private Set<Comment> comments;
     private Set<Rate> rates;
 
+    private String video;
+    private String slides;
 
     @Transient
     public int getDuree() {
@@ -142,6 +144,16 @@ public class Talk {
     @JoinColumn(name = "room_id")
     public Room getRoom() {
         return room;
+    }
+
+    @Column(name="video")
+    public String getVideo() {
+        return video;
+    }
+
+    @Column(name="slides")
+    public String getSlides() {
+        return slides;
     }
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -232,6 +244,14 @@ public class Talk {
         this.room = room;
     }
 
+    public void setVideo(String video) {
+        this.video = video;
+    }
+
+    public void setSlides(String slides) {
+        this.slides = slides;
+    }
+
     public Talk id(int id) {
         this.id = id;
         return this;
@@ -309,6 +329,16 @@ public class Talk {
 
     public Talk room(Room room) {
         this.room = room;
+        return this;
+    }
+
+    public Talk video(String video) {
+        this.video = video;
+        return this;
+    }
+
+    public Talk slides(String slides) {
+        this.slides = slides;
         return this;
     }
 }
