@@ -46,19 +46,19 @@ public class OwnerAdminController {
 
     @Autowired
     private UserRepo users;
-    
+
     @Autowired
     private RoleRepository roles;
-    
+
     @Autowired
     private EventRepository events;
 
     @RequestMapping(method=RequestMethod.GET)
     @ResponseBody
     public List<String> getAdmins() {
-        return users.findAdminsEmail(Event.current());
+        return users.findEmailByRole(Role.ADMIN, Event.current());
     }
-    
+
     @RequestMapping(method=RequestMethod.POST)
     public boolean addAdmin(@RequestBody String email) {
     	User user = users.findByEmail(email);
@@ -67,7 +67,7 @@ public class OwnerAdminController {
     		user.setEmail(email);
     		user = users.save(user);
     	}
-    	
+
     	List<Role> userRoles = roles.findByUserIdAndEventId(user.getId(), Event.current());
     	boolean alreadyAdmin = false;
     	for (Role role : userRoles) {
@@ -76,7 +76,7 @@ public class OwnerAdminController {
     			break;
     		}
     	}
-    	
+
     	if (!alreadyAdmin) {
     		Role adminRole = new Role();
     		adminRole.setName(Role.ADMIN);
@@ -87,7 +87,7 @@ public class OwnerAdminController {
     	}
     	return false;
     }
-    
+
     @RequestMapping(value="/{email:.+}", method=RequestMethod.DELETE)
     public boolean deleteAdmin(@PathVariable String email) {
     	User user = users.findByEmail(email);
@@ -102,5 +102,5 @@ public class OwnerAdminController {
     	}
     	return false;
     }
-    
+
 }

@@ -31,8 +31,8 @@ public interface UserRepo extends JpaRepository<User, Integer> {
 
     User findByEmail(String email);
 
-    @Query("select u.email from User u, Role r where r.name = 'ROLE_ADMIN' and r.event.id = :eventId and r.user.id = u.id")
-    List<String> findAdminsEmail(@Param("eventId") String eventId);
+    @Query("select u.email from User u, Role r where r.name = :role and r.event.id = :eventId and r.user.id = u.id")
+    List<String> findEmailByRole(@Param("role") String role, @Param("eventId") String eventId);
 
 
     @Query("select u from User u where u.id in (select distinct s.userId from Submission s where s.event.id = :eventId and s.state = 'ACCEPTED')")

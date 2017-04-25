@@ -55,7 +55,7 @@ public class OwnerReviewersController {
     @RequestMapping(method=RequestMethod.GET)
     @ResponseBody
     public List<String> getReviewers() {
-        return users.findAdminsEmail(Event.current());
+        return users.findEmailByRole(Role.REVIEWER, Event.current());
     }
 
     @RequestMapping(method=RequestMethod.POST)
