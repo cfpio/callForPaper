@@ -22,7 +22,7 @@ package io.cfp.service.auth;
 
 import io.cfp.entity.Role;
 import io.cfp.entity.User;
-import io.cfp.service.user.UserService;
+import io.cfp.repository.UserRepo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -41,7 +41,7 @@ public final class AuthUtils {
     private static final String TOKEN_COOKIE_NAME = "token";
 
     @Autowired
-    private UserService userService;
+    private UserRepo users;
 
     @Value("${cfpio.authentication_hack:false}")
     private boolean authHack;
@@ -71,15 +71,15 @@ public final class AuthUtils {
             return null;
         }
 
-        User user = userService.findByemail(email);
+        User user = users.findByEmail(email);
         if (user == null) {
             user = new User();
             user.setEmail(email);
             try {
-                user = userService.save(user);
+                user = users.save(user);
             } catch (DataIntegrityViolationException e) {
                 // Handle concurrent insert by parallel requests to API
-                user = userService.findByemail(email);
+                user = users.findByEmail(email);
                 if (user == null) throw e; // other error
             }
         }

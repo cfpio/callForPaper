@@ -23,7 +23,7 @@ package io.cfp.controller;
 import io.cfp.dto.user.UserProfil;
 import io.cfp.entity.Role;
 import io.cfp.entity.User;
-import io.cfp.service.user.UserService;
+import io.cfp.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -32,8 +32,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.transaction.Transactional;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
@@ -42,7 +41,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 public class UserController {
 
     @Autowired
-    private UserService userService;
+    private UserRepo users;
 
     /**
      * Get current user profil
@@ -52,24 +51,8 @@ public class UserController {
      */
     @RequestMapping(value = "/me", method = RequestMethod.GET)
     @Secured(Role.AUTHENTICATED)
-    public Map<String, Object> getUserProfil(@AuthenticationPrincipal User user) {
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("email", user.getEmail());
-        map.put("lastname", user.getLastname());
-        map.put("firstname", user.getFirstname());
-        map.put("language", user.getLanguage());
-        map.put("phone", user.getPhone());
-        map.put("company", user.getCompany());
-        map.put("bio", user.getBio());
-        map.put("social", user.getSocial());
-        map.put("twitter", user.getTwitter());
-        map.put("googleplus", user.getGoogleplus());
-        map.put("github", user.getGithub());
-        map.put("imageProfilURL", user.getImageProfilURL());
-        map.put("gender", user.getGender());
-        map.put("tshirtSize", user.getTshirtSize());
-
-        return map;
+    public UserProfil getUserProfil(@AuthenticationPrincipal User user) {
+        return new UserProfil(user, true); // safe, this is my own data
     }
 
     /**
@@ -81,10 +64,25 @@ public class UserController {
      */
     @RequestMapping(value = "/me", method = RequestMethod.PUT)
     @Secured(Role.AUTHENTICATED)
+    @Transactional
     public UserProfil putUserProfil(@AuthenticationPrincipal User user, @RequestBody UserProfil profil) {
-        profil.setEmail(user.getEmail());
-        userService.update(user.getId(), profil);
-        return profil;
+        user.firstname(profil.getFirstname())
+            .lastname(profil.getLastname())
+            .email(profil.getEmail())
+            .language(profil.getLanguage())
+            .bio(profil.getBio())
+            .phone(profil.getPhone())
+            .company(profil.getCompany())
+            .language(profil.getLanguage())
+            .github(profil.getGithub())
+            .twitter(profil.getTwitter())
+            .googleplus(profil.getGoogleplus())
+            .imageProfilURL(profil.getImageProfilURL())
+            .social(profil.getSocial())
+            .gender(profil.getGender())
+            .tshirtSize(profil.getTshirtSize());
+        users.saveAndFlush(user);
+        return new UserProfil(user, true);
 
     }
 }

@@ -26,10 +26,10 @@ import io.cfp.dto.CommentUser;
 import io.cfp.dto.TalkAdmin;
 import io.cfp.entity.Role;
 import io.cfp.entity.User;
+import io.cfp.repository.UserRepo;
 import io.cfp.service.CommentAdminService;
 import io.cfp.service.TalkAdminService;
 import io.cfp.service.email.EmailingService;
-import io.cfp.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
@@ -63,7 +63,7 @@ public class AdminContactController {
     private TalkAdminService talkService;
 
     @Autowired
-    private UserService userService;
+    private UserRepo users;
 
     /**
      * Get all contact message for a given session
@@ -85,7 +85,7 @@ public class AdminContactController {
         CommentUser saved = commentService.addComment(user, talkId, comment, false);
 
         // Send new message email
-        User speaker = userService.findById(talk.getUserId());
+        User speaker = users.findOne(talk.getUserId());
         if (speaker != null) {
             Locale userPreferredLocale = httpServletRequest.getLocale();
             emailingService.sendNewCommentToSpeaker(speaker, talk, userPreferredLocale);
