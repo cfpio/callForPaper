@@ -23,8 +23,8 @@ package io.cfp.controller;
 import io.cfp.domain.exception.NotFoundException;
 import io.cfp.dto.RateAdmin;
 import io.cfp.entity.Role;
+import io.cfp.entity.User;
 import io.cfp.service.RateAdminService;
-import io.cfp.service.admin.user.AdminUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
@@ -41,9 +41,6 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = {"/v0/rates", "/api/rates" }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class AdminRateController {
-
-    @Autowired
-    private AdminUserService adminUserServiceCustom;
 
     @Autowired
     private RateAdminService rateService;
@@ -72,7 +69,7 @@ public class AdminRateController {
     @RequestMapping(method=RequestMethod.POST)
     @Secured({Role.REVIEWER, Role.ADMIN})
     public RateAdmin postRate(@Valid @RequestBody RateAdmin rate) throws NotFoundException {
-        return rateService.add(rate, adminUserServiceCustom.getCurrentUser(), rate.getTalkId());
+        return rateService.add(rate, User.getCurrent(), rate.getTalkId());
     }
 
     /**
@@ -121,7 +118,7 @@ public class AdminRateController {
     @RequestMapping(value= "/proposals/{talkId}/me", method = RequestMethod.GET)
     @Secured({Role.REVIEWER, Role.ADMIN})
     public RateAdmin getRateByRowIdAndUserId(@PathVariable int talkId) throws NotFoundException {
-        int adminId = adminUserServiceCustom.getCurrentUser().getId();
+        int adminId = User.getCurrent().getId();
         return rateService.findForTalkAndAdmin(talkId, adminId);
     }
 

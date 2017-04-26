@@ -28,7 +28,6 @@ import io.cfp.entity.Role;
 import io.cfp.entity.User;
 import io.cfp.service.CommentAdminService;
 import io.cfp.service.TalkAdminService;
-import io.cfp.service.admin.user.AdminUserService;
 import io.cfp.service.email.EmailingService;
 import io.cfp.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,9 +52,6 @@ import java.util.Locale;
 @Secured(Role.REVIEWER)
 @RequestMapping(value = { "/v0/admin/sessions/{talkId}/contacts", "/api/admin/sessions/{talkId}/contacts" }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class AdminContactController {
-
-    @Autowired
-    private AdminUserService adminUserServiceCustom;
 
     @Autowired
     private EmailingService emailingService;
@@ -83,16 +79,16 @@ public class AdminContactController {
     @RequestMapping(method = RequestMethod.POST)
     public CommentUser postContact(@Valid @RequestBody CommentUser comment, @PathVariable int talkId, HttpServletRequest httpServletRequest) throws NotFoundException, IOException {
 
-        User admin = adminUserServiceCustom.getCurrentUser();
+        User user = User.getCurrent();
         TalkAdmin talk = talkService.getOne(talkId);
-        User user = userService.findById(talk.getUserId());
 
-        CommentUser saved = commentService.addComment(admin, talkId, comment, false);
+        CommentUser saved = commentService.addComment(user, talkId, comment, false);
 
         // Send new message email
-        if (user != null) {
+        User speaker = userService.findById(talk.getUserId());
+        if (speaker != null) {
             Locale userPreferredLocale = httpServletRequest.getLocale();
-            emailingService.sendNewCommentToSpeaker(user, talk, userPreferredLocale);
+            emailingService.sendNewCommentToSpeaker(speaker, talk, userPreferredLocale);
         }
 
         return saved;

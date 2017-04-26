@@ -37,7 +37,6 @@ import io.cfp.repository.RoomRepo;
 import io.cfp.repository.TalkRepo;
 import io.cfp.repository.TrackRepo;
 import io.cfp.repository.UserRepo;
-import io.cfp.service.admin.user.AdminUserService;
 import ma.glasnost.orika.MapperFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,8 +46,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -91,9 +88,6 @@ public class TalkAdminService {
     private RoomRepo rooms;
 
     @Autowired
-    private AdminUserService adminUserService;
-
-    @Autowired
     private MapperFacade mapper;
 
     /**
@@ -109,9 +103,9 @@ public class TalkAdminService {
 
         List<Rate> rates = rateRepo.findAllFetchAdmin(Event.current());
 
-        User admin = adminUserService.getCurrentUser();
+        User user = User.getCurrent();
         Map<Integer, List<Rate>> reviewed = rates.stream()
-            .filter(r -> admin.getId() == r.getAdminUser().getId())
+            .filter(r -> user.getId() == r.getAdminUser().getId())
             .collect(groupingBy(r -> r.getTalk().getId()));
 
         Map<Integer, Double> averages = rates.stream()

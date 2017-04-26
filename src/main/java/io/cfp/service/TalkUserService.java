@@ -23,7 +23,6 @@ package io.cfp.service;
 import io.cfp.domain.exception.CospeakerNotFoundException;
 import io.cfp.dto.TalkUser;
 import io.cfp.dto.user.CospeakerProfil;
-import io.cfp.dto.user.UserProfil;
 import io.cfp.entity.Event;
 import io.cfp.entity.Format;
 import io.cfp.entity.Talk;
@@ -34,7 +33,6 @@ import io.cfp.repository.RoomRepo;
 import io.cfp.repository.TalkRepo;
 import io.cfp.repository.TrackRepo;
 import io.cfp.repository.UserRepo;
-import io.cfp.service.admin.user.AdminUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,12 +40,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**

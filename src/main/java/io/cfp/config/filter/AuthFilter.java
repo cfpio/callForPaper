@@ -42,7 +42,6 @@ import io.cfp.entity.Event;
 import io.cfp.entity.Role;
 import io.cfp.entity.User;
 import io.cfp.repository.RoleRepository;
-import io.cfp.service.admin.user.AdminUserService;
 import io.cfp.service.auth.AuthUtils;
 
 /**
@@ -54,7 +53,6 @@ public class AuthFilter implements Filter {
 
     private AuthUtils authUtils;
     private RoleRepository roleRepository;
-    private AdminUserService adminUserService;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -62,7 +60,6 @@ public class AuthFilter implements Filter {
         WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
         authUtils = webApplicationContext.getBean(AuthUtils.class);
         roleRepository = webApplicationContext.getBean(RoleRepository.class);
-        adminUserService = webApplicationContext.getBean(AdminUserService.class);
     }
 
     /**
@@ -75,14 +72,12 @@ public class AuthFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
         User user = authUtils.getAuthUser(httpRequest);
+        User.setCurrent(user);
 
         if (user != null) {
             MDC.put(USER, user.getEmail());
             List<Role> roles = roleRepository.findByUserIdAndEventId(user.getId(), Event.current());
             for (Role role : roles) {
-            	if (Role.ADMIN.equals(role.getName()) || Role.OWNER.equals(role.getName())) {
-            		adminUserService.setCurrentAdmin(user);
-            	}
             	user.addRole(role.getName());
             }
             SecurityContextHolder.getContext().setAuthentication(new UserAuthentication(user));
@@ -93,6 +88,7 @@ public class AuthFilter implements Filter {
         } finally {
             MDC.remove(USER);
             SecurityContextHolder.getContext().setAuthentication(null);
+            User.resetCurrent();
         }
     }
 

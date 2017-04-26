@@ -31,7 +31,6 @@ import io.cfp.repository.RoomRepo;
 import io.cfp.repository.TalkRepo;
 import io.cfp.repository.UserRepo;
 import io.cfp.service.TalkUserService;
-import io.cfp.service.admin.user.AdminUserService;
 import io.cfp.service.email.EmailingService;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,13 +38,15 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.mockito.Matchers.isNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by Nicolas on 30/01/2016.
@@ -71,13 +72,9 @@ public class ScheduleControllerTest {
 
     private ScheduleController scheduleController;
 
-    @Mock
-    private AdminUserService adminUserService;
-
-
     @Before
     public void setup() {
-        scheduleController = new ScheduleController(talkUserService, talks, rooms, users, emailingService, adminUserService);
+        scheduleController = new ScheduleController(talkUserService, talks, rooms, users, emailingService);
         RestAssuredMockMvc.standaloneSetup(scheduleController);
     }
 

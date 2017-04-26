@@ -26,7 +26,6 @@ import io.cfp.dto.CommentUser;
 import io.cfp.entity.Role;
 import io.cfp.entity.User;
 import io.cfp.service.CommentAdminService;
-import io.cfp.service.admin.user.AdminUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
@@ -46,9 +45,6 @@ import java.util.List;
 public class AdminCommentController {
 
     @Autowired
-    private AdminUserService adminUserServiceCustom;
-
-    @Autowired
     private CommentAdminService commentService;
 
     /**
@@ -64,8 +60,8 @@ public class AdminCommentController {
      */
     @RequestMapping(method=RequestMethod.POST)
     public CommentUser postComment(@Valid @RequestBody CommentUser comment, @PathVariable int talkId) throws NotFoundException, IOException {
-        User admin = adminUserServiceCustom.getCurrentUser();
-        return commentService.addComment(admin, talkId, comment, true);
+        User user = User.getCurrent();
+        return commentService.addComment(user, talkId, comment, true);
     }
 
     /**

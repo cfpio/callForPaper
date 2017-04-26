@@ -38,6 +38,21 @@ import java.util.Set;
 @Table(name = "users")
 public class User {
 
+    private static final ThreadLocal<User> current = new ThreadLocal<>();
+
+    public static User getCurrent() {
+        return current.get();
+    }
+
+    public static void setCurrent(User user) {
+        current.set(user);
+    }
+
+    public static void resetCurrent() {
+        current.remove();
+    }
+
+
     public enum Gender {
 		MALE, FEMALE
 	}

@@ -30,11 +30,11 @@ import io.cfp.entity.Event;
 import io.cfp.entity.Role;
 import io.cfp.entity.Room;
 import io.cfp.entity.Talk;
+import io.cfp.entity.User;
 import io.cfp.repository.RoomRepo;
 import io.cfp.repository.TalkRepo;
 import io.cfp.repository.UserRepo;
 import io.cfp.service.TalkUserService;
-import io.cfp.service.admin.user.AdminUserService;
 import io.cfp.service.email.EmailingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,11 +59,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
 
 /**
  * Created by Nicolas on 30/01/2016.
@@ -85,17 +83,14 @@ public class ScheduleController {
 
     private final EmailingService emailingService;
 
-    private final AdminUserService adminUserService;
-
     @Autowired
-    public ScheduleController(TalkUserService talkUserService, TalkRepo talks, RoomRepo rooms, UserRepo users, EmailingService emailingService, AdminUserService adminUserService) {
+    public ScheduleController(TalkUserService talkUserService, TalkRepo talks, RoomRepo rooms, UserRepo users, EmailingService emailingService) {
         super();
         this.talkUserService = talkUserService;
         this.talks = talks;
         this.rooms = rooms;
         this.users = users;
         this.emailingService = emailingService;
-        this.adminUserService = adminUserService;
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -187,7 +182,7 @@ public class ScheduleController {
      */
     @RequestMapping(value = "/speakers", method = RequestMethod.GET)
     public List<UserProfil> getSpeakerList() {
-        boolean isAdmin = adminUserService.getCurrentUser() != null;
+        boolean isAdmin = User.getCurrent().hasRole(Role.ADMIN) ;
         return users.findUserWithAcceptedProposal(Event.current()).stream()
             .map(u -> new UserProfil(u, isAdmin))
             .collect(Collectors.toList());
