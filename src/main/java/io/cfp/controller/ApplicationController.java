@@ -93,6 +93,7 @@ public class ApplicationController {
                 .duration(settings.getDuration())
                 .name(settings.getEventName())
                 .logoUrl(settings.getLogo())
+                .contactMail(settings.getContact())
                 .url(settings.getWebsite())
                 .shortDescription(settings.getShortDescription())
                 .decisionDate(format.parse(settings.getDecisionDate()))
