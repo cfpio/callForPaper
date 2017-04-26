@@ -78,6 +78,10 @@ public class AuthFilter implements Filter {
             MDC.put(USER, user.getEmail());
             List<Role> roles = roleRepository.findByUserIdAndEventId(user.getId(), Event.current());
             for (Role role : roles) {
+                if (Role.ADMIN.equals(role.getName())) {
+                    // until exact roles are well set on API, Admin implies reviewer role
+                    user.addRole(Role.REVIEWER);
+                }
             	user.addRole(role.getName());
             }
             SecurityContextHolder.getContext().setAuthentication(new UserAuthentication(user));

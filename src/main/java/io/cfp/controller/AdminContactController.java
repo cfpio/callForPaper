@@ -49,7 +49,7 @@ import java.util.Locale;
  * Manages comments sent by administrators to speakers about a talk
  */
 @RestController
-@Secured(Role.REVIEWER)
+@Secured({Role.REVIEWER, Role.ADMIN})
 @RequestMapping(value = { "/v0/admin/sessions/{talkId}/contacts", "/api/admin/sessions/{talkId}/contacts" }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class AdminContactController {
 
