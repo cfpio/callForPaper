@@ -39,6 +39,7 @@ public class ApplicationSettings {
     private boolean open;
     private String website;
     private String logo;
+    private String contact;
 
     private static SimpleDateFormat sf = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -54,6 +55,7 @@ public class ApplicationSettings {
         shortDescription = event.getShortDescription();
         website = event.getUrl();
         this.logo = event.getLogoUrl() != null ? event.getLogoUrl() : "/images/logo.png";
+        this.contact = event.getContactMail();
         open = event.isOpen();
     }
 
@@ -135,5 +137,17 @@ public class ApplicationSettings {
 
     public void setLogo(String logo) {
         this.logo = logo;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
     }
 }
