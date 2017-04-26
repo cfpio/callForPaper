@@ -1,0 +1,1 @@
+docker exec -it mysql-cfp-dev mysql --user cfpdev --password=galettesaucisse cfpdev
