@@ -144,35 +144,37 @@ public class TalkAdminService {
     /**
      * Edit a talk
      *
-     * @param talkAdmin Talk to edit
+     * @param t Talk to edit
      * @return Edited talk
      */
-    public TalkAdmin edit(TalkAdmin talkAdmin) throws CospeakerNotFoundException, ParseException {
-        Talk talk = talkRepo.findByIdAndEventId(talkAdmin.getId(), Event.current());
+    public TalkAdmin edit(TalkAdmin t) throws CospeakerNotFoundException, ParseException {
+        Talk talk = talkRepo.findByIdAndEventId(t.getId(), Event.current());
         if (talk == null) {
             return null;
         }
 
-        talk.name(talkAdmin.getName())
-            .language(talkAdmin.getLanguage())
-            .track(trackRepo.getOne(talkAdmin.getTrackId()))
-            .description(talkAdmin.getDescription())
-            .references(talkAdmin.getReferences())
-            .difficulty(talkAdmin.getDifficulty())
-            .format(formatRepo.findByIdAndEventId(talkAdmin.getFormat(), Event.current()))
-            .track(trackRepo.findByIdAndEventId(talkAdmin.getTrackId(), Event.current()));
+        talk.name(t.getName())
+            .language(t.getLanguage())
+            .track(trackRepo.getOne(t.getTrackId()))
+            .description(t.getDescription())
+            .references(t.getReferences())
+            .difficulty(t.getDifficulty())
+            .format(formatRepo.findByIdAndEventId(t.getFormat(), Event.current()))
+            .track(trackRepo.findByIdAndEventId(t.getTrackId(), Event.current()))
+            .video(t.getVideo())
+            .slides(t.getSlides());
 
-        if (talkAdmin.getRoom() != null) {
-            talk.room(rooms.findByIdAndEventId(talkAdmin.getRoom(), Event.current()));
-            LOG.debug("Talk {} set on room {}", talkAdmin.getId(), talkAdmin.getRoom());
+        if (t.getRoom() != null) {
+            talk.room(rooms.findByIdAndEventId(t.getRoom(), Event.current()));
+            LOG.debug("Talk {} set on room {}", t.getId(), t.getRoom());
         }
-        if (talkAdmin.getSchedule() != null) {
-            final Date start = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX").parse(talkAdmin.getSchedule());
+        if (t.getSchedule() != null) {
+            final Date start = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX").parse(t.getSchedule());
             talk.date(start);
-            LOG.debug("Talk {} set at {}", talkAdmin.getId(), start);
+            LOG.debug("Talk {} set at {}", t.getId(), start);
         }
 
-        setCoSpeaker(talkAdmin, talk);
+        setCoSpeaker(t, talk);
 
         talkRepo.save(talk);
         talkRepo.flush();
