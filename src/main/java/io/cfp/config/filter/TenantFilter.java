@@ -62,7 +62,8 @@ public class TenantFilter extends OncePerRequestFilter {
         String origin = request.getHeader(HttpHeaders.ORIGIN);
         String referer = request.getHeader(HttpHeaders.REFERER);
         String header = request.getHeader(TENANT_HEADER);
-        final String path = request.getPathInfo();
+        String path = request.getPathInfo();
+        String host = request.getServerName();
         String param = request.getParameter("event");
 
         if (!StringUtils.isEmpty(param)) {
@@ -75,14 +76,19 @@ public class TenantFilter extends OncePerRequestFilter {
             // Explicit event URL
             return path.substring(8, i);
         }
-
+        if (host.endsWith(".cfp.io") && !"api.cfp.io".equals(host)) {
+            // Requested as https://foo-bar.cfp.io
+            return host.substring(0, host.indexOf('.'));
+        }
         if (origin != null && origin.endsWith(".cfp.io")) {
             // Origin: https://foo-bar.cfp.io
             return origin.substring(8, origin.indexOf('.'));
-        } else if (referer != null && referer.endsWith(".cfp.io/")) {
+        }
+        if (referer != null && referer.endsWith(".cfp.io/")) {
             // Referer: https://foo-bar.cfp.io/
             return referer.substring(8, referer.indexOf('.'));
-        } else if (header != null) {
+        }
+        if (header != null) {
             return header;
         }
 
