@@ -63,6 +63,9 @@ public class UserProfil {
         this.lastname = user.getLastname();
         this.company = user.getCompany();
         this.twitter = user.getTwitter();
+        this.googleplus = user.getGoogleplus();
+        this.social = user.getSocial();
+        this.language = user.getLanguage();
         this.bio = user.getBio();
         this.imageProfilURL = user.getImageProfilURL();
         if (includePrivateData) {
