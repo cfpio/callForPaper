@@ -68,7 +68,6 @@ public class UserController {
     public UserProfil putUserProfil(@AuthenticationPrincipal User user, @RequestBody UserProfil profil) {
         user.firstname(profil.getFirstname())
             .lastname(profil.getLastname())
-            .email(profil.getEmail())
             .language(profil.getLanguage())
             .bio(profil.getBio())
             .phone(profil.getPhone())
