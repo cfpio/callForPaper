@@ -64,6 +64,7 @@ public class UserProfil {
         this.company = user.getCompany();
         this.twitter = user.getTwitter();
         this.googleplus = user.getGoogleplus();
+        this.github = user.getGithub();
         this.social = user.getSocial();
         this.language = user.getLanguage();
         this.bio = user.getBio();
