@@ -59,6 +59,8 @@ public class Schedule {
     private String speakers;
     @JsonProperty("description")
     private String description;
+    @JsonProperty("media_url")
+    private String media;
 
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
@@ -246,6 +248,14 @@ public class Schedule {
     @JsonProperty("description")
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getMedia() {
+        return media;
+    }
+
+    public void setMedia(String media) {
+        this.media = media;
     }
 
     @JsonAnyGetter

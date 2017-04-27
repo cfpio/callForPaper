@@ -58,6 +58,8 @@ public class FullCalendar {
         private String format;
         private String icon;
         private String title;
+        private String slides;
+        private String videos;
 
         public Event(Talk talk) {
             this.id = String.valueOf(talk.getId());
@@ -73,6 +75,8 @@ public class FullCalendar {
             this.format = talk.getFormat().getName();
             this.icon = talk.getFormat().getIcon();
             this.duration = talk.getDuree();
+            this.slides = talk.getSlides();
+            this.videos = talk.getVideo();
         }
     }
 

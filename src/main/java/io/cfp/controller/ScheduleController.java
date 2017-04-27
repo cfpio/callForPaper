@@ -59,6 +59,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
@@ -116,6 +117,15 @@ public class ScheduleController {
                 schedule.setEventEnd(DateTimeFormatter.ISO_INSTANT.format(t.getDate().toInstant().plus(t.getDuree(), ChronoUnit.MINUTES)));
                 schedule.setVenue(t.getRoom() != null ? t.getRoom().getName() : "TBD");
                 schedule.setVenueId(t.getRoom() != null ? String.valueOf(t.getRoom().getId()) : null);
+                schedule.setMedia(t.getVideo() != null ? t.getVideo() : t.getSlides());
+
+                final Map<String, Object> p = schedule.getAdditionalProperties();
+                if (t.getVideo() != null) {
+                    p.put("video", t.getVideo());
+                }
+                if (t.getSlides() != null) {
+                    p.put("slides", t.getSlides());
+                }
 
                 return schedule;
             }).collect(toList());
