@@ -20,12 +20,17 @@
 
 package io.cfp.controller;
 
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
+import io.cfp.domain.exception.CospeakerNotFoundException;
+import io.cfp.domain.exception.NotFoundException;
+import io.cfp.domain.exception.NotVerifiedException;
+import io.cfp.dto.TalkAdmin;
+import io.cfp.dto.TalkUser;
+import io.cfp.entity.Role;
+import io.cfp.entity.Talk;
+import io.cfp.entity.User;
+import io.cfp.repository.TalkRepo;
+import io.cfp.service.TalkUserService;
+import io.cfp.service.email.EmailingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
@@ -36,14 +41,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.cfp.domain.exception.CospeakerNotFoundException;
-import io.cfp.domain.exception.NotVerifiedException;
-import io.cfp.dto.TalkUser;
-import io.cfp.entity.Role;
-import io.cfp.entity.Talk;
-import io.cfp.entity.User;
-import io.cfp.service.TalkUserService;
-import io.cfp.service.email.EmailingService;
+import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = { "/v0", "/api" }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -55,6 +54,8 @@ public class SessionController  {
     @Autowired
     private TalkUserService talkService;
 
+    @Autowired
+    private TalkRepo talks;
 
 
     /**
@@ -85,9 +86,20 @@ public class SessionController  {
      * Get a session
      */
     @RequestMapping(value = "/proposals/{talkId}", method = RequestMethod.GET)
-    @Secured(Role.AUTHENTICATED)
-    public TalkUser getGoogleSpreadsheet(@AuthenticationPrincipal User user, @PathVariable Integer talkId) throws NotVerifiedException {
-        return talkService.getOne(user.getId(), talkId);
+    public TalkUser get(@AuthenticationPrincipal User user, @PathVariable Integer talkId) throws NotFoundException {
+        final Talk t = talks.findOne(talkId);
+        if (t.getState() == Talk.State.ACCEPTED) {
+            // This is an accepted talk, so we can just expose it publicly
+            return new TalkUser(t);
+        }
+        if (t.getUser().getId() == t.getUser().getId()) {
+            // A user can access his own data
+            return new TalkAdmin(t);
+        }
+        if (user.hasRole(Role.REVIEWER)) {
+            return new TalkAdmin(t);
+        }
+        throw new NotFoundException();
     }
 
     /**

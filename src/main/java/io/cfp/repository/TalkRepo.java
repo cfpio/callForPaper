@@ -34,6 +34,8 @@ import java.util.List;
 
 public interface TalkRepo extends JpaRepository<Talk, Integer> {
 
+    List<Talk> findByEventId(String id);
+
     Talk findByIdAndEventId(int integer, String eventId);
 
     List<Talk> findByEventIdAndUserIdAndStateIn(String eventId, int userId, Collection<Talk.State> states);
@@ -82,4 +84,5 @@ public interface TalkRepo extends JpaRepository<Talk, Integer> {
     @Modifying
     @Query("delete from Talk t where t.event.id = :eventId")
     void deleteAllByEventId(@Param("eventId") String eventId);
+
 }
