@@ -92,12 +92,14 @@ public class SessionController  {
             // This is an accepted talk, so we can just expose it publicly
             return new TalkUser(t);
         }
-        if (t.getUser().getId() == t.getUser().getId()) {
-            // A user can access his own data
-            return new TalkAdmin(t);
-        }
-        if (user.hasRole(Role.REVIEWER)) {
-            return new TalkAdmin(t);
+        if (user != null) {
+            if (t.getUser().getId() == user.getId()) {
+                // A user can access his own data
+                return new TalkAdmin(t);
+            }
+            if (user.hasRole(Role.REVIEWER)) {
+                return new TalkAdmin(t);
+            }
         }
         throw new NotFoundException();
     }
