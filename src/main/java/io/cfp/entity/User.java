@@ -21,6 +21,7 @@
 package io.cfp.entity;
 
 import io.cfp.dto.user.AdminUserDTO;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.Email;
 
@@ -329,6 +330,11 @@ public class User {
         result.setEmail(this.getEmail());
         result.setName(this.getFirstname()+" "+this.getLastname());
         return result;
+    }
+
+    // Used to trace current user in application logs
+    public String toLog() {
+        return email + '(' + StringUtils.join(roles) + ')';
     }
 }
 

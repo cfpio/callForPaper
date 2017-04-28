@@ -75,7 +75,6 @@ public class AuthFilter implements Filter {
         User.setCurrent(user);
 
         if (user != null) {
-            MDC.put(USER, user.getEmail());
             List<Role> roles = roleRepository.findByUserIdAndEventId(user.getId(), Event.current());
             for (Role role : roles) {
                 if (Role.ADMIN.equals(role.getName())) {
@@ -84,6 +83,7 @@ public class AuthFilter implements Filter {
                 }
             	user.addRole(role.getName());
             }
+            MDC.put(USER, user.toLog());
             SecurityContextHolder.getContext().setAuthentication(new UserAuthentication(user));
         }
 
