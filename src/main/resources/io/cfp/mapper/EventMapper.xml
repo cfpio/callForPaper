@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.cfp.mapper.EventMapper">
+
+    <select id="findOpen" resultType="io.cfp.model.Event">
+        select * from events where open=true
+    </select>
+
+    <select id="findPassed" resultType="io.cfp.model.Event">
+        select * from events where date &lt; current_date()
+    </select>
+
+    <select id="findByUser" parameterType="int" resultType="io.cfp.model.Event">
+        select * from events e where exists (select * from roles r where r.event_id = e.id AND r.user_id = #{user})
+    </select>
+
+    <select id="findAll" parameterType="io.cfp.model.queries.EventQuery" resultType="io.cfp.model.Event">
+        select * from events e
+        <where>
+            <if test="name">
+                e.name=#{name}
+            </if>
+            <if test="open">
+                e.open=true
+            </if>
+            <if test="passed">
+                e.date &lt; current_date()
+            </if>
+            <if test="user">
+                exists (select * from roles r where r.event_id = e.id AND r.user_id = #{user})
+            </if>
+        </where>
+    </select>
+
+    <select id="exists" resultType="boolean" parameterType="String">
+        select exists(select 1 from events where id=#{id})
+    </select>
+
+    <insert id="insert" parameterType="io.cfp.model.Event">
+        insert into events (id, name, short_description, date, release_date, decision_date, open)
+        values (#{id}, #{name}, #{shortDescription}, #{date}, #{releaseDate}, #{decisionDate}, #{open})
+    </insert>
+
+</mapper>
