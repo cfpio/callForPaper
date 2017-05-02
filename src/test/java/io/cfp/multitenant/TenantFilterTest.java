@@ -58,8 +58,8 @@ public class TenantFilterTest {
     }
 
     @Test
-    public void should_retrieve_tenant_from_Path() {
-        request.setPathInfo("/events/test/something");
+    public void should_retrieve_tenant_from_Host() {
+        request.setServerName("test.cfp.io");
         assertEquals("test", filter.extractTenant(request));
     }
 
