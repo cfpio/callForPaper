@@ -12,13 +12,12 @@ public interface UserMapper {
 
     List<User> findAll(UserQuery userQuery);
     User findById(User user);
-    int create(User user);
     int update(User user);
     int delete(User user);
 
     boolean exists(String email);
 
-    void insert(User user);
+    int insert(User user);
 
     User findByEmail(@Param("email") String email);
     List<String> findEmailByRole(@Param("role") String role, @Param("eventId") String eventId);

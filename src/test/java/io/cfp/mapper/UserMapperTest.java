@@ -65,7 +65,7 @@ public class UserMapperTest {
     public void should_create_a_user() {
         User user = new User();
         user.setEmail("CREATED_EMAIL");
-        int createdLines = userMapper.create(user);
+        int createdLines = userMapper.insert(user);
 
         assertThat(createdLines).isEqualTo(1);
         assertThat(user.getId()).isGreaterThan(0);

@@ -24,21 +24,21 @@
     </select>
 
     <select id="findEmailByRole" resultType="String">
-        SELECT u.email FROM users u, roles r WHERE r.name = #{role} AND r.event.id = #{eventId} AND r.user.id = u.id
+        SELECT u.email FROM users u, roles r WHERE r.name = #{role} AND r.event_id = #{eventId} AND r.user_id = u.id
     </select>
 
     <select id="findUserWithAcceptedProposal" resultType="io.cfp.model.User">
         SELECT * FROM users u
         WHERE u.id IN
             (
-            SELECT DISTINCT s.userId
-                FROM submissions s
-                WHERE s.event.id = #{eventId}
-                AND s.state = 'ACCEPTED'
+            SELECT DISTINCT p.user
+                FROM proposals p
+                WHERE p.event_id = #{eventId}
+                AND p.state = 'ACCEPTED'
             )
     </select>
 
-    <insert id="create" parameterType="io.cfp.model.User" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    <insert id="insert" parameterType="io.cfp.model.User" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO users (email, lastname, firstname, company, phone, bio, twitter, googleplus, github, social, image_profil_url, language)
         VALUES (#{email}, #{lastname}, #{firstname}, #{company}, #{phone}, #{bio}, #{twitter}, #{googleplus}, #{github}, #{social}, #{imageProfilURL}, #{language})
     </insert>

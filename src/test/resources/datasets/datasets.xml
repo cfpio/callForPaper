@@ -46,6 +46,13 @@
             <column name="event_id" value="EVENT_ID"/>
             <column name="user_id" value="10"/>
         </insert>
+        <insert tableName="proposals">
+            <column name="id" value="20"/>
+            <column name="name" value="PROPOSAL_NAME"/>
+            <column name="event_id" value="EVENT_ID"/>
+            <column name="user" value="10"/>
+            <column name="state" value="ACCEPTED"/>
+        </insert>
     </changeSet>
 
 </databaseChangeLog>
