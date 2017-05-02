@@ -22,22 +22,20 @@ package io.cfp.api;
 
 import io.cfp.domain.exception.BadRequestException;
 import io.cfp.domain.exception.EntityExistsException;
-import io.cfp.entity.Role;
-import io.cfp.entity.User;
 import io.cfp.mapper.EventMapper;
+import io.cfp.mapper.RoleMapper;
+import io.cfp.mapper.UserMapper;
 import io.cfp.model.Event;
-import io.cfp.repository.EventRepository;
-import io.cfp.repository.RoleRepository;
-import io.cfp.repository.UserRepo;
+import io.cfp.model.Role;
+import io.cfp.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.management.InstanceAlreadyExistsException;
+import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
 
@@ -51,14 +49,13 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 public class EventsController {
 
     @Autowired
-    private RoleRepository roles;
-
-    @Autowired
-    private UserRepo users;
+    private RoleMapper roles;
 
     @Autowired
     private EventMapper events;
 
+    @Autowired
+    private UserMapper users;
 
 
     @RequestMapping(value = "/events", method = RequestMethod.GET)
@@ -75,6 +72,7 @@ public class EventsController {
 
     //@Secured(Role.MAINTAINER)
     @RequestMapping(value = "/events", method = RequestMethod.POST)
+    @Transactional
     public Event create(@RequestParam(name = "id", required=true) String id, @RequestParam(name = "owner", required=true) String owner) throws EntityExistsException {
 
         if (events.exists(id)) {
@@ -95,20 +93,19 @@ public class EventsController {
 
         events.insert(e);
 
-        /*
-        User user = users.findByEmail(owner);
-        if (user == null) {
-            user = new User();
-            user.setEmail(owner);
-            users.saveAndFlush(user);
+        User u;
+        if (!users.exists(owner)) {
+            u = new User()
+                .setEmail(owner);
+            users.insert(u);
+        } else {
+            u = users.findByEmail(owner);
         }
 
-        Role r = new Role();
-        r.setName(Role.OWNER.toString());
-        r.setEvent(e);
-        r.setUser(user);
-        roles.saveAndFlush(r);
-        */
+        roles.insert(new Role()
+            .setName(io.cfp.entity.Role.OWNER.toString())
+            .setEvent(id)
+            .setUser(u.getId()));
 
         return e;
     }

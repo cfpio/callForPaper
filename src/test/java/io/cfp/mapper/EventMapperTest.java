@@ -60,7 +60,8 @@ public class EventMapperTest {
 
     @Test
     public void should_create_an_Event() {
-        Event event = new Event().setId("EVENT_TEST");
+        Event event = new Event();
+        event.setId("EVENT_TEST");
         int createdLines = eventMapper.insert(event);
 
         assertThat(createdLines).isEqualTo(1);

@@ -19,6 +19,10 @@
         SELECT * FROM users u WHERE u.email = #{email}
     </select>
 
+    <select id="exists" resultType="boolean" parameterType="String">
+        select exists(select 1 from users where email=#{email})
+    </select>
+
     <select id="findEmailByRole" resultType="String">
         SELECT u.email FROM users u, roles r WHERE r.name = #{role} AND r.event.id = #{eventId} AND r.user.id = u.id
     </select>
