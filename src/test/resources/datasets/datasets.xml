@@ -32,6 +32,10 @@
             <column name="id" value="10"/>
             <column name="email" value="EMAIL"/>
         </insert>
+        <insert tableName="users">
+            <column name="id" value="11"/>
+            <column name="email" value="EMAIL2"/>
+        </insert>
         <insert tableName="events">
             <column name="id" value="EVENT_ID"/>
             <column name="short_description" value="Test"/>

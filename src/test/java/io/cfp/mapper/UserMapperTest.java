@@ -17,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UserMapperTest {
 
     private static final int USER_ID = 10;
+    private static final int USER_ID_TO_DELETE = 11;
 
     @Autowired
     private UserMapper userMapper;
@@ -84,7 +85,7 @@ public class UserMapperTest {
     @Test
     public void should_delete_a_user() {
         User user = new User();
-        user.setId(USER_ID);
+        user.setId(USER_ID_TO_DELETE);
         int deletedLines = userMapper.delete(user);
 
         assertThat(deletedLines).isEqualTo(1);
