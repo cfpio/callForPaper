@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.cfp.mapper.UserMapper">
+
+    <select id="findAll" parameterType="io.cfp.model.queries.UserQuery" resultType="io.cfp.model.User">
+        SELECT * FROM users u
+        <where>
+            <if test="email">
+                u.email = #{email}
+            </if>
+        </where>
+    </select>
+
+    <select id="findById" resultType="io.cfp.model.User">
+        SELECT * FROM users WHERE id = #{id}
+    </select>
+
+    <select id="findByEmail" resultType="io.cfp.model.User">
+        SELECT * FROM users u WHERE u.email = #{email}
+    </select>
+
+    <select id="findEmailByRole" resultType="String">
+        SELECT u.email FROM users u, roles r WHERE r.name = #{role} AND r.event.id = #{eventId} AND r.user.id = u.id
+    </select>
+
+    <select id="findUserWithAcceptedProposal" resultType="io.cfp.model.User">
+        SELECT * FROM users u
+        WHERE u.id IN
+            (
+            SELECT DISTINCT s.userId
+                FROM submissions s
+                WHERE s.event.id = #{eventId}
+                AND s.state = 'ACCEPTED'
+            )
+    </select>
+
+    <insert id="create" parameterType="io.cfp.model.User" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO users (email, lastname, firstname, company, phone, bio, twitter, googleplus, github, social, image_profil_url, language)
+        VALUES (#{email}, #{lastname}, #{firstname}, #{company}, #{phone}, #{bio}, #{twitter}, #{googleplus}, #{github}, #{social}, #{imageProfilURL}, #{language})
+    </insert>
+
+    <update id="update" parameterType="io.cfp.model.User">
+        UPDATE users
+        SET email=#{email},
+            lastname=#{lastname},
+            firstname=#{firstname},
+            company=#{company},
+            phone=#{phone},
+            bio=#{bio},
+            twitter=#{twitter},
+            googleplus=#{googleplus},
+            github=#{github},
+            social=#{social},
+            image_profil_url=#{imageProfilURL},
+            language=#{language}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="io.cfp.model.User">
+        DELETE FROM users
+        WHERE id = #{id}
+    </delete>
+
+</mapper>
