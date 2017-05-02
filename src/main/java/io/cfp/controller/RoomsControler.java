@@ -24,8 +24,10 @@ import io.cfp.dto.RoomDto;
 import io.cfp.entity.Event;
 import io.cfp.entity.Role;
 import io.cfp.entity.Room;
+import io.cfp.multitenant.TenantId;
 import io.cfp.repository.EventRepository;
 import io.cfp.repository.RoomRepo;
+import io.cfp.repository.TalkRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,10 +52,13 @@ public class RoomsControler {
     @Autowired
     private EventRepository events;
 
+    @Autowired
+    private TalkRepo talks;
+
     @RequestMapping(method = GET)
-    public Collection<RoomDto> all() {
+    public Collection<RoomDto> all(@TenantId String eventId) {
         return rooms
-            .findByEventId(Event.current())
+            .findByEventId(eventId)
             .stream()
             .map( r -> new RoomDto(r) )
             .collect(Collectors.toList());
@@ -62,19 +67,19 @@ public class RoomsControler {
     @RequestMapping(method = POST)
     @Transactional
     @Secured(Role.OWNER)
-    public RoomDto create(@RequestBody RoomDto room) {
+    public RoomDto create(@RequestBody RoomDto room, @TenantId String eventId) {
         return new RoomDto(
             rooms.save(
                 new Room()
-                    .withEvent(events.findOne(Event.current()))
+                    .withEvent(events.getOne(eventId))
                     .withName(room.getName())));
     }
 
     @RequestMapping(value = "/{id}", method = PUT)
     @Transactional
     @Secured(Role.OWNER)
-    public void update(@PathVariable int id, @RequestBody RoomDto update) {
-    	Room room = rooms.findByIdAndEventId(id, Event.current()); // make sure the track belongs to the current event
+    public void update(@PathVariable int id, @RequestBody RoomDto update, @TenantId String eventId) {
+    	Room room = rooms.findByIdAndEventId(id, eventId); // make sure the track belongs to the current event
     	if (room != null) {
             rooms.save(
                 room.withName(update.getName()));
@@ -84,14 +89,15 @@ public class RoomsControler {
     @RequestMapping(value = "/{id}", method = DELETE)
     @Transactional
     @Secured(Role.OWNER)
-    public void delete(@PathVariable int id) {
-    	Room room = rooms.findByIdAndEventId(id, Event.current()); // make sure the track belongs to the current event
-    	if (room != null && !isReferenced(room)) {
+    public void delete(@PathVariable int id, @TenantId String eventId) {
+    	Room room = rooms.findByIdAndEventId(id, eventId); // make sure the track belongs to the current event
+    	if (room != null && !isReferenced(room, eventId)) {
             rooms.delete(id);
     	}
     }
 
-    private boolean isReferenced(Room room) {
-    	return false; /** TODO check schedule */
+    private boolean isReferenced(Room room, String eventId) {
+        int count = talks.countByEventIdAndRoom(eventId, room);
+    	return count == 0;
     }
 }

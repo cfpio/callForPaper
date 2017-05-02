@@ -21,6 +21,7 @@
 package io.cfp.repository;
 
 import io.cfp.entity.Format;
+import io.cfp.entity.Room;
 import io.cfp.entity.Talk;
 import io.cfp.entity.Track;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -47,6 +48,9 @@ public interface TalkRepo extends JpaRepository<Talk, Integer> {
     int countByEventIdAndTrack(String eventId, Track track);
 
     int countByEventIdAndFormat(String eventId, Format format);
+
+    int countByEventIdAndRoom(String eventId, Room room);
+
 
     Talk findByIdAndEventIdAndUserId(int talkId, String eventId, int userId);
 
@@ -84,5 +88,4 @@ public interface TalkRepo extends JpaRepository<Talk, Integer> {
     @Modifying
     @Query("delete from Talk t where t.event.id = :eventId")
     void deleteAllByEventId(@Param("eventId") String eventId);
-
 }

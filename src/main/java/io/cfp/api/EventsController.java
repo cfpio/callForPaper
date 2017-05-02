@@ -29,6 +29,7 @@ import io.cfp.model.Event;
 import io.cfp.model.Role;
 import io.cfp.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -70,7 +71,7 @@ public class EventsController {
         }
     }
 
-    //@Secured(Role.MAINTAINER)
+    @Secured(io.cfp.entity.Role.MAINTAINER)
     @RequestMapping(value = "/events", method = RequestMethod.POST)
     @Transactional
     public Event create(@RequestParam(name = "id", required=true) String id, @RequestParam(name = "owner", required=true) String owner) throws EntityExistsException {

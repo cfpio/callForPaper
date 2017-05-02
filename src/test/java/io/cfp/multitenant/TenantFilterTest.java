@@ -18,8 +18,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.cfp.config.filter;
+package io.cfp.multitenant;
 
+import io.cfp.multitenant.TenantFilter;
 import org.junit.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockHttpServletRequest;

@@ -22,10 +22,12 @@ package io.cfp;
 
 import io.cfp.config.filter.AuthFilter;
 import io.cfp.config.filter.CorsFilter;
-import io.cfp.config.filter.TenantFilter;
+import io.cfp.multitenant.TenantFilter;
+import io.cfp.multitenant.TenantIdHandlerMethodArgumentResolver;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -33,6 +35,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import javax.servlet.Filter;
 import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 public class WebConfiguration extends WebMvcConfigurerAdapter {
@@ -45,6 +48,12 @@ public class WebConfiguration extends WebMvcConfigurerAdapter {
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
         configurer.enable();
+    }
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+        super.addArgumentResolvers(argumentResolvers);
+        argumentResolvers.add(new TenantIdHandlerMethodArgumentResolver());
     }
 
     @Bean
