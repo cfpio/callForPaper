@@ -18,7 +18,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.cfp.controller;
+package io.cfp.api;
 
 import io.cfp.domain.exception.BadRequestException;
 import io.cfp.domain.exception.EntityExistsException;
