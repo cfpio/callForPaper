@@ -1,6 +1,6 @@
 package io.cfp.repository;
 
-import io.cfp.TestConfig;
+import io.cfp.JpaTestConfig;
 import io.cfp.entity.Role;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,7 +14,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = TestConfig.class)
+@SpringBootTest(classes = JpaTestConfig.class)
 @DirtiesContext
 public class RoleRepositoryTest {
 

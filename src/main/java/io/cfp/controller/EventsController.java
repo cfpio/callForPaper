@@ -22,9 +22,10 @@ package io.cfp.controller;
 
 import io.cfp.domain.exception.BadRequestException;
 import io.cfp.domain.exception.EntityExistsException;
-import io.cfp.entity.Event;
 import io.cfp.entity.Role;
 import io.cfp.entity.User;
+import io.cfp.mapper.EventMapper;
+import io.cfp.model.Event;
 import io.cfp.repository.EventRepository;
 import io.cfp.repository.RoleRepository;
 import io.cfp.repository.UserRepo;
@@ -50,13 +51,13 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 public class EventsController {
 
     @Autowired
-    private EventRepository events;
-
-    @Autowired
     private RoleRepository roles;
 
     @Autowired
     private UserRepo users;
+
+    @Autowired
+    private EventMapper events;
 
 
 
@@ -72,7 +73,7 @@ public class EventsController {
         }
     }
 
-    @Secured(Role.MAINTAINER)
+    //@Secured(Role.MAINTAINER)
     @RequestMapping(value = "/events", method = RequestMethod.POST)
     public Event create(@RequestParam(name = "id", required=true) String id, @RequestParam(name = "owner", required=true) String owner) throws EntityExistsException {
 
@@ -81,20 +82,20 @@ public class EventsController {
         }
         Date now = new Date();
 
-        Event e = Event.builder()
-            .id(id)
-            .name(id)
-            .contactMail(owner)
-            .published(false)
-            .open(false)
-            .shortDescription(id)
-            .date(now)
-            .decisionDate(now)
-            .releaseDate(now)
-            .build();
+        Event e = new Event()
+            .setId(id)
+            .setName(id)
+            .setContactMail(owner)
+            .setPublished(false)
+            .setOpen(false)
+            .setShortDescription(id)
+            .setDate(now)
+            .setDecisionDate(now)
+            .setReleaseDate(now);
 
-        events.saveAndFlush(e);
+        events.insert(e);
 
+        /*
         User user = users.findByEmail(owner);
         if (user == null) {
             user = new User();
@@ -107,6 +108,7 @@ public class EventsController {
         r.setEvent(e);
         r.setUser(user);
         roles.saveAndFlush(r);
+        */
 
         return e;
     }

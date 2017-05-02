@@ -19,7 +19,7 @@
  */
 
 import com.jayway.restassured.module.mockmvc.RestAssuredMockMvc;
-import io.cfp.TestConfig;
+import io.cfp.JpaTestConfig;
 import io.cfp.controller.ApplicationController;
 import io.cfp.repository.EventRepository;
 import org.junit.Before;
@@ -39,7 +39,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
  * Created by tmaugin on 08/04/2015.
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = TestConfig.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = JpaTestConfig.class)
 @Ignore
 public class ApplicationTest {
 
