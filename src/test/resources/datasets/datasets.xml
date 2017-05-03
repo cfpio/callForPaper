@@ -28,14 +28,6 @@
 
 
     <changeSet id="test-1" author="sebbrousse">
-        <insert tableName="users">
-            <column name="id" value="10"/>
-            <column name="email" value="EMAIL"/>
-        </insert>
-        <insert tableName="users">
-            <column name="id" value="11"/>
-            <column name="email" value="EMAIL2"/>
-        </insert>
         <insert tableName="events">
             <column name="id" value="EVENT_ID"/>
             <column name="short_description" value="Test"/>
@@ -44,11 +36,31 @@
             <column name="release_date" valueDate="2042-12-29"/>
             <column name="open" valueBoolean="true"/>
         </insert>
+        <insert tableName="users">
+            <column name="id" value="10"/>
+            <column name="email" value="EMAIL"/>
+        </insert>
+        <insert tableName="users">
+            <column name="id" value="11"/>
+            <column name="email" value="EMAIL2"/>
+        </insert>
         <insert tableName="roles">
             <column name="id" value="10"/>
             <column name="name" value="ROLE_ADMIN"/>
             <column name="event_id" value="EVENT_ID"/>
             <column name="user_id" value="10"/>
+        </insert>
+        <insert tableName="formats">
+            <column name="id" value="30"/>
+            <column name="name" value="FORMAT_NAME"/>
+        </insert>
+        <insert tableName="tracks">
+            <column name="id" value="40"/>
+            <column name="libelle" value="TRACK_LIBELLE"/>
+        </insert>
+        <insert tableName="rooms">
+            <column name="id" value="50"/>
+            <column name="name" value="ROOM_NAME"/>
         </insert>
         <insert tableName="proposals">
             <column name="id" value="20"/>
@@ -56,7 +68,20 @@
             <column name="event_id" value="EVENT_ID"/>
             <column name="user" value="10"/>
             <column name="state" value="ACCEPTED"/>
+            <column name="description" value="PROPOSAL_DESCRIPTION"/>
+            <column name="refs" value="PROPOSAL_REFS"/>
+            <column name="difficulty" value="1"/>
+            <column name="added" value="2042-12-29"/>
+            <column name="format" value="30"/>
+            <column name="schedule_date" value="2042-12-29"/>
+            <column name="schedule_heure" value="12H00"/>
+            <column name="track" value="40"/>
+            <column name="language" value="PROPOSAL_LANGUAGE"/>
+            <column name="room_id" value="50"/>
+            <column name="video" value="PROPOSAL_VIDEO"/>
+            <column name="slides" value="PROPOSAL_SLIDES"/>
         </insert>
+
     </changeSet>
 
 </databaseChangeLog>
