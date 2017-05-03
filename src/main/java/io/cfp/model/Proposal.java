@@ -20,7 +20,7 @@
 
 package io.cfp.model;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -31,8 +31,8 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Accessors(chain = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Proposal {
 
     public enum State { DRAFT, CONFIRMED, ACCEPTED, REFUSED, BACKUP }
@@ -43,25 +43,20 @@ public class Proposal {
     @NotNull(message = "Session name field is required")
     private String name;
     private String language;
-    private Track track;
+    private String eventId;
+    private Integer trackId;
+    private String trackLabel;
     private String description;
     private String references;
     private Integer difficulty;
     private Date added;
-    private Format format;
-    private User user;
-    private Event event;
+    private Integer formatId;
+    private User speaker;
 
-    //schedule data
-    private Date date;
-    private String heure;
-    public Room room;
+    private Date schedule;
+    private Integer roomId;
 
     private Set<User> cospeakers;
-
-    //dependent entity to remove links when deleting talk
-    private Set<Comment> comments;
-    private Set<Rate> rates;
 
     private String video;
     private String slides;

@@ -17,13 +17,18 @@ public class ProposalQuery {
     private String format;
 
     public ProposalQuery setState(String state) {
-        switch (state.toUpperCase()) {
-            case "ACCEPTED":
-                this.state = Proposal.State.ACCEPTED;break;
-            default:
+        if (state != null) {
+            for (Proposal.State value : Proposal.State.values()) {
+                if (value.name().equalsIgnoreCase(state)) {
+                    this.state = value;
+                }
+            }
+            if (this.state == null) {
                 throw new BadRequestException("Unsupported state filter :"+state);
+            }
         }
 
         return this;
     }
+
 }

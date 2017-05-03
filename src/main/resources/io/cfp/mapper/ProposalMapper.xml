@@ -2,45 +2,56 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="io.cfp.mapper.ProposalMapper">
 
-
     <resultMap id="ProposalMap" type="io.cfp.model.Proposal" autoMapping="true">
-        <!--<id property="id" column="id"/>-->
-        <association property="event" resultMap="EventMap"/>
-        <association property="user" resultMap="EventMap" />
-    </resultMap>
-
-    <resultMap id="EventMap" type="io.cfp.model.Event">
-        <!--<id property="id" column="id"/>-->
-    </resultMap>
-
-    <resultMap id="UserMap" type="io.cfp.model.User">
-        <!--<id property="email" column="id"/>-->
+        <id property="id" column="id" jdbcType="VARCHAR"/>
+        <collection property="cospeakers" ofType="io.cfp.model.User">
+            <id property="id" column="cospeaker_id" jdbcType="INTEGER"/>
+            <result property="name" column="category_email" jdbcType="VARCHAR"/>
+            <result property="firstname" column="category_firstname" jdbcType="VARCHAR"/>
+            <result property="lastname" column="category_lastname" jdbcType="VARCHAR"/>
+        </collection>
     </resultMap>
 
     <sql id="proposalColumns">
         SELECT
             *,
-            p.schedule_date as "date",
-            p.schedule_heure as "heure",
+            e.id as "eventId",
+            p.schedule_date as "schedule",
             p.refs as "references",
-            e.id as "event.id",
-            f.id as "format.id",
-            f.name as "format.name",
-            r.id as "room.id",
-            r.name as "room.name",
-            t.id as "track.id",
-            t.libelle as "track.libelle",
-            u.id as "user.id",
-            u.email as "user.email"
+            f.id as "formatId",
+            r.id as "roomId",
+            t.id as "trackId",
+            t.libelle as "trackLabel",
+            u.id as "speaker.id",
+            u.email as "speaker.email",
+            u.bio as "speaker.bio",
+            u.company as "speaker.company",
+            u.firstname as "speaker.firstname",
+            u.lastname as "speaker.lastname",
+            u.gender as "speaker.gender",
+            u.github as "speaker.github",
+            u.googleplus as "speaker.googleplus",
+            u.image_profil_url as "speaker.imageProfilURL",
+            u.language as "speaker.language",
+            u.phone as "speaker.phone",
+            u.social as "speaker.social",
+            u.tshirt_size as "speaker.tshirtSize",
+            u.twitter as "speaker.twitter",
+            cu.id as "cospeaker_id",
+            cu.email as "cospeaker_email",
+            cu.firstname as "cospeaker_firstname",
+            cu.lastname as "cospeaker_lastname"
         FROM proposals p
             left outer join events e on p.event_id = e.id
             left outer join formats f on p.format = f.id
             left outer join rooms r on p.room_id = r.id
             left outer join tracks t on p.track = t.id
             left outer join users u on p.user = u.id
+            left outer join cospeakers c on c.proposal_id = p.id
+            left outer join users cu on c.user_id = cu.id
     </sql>
 
-    <select id="findAll" parameterType="io.cfp.model.queries.ProposalQuery" resultType="io.cfp.model.Proposal">
+    <select id="findAll" parameterType="io.cfp.model.queries.ProposalQuery" resultMap="ProposalMap">
         <include refid="proposalColumns"/>
         <where>
             <if test="eventId">
@@ -87,7 +98,6 @@
             user,
             format,
             schedule_date,
-            schedule_heure,
             track,
             event_id,
             language,
@@ -101,14 +111,13 @@
             #{references},
             #{difficulty},
             #{added},
-            #{user.id},
-            #{format.id},
-            #{date},
-            #{heure},
-            #{track.id},
-            #{event.id},
+            #{speaker.id},
+            #{formatId},
+            #{schedule},
+            #{trackId},
+            #{eventId},
             #{language},
-            #{room.id},
+            #{roomId},
             #{video},
             #{slides}
         )
@@ -122,14 +131,13 @@
             refs=#{references},
             difficulty=#{difficulty},
             added=#{added},
-            user=#{user.id},
-            format=#{format.id},
-            schedule_date=#{date},
-            schedule_heure=#{heure},
-            track=#{track.id},
-            event_id=#{event.id},
+            user=#{speaker.id},
+            format=#{formatId},
+            schedule_date=#{schedule},
+            track=#{trackId},
+            event_id=#{eventId},
             language=#{language},
-            room_id=#{room.id},
+            room_id=#{roomId},
             video=#{video},
             slides=#{slides}
         WHERE id = #{id}

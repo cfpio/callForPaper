@@ -67,34 +67,23 @@ public class ProposalMapperTest {
         assertThat(foundProposal).isNotNull();
         assertThat(foundProposal.getId()).isEqualTo(20);
         assertThat(foundProposal.getAdded()).isEqualTo("2042-12-29");
-        assertThat(foundProposal.getDate()).isEqualTo("2042-12-31");
+        assertThat(foundProposal.getSchedule()).isEqualTo("2042-12-31");
         assertThat(foundProposal.getDescription()).isEqualTo("PROPOSAL_DESCRIPTION");
-        assertThat(foundProposal.getEvent()).isNotNull();
-        assertThat(foundProposal.getEvent().getId()).isEqualTo("EVENT_ID");
-        assertThat(foundProposal.getEvent().isOpen()).isTrue();
-        assertThat(foundProposal.getFormat()).isNotNull();
-        assertThat(foundProposal.getFormat().getId()).isEqualTo(FORMAT_ID);
-        assertThat(foundProposal.getFormat().getName()).isEqualTo("FORMAT_NAME");
-        assertThat(foundProposal.getHeure()).isEqualTo("12H00");
+        assertThat(foundProposal.getFormatId()).isEqualTo(FORMAT_ID);
         assertThat(foundProposal.getLanguage()).isEqualTo("PROPOSAL_LANGUAGE");
         assertThat(foundProposal.getDifficulty()).isEqualTo(1);
-        assertThat(foundProposal.getComments()).isNull(); // TODO
         assertThat(foundProposal.getName()).isEqualTo("PROPOSAL_NAME");
         assertThat(foundProposal.getReferences()).isEqualTo("PROPOSAL_REFS");
-        assertThat(foundProposal.getRoom()).isNotNull();
-        assertThat(foundProposal.getRoom().getId()).isEqualTo(ROOM_ID);
-        assertThat(foundProposal.getRoom().getName()).isEqualTo("ROOM_NAME");
-        assertThat(foundProposal.getCospeakers()).isNull(); //TODO
-        assertThat(foundProposal.getRates()).isNull(); //TODO
-        assertThat(foundProposal.getSlides()).isEqualTo("PROPOSAL_SLIDES");
+        assertThat(foundProposal.getRoomId()).isEqualTo(ROOM_ID);
+        assertThat(foundProposal.getCospeakers()).hasSize(1);
         assertThat(foundProposal.getState()).isEqualTo(Proposal.State.ACCEPTED);
-        assertThat(foundProposal.getTrack()).isNotNull();
-        assertThat(foundProposal.getTrack().getId()).isEqualTo(TRACK_ID);
-        assertThat(foundProposal.getTrack().getLibelle()).isEqualTo("TRACK_LIBELLE");
-        assertThat(foundProposal.getUser()).isNotNull();
-        assertThat(foundProposal.getUser().getId()).isEqualTo(USER_ID);
-        assertThat(foundProposal.getUser().getEmail()).isEqualTo("EMAIL");
+        assertThat(foundProposal.getTrackId()).isEqualTo(TRACK_ID);
+        assertThat(foundProposal.getTrackLabel()).isEqualTo("TRACK_LIBELLE");
+        assertThat(foundProposal.getSpeaker()).isNotNull();
+        assertThat(foundProposal.getSpeaker().getId()).isEqualTo(USER_ID);
+        assertThat(foundProposal.getSpeaker().getEmail()).isEqualTo("EMAIL");
         assertThat(foundProposal.getVideo()).isEqualTo("PROPOSAL_VIDEO");
+        assertThat(foundProposal.getSlides()).isEqualTo("PROPOSAL_SLIDES");
     }
 
     @Test
