@@ -78,7 +78,7 @@ public class WebConfiguration extends WebMvcConfigurerAdapter {
         FilterRegistrationBean registrationBean = new FilterRegistrationBean();
         AuthFilter authFilter = new AuthFilter();
         registrationBean.setFilter(authFilter);
-        registrationBean.setUrlPatterns(Arrays.asList("/v0/*", "/api/*"));
+        registrationBean.setUrlPatterns(Arrays.asList("/v0/*", "/api/*", "/v1/*"));
         registrationBean.setOrder(2);
         return registrationBean;
     }
@@ -88,7 +88,7 @@ public class WebConfiguration extends WebMvcConfigurerAdapter {
         FilterRegistrationBean registrationBean = new FilterRegistrationBean();
         Filter authFilter = new CorsFilter();
         registrationBean.setFilter(authFilter);
-        registrationBean.setUrlPatterns(Arrays.asList("/v0/*", "/api/*"));
+        registrationBean.setUrlPatterns(Arrays.asList("/v0/*", "/api/*", "/v1/*"));
         registrationBean.setOrder(2);
         return registrationBean;
     }
