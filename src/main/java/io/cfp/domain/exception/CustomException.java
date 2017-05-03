@@ -23,7 +23,7 @@ package io.cfp.domain.exception;
 /**
  * Created by tmaugin on 13/05/2015.
  */
-public class CustomException extends Exception
+public class CustomException extends RuntimeException
 {
     public CustomException() {}
 
