@@ -20,7 +20,7 @@
 
 package io.cfp.model;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -31,8 +31,8 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Accessors(chain = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class User {
 
     public enum Gender {
@@ -68,5 +68,17 @@ public class User {
         return this;
     }
 
+    public String getShortName() {
+        String res = "";
+        if (firstname != null && firstname.length() > 0) {
+            res += firstname.charAt(0) + ". ";
+        }
+
+        if (lastname != null) {
+            res += lastname;
+        }
+
+        return res;
+    }
 }
 
