@@ -20,29 +20,22 @@
 
 package io.cfp.config.filter;
 
-import java.io.IOException;
-import java.util.List;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.log4j.MDC;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
-
+import com.google.common.annotations.VisibleForTesting;
 import io.cfp.domain.common.UserAuthentication;
 import io.cfp.entity.Event;
 import io.cfp.entity.Role;
 import io.cfp.entity.User;
 import io.cfp.repository.RoleRepository;
 import io.cfp.service.auth.AuthUtils;
+import org.apache.log4j.MDC;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * Filter reading auth token (JWT) to verify if user is correctly logged
@@ -71,7 +64,12 @@ public class AuthFilter implements Filter {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
-        User user = authUtils.getAuthUser(httpRequest);
+        // FIXME Hack temporaire le temps de basculer l'ensemble du modele
+        io.cfp.model.User newUser = authUtils.getAuthUser(httpRequest);
+        User user = null;
+        if (newUser != null) {
+            user = new User(newUser);
+        }
         User.setCurrent(user);
 
         if (user != null) {
@@ -99,4 +97,13 @@ public class AuthFilter implements Filter {
     @Override
     public void destroy() { /* unused */ }
 
+    @VisibleForTesting
+    public void setAuthUtils(AuthUtils authUtils) {
+        this.authUtils = authUtils;
+    }
+
+    @VisibleForTesting
+    public void setRoleRepository(RoleRepository roleRepository) {
+        this.roleRepository = roleRepository;
+    }
 }

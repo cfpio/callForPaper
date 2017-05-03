@@ -20,22 +20,20 @@
 
 package io.cfp.controller;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import io.cfp.dto.AdminUserInfo;
 import io.cfp.entity.Event;
 import io.cfp.entity.Role;
 import io.cfp.entity.User;
 import io.cfp.repository.RoleRepository;
 import io.cfp.service.auth.AuthUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = { "/v0/adminUser", "/api/adminUser" }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -53,7 +51,12 @@ public class AdminUserController {
     @RequestMapping(value="/currentUser", method= RequestMethod.GET)
     public AdminUserInfo getCurrentUser(HttpServletRequest req) {
 
-    	User user = authUtils.getAuthUser(req);
+        // FIXME Hack temporaire le temps de basculer l'ensemble du modele
+        io.cfp.model.User newUser = authUtils.getAuthUser(req);
+        User user = null;
+        if (newUser != null) {
+            user = new User(newUser);
+        }
 
         if (user == null) {
             return new AdminUserInfo("./", null);

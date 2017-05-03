@@ -21,11 +21,13 @@
 package io.cfp.service.auth;
 
 import io.cfp.entity.Role;
-import io.cfp.entity.User;
-import io.cfp.repository.UserRepo;
+import io.cfp.mapper.UserMapper;
+import io.cfp.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -38,10 +40,12 @@ import java.text.ParseException;
 @Component
 public final class AuthUtils {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthUtils.class);
     private static final String TOKEN_COOKIE_NAME = "token";
+    private static final String AUTH_HEADER_NAME = "Authorization";
 
     @Autowired
-    private UserRepo users;
+    private UserMapper userMapper;
 
     @Value("${cfpio.authentication_hack:false}")
     private boolean authHack;
@@ -71,15 +75,15 @@ public final class AuthUtils {
             return null;
         }
 
-        User user = users.findByEmail(email);
+        User user = userMapper.findByEmail(email);
         if (user == null) {
             user = new User();
             user.setEmail(email);
             try {
-                user = users.save(user);
+                userMapper.insert(user);
             } catch (DataIntegrityViolationException e) {
                 // Handle concurrent insert by parallel requests to API
-                user = users.findByEmail(email);
+                user = userMapper.findByEmail(email);
                 if (user == null) throw e; // other error
             }
         }
@@ -102,6 +106,14 @@ public final class AuthUtils {
 	    	}
     	}
 
+        if (tokenValue == null) {
+            final String header = httpRequest.getHeader(AUTH_HEADER_NAME);
+            if (header != null) {
+                tokenValue = getTokenFromHeader(header);
+                LOGGER.debug("Found token in Header Authorization with value {}", tokenValue);
+            }
+        }
+
     	if (tokenValue != null) {
     		try {
                 return decodeToken(tokenValue);
@@ -120,5 +132,9 @@ public final class AuthUtils {
      */
     private Claims decodeToken(String tokenValue) throws ExpiredJwtException {
         return Jwts.parser().setSigningKey(signingKey).parseClaimsJws(tokenValue).getBody();
+    }
+
+    private String getTokenFromHeader(String header) {
+        return header.replace("Bearer", "").trim();
     }
 }

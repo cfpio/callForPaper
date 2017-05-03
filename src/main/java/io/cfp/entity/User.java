@@ -26,11 +26,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.Email;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Speaker account
@@ -90,6 +86,28 @@ public class User {
 
     private Set<String> roles;
 
+    public User() {
+    }
+
+    public User(io.cfp.model.User user) {
+        this.id = user.getId();
+        this.email = user.getEmail();
+        this.lastname = user.getLastname();
+        this.firstname = user.getFirstname();
+        this.company = user.getCompany();
+        this.phone = user.getPhone();
+        this.bio = user.getBio();
+        this.twitter = user.getTwitter();
+        this.googleplus = user.getGoogleplus();
+        this.github = user.getGithub();
+        this.language = user.getLanguage();
+        this.gender = Gender.valueOf(user.getGender().name());
+        this.tshirtSize = TshirtSize.valueOf(user.getTshirtSize().name());
+        this.social = user.getSocial();
+        this.imageProfilURL = user.getImageProfilURL();
+        this.roles = user.getRoles();
+    }
+
     @Transient
     public boolean hasRole(String role) {
         return roles != null && roles.contains(role);
@@ -113,6 +131,8 @@ public class User {
         roles.addAll(r);
         return this;
     }
+
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

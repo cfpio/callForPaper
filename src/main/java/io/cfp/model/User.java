@@ -20,28 +20,13 @@
 
 package io.cfp.model;
 
-import io.cfp.dto.user.AdminUserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import org.apache.commons.lang3.StringUtils;
-import org.hibernate.annotations.Type;
-import org.hibernate.validator.constraints.Email;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
 
 @Data
@@ -73,5 +58,15 @@ public class User {
     private TshirtSize tshirtSize = TshirtSize.L;
     private String social;
     private String imageProfilURL;
+    private Set<String> roles;
+
+    public User addRole(String... roles) {
+        if (this.roles == null) {
+            this.roles = new HashSet<>();
+        }
+        this.roles.addAll(Arrays.asList(roles));
+        return this;
+    }
+
 }
 
