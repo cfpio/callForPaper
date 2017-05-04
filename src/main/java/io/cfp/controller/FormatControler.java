@@ -46,7 +46,7 @@ import io.cfp.repository.FormatRepo;
 import io.cfp.repository.TalkRepo;
 
 @RestController
-@RequestMapping(value = { "/v0/formats", "/api/formats" }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = { "/v0/formats" }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class FormatControler {
 
     @Autowired

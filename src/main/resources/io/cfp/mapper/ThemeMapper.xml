@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.cfp.mapper.ThemeMapper">
+
+    <insert id="insert"
+            useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into tracks (libelle, description, color, event_id)
+        values (#{libelle}, #{description}, #{color}, #{event})
+    </insert>
+
+    <select id="findByEvent" resultType="io.cfp.model.Theme">
+        SELECT * FROM tracks WHERE event_id = #{eventId}
+    </select>
+
+    <update id="updateForEvent">
+        UPDATE tracks SET
+        libelle = #{it.libelle},
+        description = #{it.description},
+        color = #{it.color}
+        WHERE id = #{it.id} and event_id = #{eventId}
+    </update>
+
+    <delete id="deleteForEvent" >
+        DELETE FROM tracks WHERE id = #{id} and event_id = #{eventId}
+    </delete>
+
+</mapper>

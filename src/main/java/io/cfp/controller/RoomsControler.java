@@ -43,7 +43,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
-@RequestMapping(value = { "/v0/rooms", "/api/rooms" }, produces = APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = { "/v0/rooms" }, produces = APPLICATION_JSON_UTF8_VALUE)
 public class RoomsControler {
 
     @Autowired

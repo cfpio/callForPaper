@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.cfp.mapper.FormatMapper">
+
+    <insert id="insert"
+            useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into formats (name, description, icon, duration, event_id)
+        values (#{name}, #{description}, #{icon}, #{duration}, #{event})
+    </insert>
+
+    <select id="findByEvent" resultType="io.cfp.model.Format">
+        SELECT * FROM formats WHERE event_id = #{eventId}
+    </select>
+
+    <update id="updateForEvent">
+        UPDATE formats SET
+        name = #{it.name},
+        description = #{it.description},
+        icon = #{it.icon},
+        duration = #{it.duration}
+        WHERE id = #{it.id} and event_id = #{eventId}
+    </update>
+
+    <delete id="deleteForEvent">
+        DELETE FROM formats WHERE id = #{id} and event_id = #{eventId}
+    </delete>
+
+</mapper>
