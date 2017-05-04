@@ -115,9 +115,7 @@ public class ProposalMapperTest {
 
     @Test
     public void should_delete_a_proposal() {
-        Proposal proposal = new Proposal() ;
-        proposal.setId(PROPOSAL_ID);
-        int deletedLines = proposalMapper.deleteForEvent(proposal, "EVENT_ID");
+        int deletedLines = proposalMapper.deleteForEvent(PROPOSAL_ID, "EVENT_ID");
 
         assertThat(deletedLines).isEqualTo(1);
     }
