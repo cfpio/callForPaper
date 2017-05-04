@@ -1,11 +1,22 @@
-FROM java:8-jdk
+FROM maven:3.3.3-jdk-8 as build
 
-MAINTAINER team@breizhcamp.org
+WORKDIR /work
+ADD pom.xml /work/
+RUN mvn dependency:go-offline
 
+ADD / /work
+
+RUN mvn -q -Prelease package
+
+
+### ---
+
+FROM openjdk:8-jdk-alpine
+LABEL maintainer "team@breizhcamp.org"
 EXPOSE 8080
-EXPOSE 8443
+ENTRYPOINT [ "java", "-jar", "app.jar" ]
 
-ADD target/call-for-paper.jar /app.jar
-RUN sh -c 'touch /app.jar'
+COPY --from=build target/call-for-paper.jar /app.jar
 
-ENTRYPOINT [ "java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar" ]
+
+
