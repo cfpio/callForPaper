@@ -20,6 +20,7 @@
 
 package io.cfp.api;
 
+import io.cfp.entity.Role;
 import io.cfp.mapper.ProposalMapper;
 import io.cfp.model.Proposal;
 import io.cfp.model.queries.ProposalQuery;
@@ -35,7 +36,7 @@ import java.util.List;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
 @RestController
-@RequestMapping(value = { "/v1", "/api" }, produces = APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = { "/v1" }, produces = APPLICATION_JSON_UTF8_VALUE)
 public class ProposalsController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProposalsController.class);
@@ -45,6 +46,7 @@ public class ProposalsController {
 
 
     @GetMapping("/proposals")
+    @Secured({Role.REVIEWER, Role.ADMIN})
     public List<Proposal> search(@RequestParam(name = "state", required = false) String state,
                                  @RequestParam(name = "userId", required = false) Integer userId) {
         ProposalQuery query = new ProposalQuery()
