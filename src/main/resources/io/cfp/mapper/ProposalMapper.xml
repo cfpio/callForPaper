@@ -123,24 +123,23 @@
         )
     </insert>
 
-    <update id="update" parameterType="io.cfp.model.Proposal">
+    <update id="updateForEvent" parameterType="io.cfp.model.Proposal">
         UPDATE proposals
-        SET state=#{state},
-            name=#{name},
-            description=#{description},
-            refs=#{references},
-            difficulty=#{difficulty},
-            added=#{added},
-            user=#{speaker.id},
-            format=#{formatId},
-            schedule_date=#{schedule},
-            track=#{trackId},
-            event_id=#{eventId},
-            language=#{language},
-            room_id=#{roomId},
-            video=#{video},
-            slides=#{slides}
-        WHERE id = #{id}
+        SET state=#{it.state},
+            name=#{it.name},
+            description=#{it.description},
+            refs=#{it.references},
+            difficulty=#{it.difficulty},
+            added=#{it.added},
+            user=#{it.speaker.id},
+            format=#{it.formatId},
+            schedule_date=#{it.schedule},
+            track=#{it.trackId},
+            language=#{it.language},
+            room_id=#{it.roomId},
+            video=#{it.video},
+            slides=#{it.slides}
+        WHERE id = #{id}  AND event = #{eventId}
     </update>
 
     <delete id="delete" parameterType="io.cfp.model.Proposal">

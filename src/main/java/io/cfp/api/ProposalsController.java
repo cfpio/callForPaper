@@ -24,6 +24,7 @@ import io.cfp.entity.Role;
 import io.cfp.mapper.ProposalMapper;
 import io.cfp.model.Proposal;
 import io.cfp.model.queries.ProposalQuery;
+import io.cfp.multitenant.TenantId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,27 +43,29 @@ public class ProposalsController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProposalsController.class);
 
     @Autowired
-    private ProposalMapper proposalMapper;
+    private ProposalMapper proposals;
 
 
     @GetMapping("/proposals")
     @Secured({Role.REVIEWER, Role.ADMIN})
-    public List<Proposal> search(@RequestParam(name = "state", required = false) String state,
+    public List<Proposal> search(@TenantId String event,
+                                 @RequestParam(name = "state", required = false) String state,
                                  @RequestParam(name = "userId", required = false) Integer userId) {
         ProposalQuery query = new ProposalQuery()
+            .setEventId(event)
             .setState(state)
             .setUserId(userId);
 
         LOGGER.info("Search Proposals : {}", query);
-        List<Proposal> proposals = proposalMapper.findAll(query);
-        LOGGER.debug("Found {} Proposals", proposals.size());
-        return proposals;
+        List<Proposal> p = proposals.findAll(query);
+        LOGGER.debug("Found {} Proposals", p.size());
+        return p;
     }
 
     @GetMapping("/proposals/{id}")
     public Proposal get(@PathVariable Integer id) {
         LOGGER.info("Get Proposal with id {}", id);
-        Proposal proposal = proposalMapper.findById(id);
+        Proposal proposal = proposals.findById(id);
         LOGGER.debug("Found Proposal {}", proposal);
         return proposal;
     }
@@ -70,9 +73,10 @@ public class ProposalsController {
     @PostMapping("/proposals")
     @ResponseStatus(HttpStatus.CREATED)
     @Secured(io.cfp.entity.Role.AUTHENTICATED)
-    public Proposal create(Proposal proposal) {
+    public Proposal create(@TenantId String event,
+                           Proposal proposal) {
         LOGGER.info("Create a Proposal : {}", proposal.getName());
-        proposalMapper.insert(proposal);
+        proposals.insert(proposal.setEventId(event));
 
         return proposal;
     }
@@ -80,10 +84,11 @@ public class ProposalsController {
     @PutMapping("/proposals/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Secured(io.cfp.entity.Role.AUTHENTICATED)
-    public void update(@PathVariable Integer id, Proposal proposal) {
+    public void update(@TenantId String event,
+                       @PathVariable Integer id, Proposal proposal) {
         if (id.equals(proposal.getId())) {
             LOGGER.info("Update a Proposal : {}", proposal.getName());
-            proposalMapper.update(proposal);
+            proposals.updateForEvent(proposal, event);
         }
     }
 
@@ -93,7 +98,7 @@ public class ProposalsController {
     public void delete(@PathVariable Integer id) {
         LOGGER.info("Delete a Proposal with id {}", id);
         Proposal proposal = new Proposal().setId(id);
-        proposalMapper.delete(proposal);
+        proposals.delete(proposal);
     }
 
 }

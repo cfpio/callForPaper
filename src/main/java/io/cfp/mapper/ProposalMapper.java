@@ -23,6 +23,7 @@ package io.cfp.mapper;
 import io.cfp.model.Proposal;
 import io.cfp.model.queries.ProposalQuery;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -32,7 +33,7 @@ public interface ProposalMapper {
     List<Proposal> findAll(ProposalQuery userQuery);
     Proposal findById(Integer id);
     int insert(Proposal proposal);
-    int update(Proposal proposal);
+    int updateForEvent(@Param("it") Proposal proposal, @Param("eventId") String eventId);
     int delete(Proposal proposal);
 
     int count(ProposalQuery proposalQuery);

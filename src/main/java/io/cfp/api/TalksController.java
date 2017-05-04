@@ -23,6 +23,7 @@ package io.cfp.api;
 import io.cfp.mapper.ProposalMapper;
 import io.cfp.model.Proposal;
 import io.cfp.model.queries.ProposalQuery;
+import io.cfp.multitenant.TenantId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ public class TalksController {
     private static final Logger LOGGER = LoggerFactory.getLogger(TalksController.class);
 
     @Autowired
-    private ProposalMapper proposalMapper;
+    private ProposalMapper proposals;
 
 
     /**
@@ -51,13 +52,14 @@ public class TalksController {
      * @return Liste de proposition
      */
     @GetMapping("/talks")
-    public List<Proposal> search(@RequestParam(name = "userId", required = false) Integer userId) {
+    public List<Proposal> search(@TenantId String event, @RequestParam(name = "userId", required = false) Integer userId) {
         ProposalQuery query = new ProposalQuery()
+            .setEventId(event)
             .setState(Proposal.State.ACCEPTED.name())
             .setUserId(userId);
 
         LOGGER.info("Search accepted Proposals : {}", query);
-        List<Proposal> proposals = proposalMapper.findAll(query);
+        List<Proposal> proposals = this.proposals.findAll(query);
         LOGGER.debug("Found {} Proposals", proposals.size());
         return proposals;
     }
