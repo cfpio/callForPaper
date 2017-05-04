@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = { "/v0/adminUser", "/api/adminUser" }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -63,15 +64,15 @@ public class AdminUserController {
         }
 
         AdminUserInfo infos = new AdminUserInfo("./logout", user.getEmail());
-        List<Role> userRoles = roles.findByUserIdAndEventId(user.getId(), Event.current());
-        for (Role role : userRoles) {
-        	if (Role.ADMIN.equals(role.getName())) {
+        user.addRoles(roles.findByUserIdAndEventId(user.getId(), Event.current()).stream().map(r -> r.getName()).collect(Collectors.toList()));
+        for (String role : user.getRoles()) {
+        	if (Role.ADMIN.equals(role)) {
         		infos.setAdmin(true);
         	}
-        	if (Role.OWNER.equals(role.getName())) {
+        	if (Role.OWNER.equals(role)) {
         		infos.setOwner(true);
         	}
-            if (Role.REVIEWER.equals(role.getName())) {
+            if (Role.REVIEWER.equals(role)) {
                 infos.setReviewer(true);
             }
          }
