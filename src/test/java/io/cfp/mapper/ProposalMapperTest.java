@@ -102,7 +102,6 @@ public class ProposalMapperTest {
         Proposal proposal = new Proposal() ;
         proposal.setId(PROPOSAL_ID);
         proposal.setName("UPDATED_NAME");
-        proposal.setState(Proposal.State.CONFIRMED);
         int updatedLines = proposalMapper.updateForEvent(proposal, "EVENT_ID");
 
         assertThat(updatedLines).isEqualTo(1);
@@ -110,7 +109,6 @@ public class ProposalMapperTest {
         Proposal updatedProposal = proposalMapper.findById(PROPOSAL_ID);
         assertThat(updatedProposal).isNotNull();
         assertThat(updatedProposal.getName()).isEqualTo("UPDATED_NAME");
-        assertThat(updatedProposal.getState()).isEqualTo(Proposal.State.CONFIRMED);
     }
 
     @Test

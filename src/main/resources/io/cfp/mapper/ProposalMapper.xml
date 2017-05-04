@@ -125,8 +125,7 @@
 
     <update id="updateForEvent">
         UPDATE proposals
-        SET state=#{it.state},
-            name=#{it.name},
+        SET name=#{it.name},
             description=#{it.description},
             refs=#{it.references},
             difficulty=#{it.difficulty},
