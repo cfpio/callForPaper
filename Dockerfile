@@ -16,7 +16,7 @@ LABEL maintainer "team@breizhcamp.org"
 EXPOSE 8080
 ENTRYPOINT [ "java", "-jar", "app.jar" ]
 
-COPY --from=build target/call-for-paper.jar /app.jar
+COPY --from=build /work/target/call-for-paper.jar /app.jar
 
 
 
