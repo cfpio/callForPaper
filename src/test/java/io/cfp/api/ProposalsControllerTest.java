@@ -1,5 +1,6 @@
 package io.cfp.api;
 
+import io.cfp.entity.Role;
 import io.cfp.mapper.ProposalMapper;
 import io.cfp.mapper.UserMapper;
 import io.cfp.model.Proposal;
@@ -77,9 +78,18 @@ public class ProposalsControllerTest {
 
         when(proposalMapper.findAll(any(ProposalQuery.class))).thenReturn(proposals);
 
-        mockMvc.perform(get("/api/proposals")
+        User user = new User();
+        user.setEmail("EMAIL");
+        user.addRole(Role.ADMIN);
+        String token = Utils.createTokenForUser(user);
+
+        when(userMapper.findByEmail("EMAIL")).thenReturn(user);
+
+
+        mockMvc.perform(get("/v1/proposals")
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .header("Authorization", "Bearer "+token)
             )
             .andDo(print())
             .andExpect(status().isOk())
@@ -93,7 +103,7 @@ public class ProposalsControllerTest {
 
         when(proposalMapper.findById(eq(10))).thenReturn(proposal);
 
-        mockMvc.perform(get("/api/proposals/10")
+        mockMvc.perform(get("/v1/proposals/10")
             .accept(MediaType.APPLICATION_JSON_UTF8)
             .contentType(MediaType.APPLICATION_JSON_UTF8)
         )
@@ -121,7 +131,7 @@ public class ProposalsControllerTest {
     @Test
     public void should_not_authorise_anonymous_to_create_proposals() throws Exception {
 
-        mockMvc.perform(post("/api/proposals")
+        mockMvc.perform(post("/v1/proposals")
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
             )
@@ -141,7 +151,7 @@ public class ProposalsControllerTest {
 
         String newProposal = Utils.getContent("/json/proposals/new_proposal.json");
 
-        mockMvc.perform(post("/api/proposals")
+        mockMvc.perform(post("/v1/proposals")
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(newProposal)
