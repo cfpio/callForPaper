@@ -103,7 +103,7 @@ public class ProposalMapperTest {
         proposal.setId(PROPOSAL_ID);
         proposal.setName("UPDATED_NAME");
         proposal.setState(Proposal.State.CONFIRMED);
-        int updatedLines = proposalMapper.update(proposal);
+        int updatedLines = proposalMapper.updateForEvent(proposal, "EVENT_ID");
 
         assertThat(updatedLines).isEqualTo(1);
 

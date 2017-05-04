@@ -139,7 +139,7 @@
             room_id=#{it.roomId},
             video=#{it.video},
             slides=#{it.slides}
-        WHERE id = #{id}  AND event = #{eventId}
+        WHERE id = #{it.id}  AND event_id = #{eventId}
     </update>
 
     <delete id="delete" parameterType="io.cfp.model.Proposal">
