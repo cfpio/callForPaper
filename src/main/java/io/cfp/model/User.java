@@ -68,6 +68,10 @@ public class User {
         return this;
     }
 
+    public boolean hasRole(String role) {
+        return roles != null && roles.contains(role);
+    }
+
     public String getShortName() {
         String res = "";
         if (firstname != null && firstname.length() > 0) {

@@ -34,7 +34,7 @@ public interface ProposalMapper {
     Proposal findById(Integer id);
     int insert(Proposal proposal);
     int updateForEvent(@Param("it") Proposal proposal, @Param("eventId") String eventId);
-    int delete(Proposal proposal);
+    int deleteForEvent(@Param("id") int id, @Param("eventId") String eventId);
 
     int count(ProposalQuery proposalQuery);
 

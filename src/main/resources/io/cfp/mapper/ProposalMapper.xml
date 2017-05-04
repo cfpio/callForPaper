@@ -142,9 +142,9 @@
         WHERE id = #{it.id}  AND event_id = #{eventId}
     </update>
 
-    <delete id="delete" parameterType="io.cfp.model.Proposal">
+    <delete id="deleteForEvent" parameterType="io.cfp.model.Proposal">
         DELETE FROM proposals
-        WHERE id = #{id}
+        WHERE id = #{id} AND event_id = #{eventId}
     </delete>
 
 </mapper>

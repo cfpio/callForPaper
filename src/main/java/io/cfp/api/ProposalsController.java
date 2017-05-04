@@ -23,6 +23,7 @@ package io.cfp.api;
 import io.cfp.entity.Role;
 import io.cfp.mapper.ProposalMapper;
 import io.cfp.model.Proposal;
+import io.cfp.model.User;
 import io.cfp.model.queries.ProposalQuery;
 import io.cfp.multitenant.TenantId;
 import org.slf4j.Logger;
@@ -30,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -84,21 +86,27 @@ public class ProposalsController {
     @PutMapping("/proposals/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Secured(io.cfp.entity.Role.AUTHENTICATED)
-    public void update(@TenantId String event,
+    public void update(@AuthenticationPrincipal User user,
+                       @TenantId String event,
                        @PathVariable Integer id, Proposal proposal) {
-        if (id.equals(proposal.getId())) {
-            LOGGER.info("Update a Proposal : {}", proposal.getName());
-            proposals.updateForEvent(proposal, event);
+
+        if (!user.hasRole(Role.ADMIN)) {
+            // FIXME only ADMIN can set state to ACCEPTED/REJECTED
+            // FIXME simple user can only update his own proposal
         }
+        proposal.setId(id);
+        LOGGER.info("Update a Proposal : {}", proposal.getName());
+        proposals.updateForEvent(proposal, event);
     }
 
     @DeleteMapping("/proposals/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Secured(io.cfp.entity.Role.ADMIN)
-    public void delete(@PathVariable Integer id) {
+    public void delete(@AuthenticationPrincipal User user,
+                       @TenantId String event,
+                       @PathVariable Integer id) {
         LOGGER.info("Delete a Proposal with id {}", id);
-        Proposal proposal = new Proposal().setId(id);
-        proposals.delete(proposal);
+        proposals.deleteForEvent(id, event);
     }
 
 }
