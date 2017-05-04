@@ -5,7 +5,7 @@ set -x -e
 #
 # Build production docker image
 #
-docker build -t cfpio/callforpapers:1.0.${BUILD_NUMBER}  -t cfpio/callforpapers:latest --label "org.label-schema.vcs-ref-commit=$GIT_COMMIT" dist
+docker build -t cfpio/callforpapers:1.0.${BUILD_NUMBER}  -t cfpio/callforpapers:latest --label "org.label-schema.vcs-ref-commit=$GIT_COMMIT" .
 
 #
 # Push to Dockerhub
