@@ -95,43 +95,4 @@ public class DraftsController {
         return talkService.editDraft(user.getId(), talkUser);
     }
 
-    /**
-     * Get all co-draft for the current user
-     */
-    @RequestMapping(value="/codrafts", method= RequestMethod.GET)
-    @Secured(Role.AUTHENTICATED)
-    public List<TalkUser> getCoDrafts(@AuthenticationPrincipal User user) throws NotVerifiedException {
-        return talkService.findAllCospeakerTalks(user.getId(), Talk.State.DRAFT);
-    }
-
-    /**
-     * Get a co-draft for the current user
-     */
-    @RequestMapping(value="/codrafts/{talkId}", method= RequestMethod.GET)
-    @Secured(Role.AUTHENTICATED)
-    public TalkUser getCoDraft(@AuthenticationPrincipal User user, @PathVariable Integer talkId) throws NotVerifiedException {
-        TalkUser talk = talkService.getOneCospeakerTalk(user.getId(), talkId);
-        return talk;
-    }
-
-
-    /**
-     * Get all co-session for the current user
-     */
-    @RequestMapping(value="/cosessions", method= RequestMethod.GET)
-    @Secured(Role.AUTHENTICATED)
-    public List<TalkUser> getCoSessions(@AuthenticationPrincipal User user) throws NotVerifiedException {
-        return talkService.findAllCospeakerTalks(user.getId(), Talk.State.CONFIRMED, Talk.State.ACCEPTED, Talk.State.REFUSED);
-    }
-
-    /**
-     * Get a co-session for the current user
-     */
-    @RequestMapping(value = "/cosessions/{talkId}", method = RequestMethod.GET)
-    @Secured(Role.AUTHENTICATED)
-    public TalkUser getCoSession(@AuthenticationPrincipal User user, @PathVariable Integer talkId) throws NotVerifiedException {
-        TalkUser talk = talkService.getOneCospeakerTalk(user.getId(), talkId);
-
-        return talk;
-    }
 }
