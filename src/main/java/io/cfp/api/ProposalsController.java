@@ -35,7 +35,11 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
@@ -52,11 +56,19 @@ public class ProposalsController {
     @GetMapping("/proposals")
     @Secured({Role.REVIEWER, Role.ADMIN})
     public List<Proposal> search(@TenantId String event,
-                                 @RequestParam(name = "state", required = false) String state,
+                                 @RequestParam(name = "states", required = false) String states,
                                  @RequestParam(name = "userId", required = false) Integer userId) {
+
+        List<Proposal.State> stateList = new ArrayList<>();
+        if (states != null) {
+            stateList = Arrays.stream(states.split(","))
+                .map(Proposal.State::valueOf)
+                .collect(Collectors.toList());
+        }
+
         ProposalQuery query = new ProposalQuery()
             .setEventId(event)
-            .setState(state)
+            .setStates(stateList)
             .setUserId(userId);
 
         LOGGER.info("Search Proposals : {}", query);
@@ -78,7 +90,7 @@ public class ProposalsController {
     @ResponseStatus(HttpStatus.CREATED)
     @Secured(io.cfp.entity.Role.AUTHENTICATED)
     public Proposal create(@TenantId String event,
-                           Proposal proposal) {
+                           @Valid @RequestBody Proposal proposal) {
         LOGGER.info("Create a Proposal : {}", proposal.getName());
         proposals.insert(proposal.setEventId(event));
 
@@ -90,10 +102,12 @@ public class ProposalsController {
     @Secured(io.cfp.entity.Role.AUTHENTICATED)
     public void update(@AuthenticationPrincipal User user,
                        @TenantId String event,
-                       @PathVariable Integer id, Proposal proposal) {
+                       @PathVariable Integer id,
+                       @Valid @RequestBody Proposal proposal) {
 
         // A user can only update its proposals
-        if (!user.hasRole(Role.ADMIN) && user.getId() != proposal.getSpeaker().getId()) {
+        if (!user.hasRole(Role.ADMIN)
+            && user.getId() != proposal.getSpeaker().getId()) {
             throw new ForbiddenException();
         }
         proposal.setId(id);

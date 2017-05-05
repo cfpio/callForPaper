@@ -2,6 +2,7 @@ package io.cfp.api;
 
 import io.cfp.SecurityConfiguration;
 import io.cfp.WebConfiguration;
+import io.cfp.config.exception.GlobalControllerExceptionHandler;
 import io.cfp.config.filter.AuthFilter;
 import io.cfp.repository.RoleRepository;
 import io.cfp.repository.UserRepo;
@@ -10,10 +11,12 @@ import io.cfp.service.user.SecurityUserService;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import static org.mockito.Mockito.mock;
 
 @SpringBootApplication
+@EnableWebMvc
 @Import({SecurityConfiguration.class, WebConfiguration.class })
 class ApiTestApplication {
 
@@ -45,6 +48,9 @@ class ApiTestApplication {
         return new AuthUtils();
     }
 
-
+    @Bean
+    public GlobalControllerExceptionHandler exceptionHandler() {
+        return new GlobalControllerExceptionHandler();
+    }
 
 }

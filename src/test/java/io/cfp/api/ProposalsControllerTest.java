@@ -1,9 +1,9 @@
 package io.cfp.api;
 
-import io.cfp.entity.Role;
 import io.cfp.mapper.ProposalMapper;
 import io.cfp.mapper.UserMapper;
 import io.cfp.model.Proposal;
+import io.cfp.model.Role;
 import io.cfp.model.User;
 import io.cfp.model.queries.ProposalQuery;
 import io.cfp.utils.Utils;
@@ -21,11 +21,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -46,6 +44,7 @@ public class ProposalsControllerTest {
 
     @Before
     public void setUp() {
+
         User speaker = new User()
             .setId(20)
             .setEmail("EMAIL");
@@ -87,10 +86,10 @@ public class ProposalsControllerTest {
 
 
         mockMvc.perform(get("/v1/proposals")
-                .accept(MediaType.APPLICATION_JSON_UTF8)
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .header("Authorization", "Bearer "+token)
-            )
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .header("Authorization", "Bearer "+token)
+        )
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -101,11 +100,21 @@ public class ProposalsControllerTest {
     @Test
     public void should_get_proposal_by_id() throws Exception {
 
-        when(proposalMapper.findById(eq(10))).thenReturn(proposal);
+        when(proposalMapper.findById(eq(10), anyString())).thenReturn(proposal);
+
+        User user = new User();
+        user.setId(20);
+        user.setEmail("EMAIL");
+        user.addRole(Role.ADMIN);
+        String token = Utils.createTokenForUser(user);
+
+        when(userMapper.findByEmail("EMAIL")).thenReturn(user);
+
 
         mockMvc.perform(get("/v1/proposals/10")
             .accept(MediaType.APPLICATION_JSON_UTF8)
             .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .header("Authorization", "Bearer "+token)
         )
             .andDo(print())
             .andExpect(status().isOk())
@@ -131,12 +140,15 @@ public class ProposalsControllerTest {
     @Test
     public void should_not_authorise_anonymous_to_create_proposals() throws Exception {
 
+        String newProposal = Utils.getContent("/json/proposals/new_proposal.json");
+
         mockMvc.perform(post("/v1/proposals")
-                .accept(MediaType.APPLICATION_JSON_UTF8)
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-            )
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .content(newProposal)
+        )
             .andDo(print())
-            .andExpect(status().isForbidden())
+            .andExpect(status().isUnauthorized())
         ;
     }
 
@@ -144,7 +156,9 @@ public class ProposalsControllerTest {
     public void should_create_proposals() throws Exception {
 
         User user = new User();
+        user.setId(20);
         user.setEmail("EMAIL");
+        user.addRole(Role.AUTHENTICATED);
         String token = Utils.createTokenForUser(user);
 
         when(userMapper.findByEmail("EMAIL")).thenReturn(user);
@@ -152,13 +166,109 @@ public class ProposalsControllerTest {
         String newProposal = Utils.getContent("/json/proposals/new_proposal.json");
 
         mockMvc.perform(post("/v1/proposals")
-                .accept(MediaType.APPLICATION_JSON_UTF8)
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(newProposal)
-                .header("Authorization", "Bearer "+token)
-            )
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .header("Authorization", "Bearer "+token)
+            .content(newProposal)
+        )
             .andDo(print())
             .andExpect(status().isCreated())
+        ;
+    }
+
+    @Test
+    public void should_not_create_invalid_proposals() throws Exception {
+
+        User user = new User();
+        user.setId(20);
+        user.setEmail("EMAIL");
+        user.addRole(Role.AUTHENTICATED);
+        String token = Utils.createTokenForUser(user);
+
+        when(userMapper.findByEmail("EMAIL")).thenReturn(user);
+
+        String invalidProposal = Utils.getContent("/json/proposals/invalid_proposal.json");
+
+        mockMvc.perform(post("/v1/proposals")
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .header("Authorization", "Bearer "+token)
+            .content(invalidProposal)
+        )
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+        ;
+    }
+
+    @Test
+    public void should_update_my_proposals() throws Exception {
+
+        User user = new User();
+        user.setId(20);
+        user.setEmail("EMAIL");
+        user.addRole(Role.AUTHENTICATED);
+        String token = Utils.createTokenForUser(user);
+
+        when(userMapper.findByEmail("EMAIL")).thenReturn(user);
+
+        String updatedProposal = Utils.getContent("/json/proposals/other_proposal.json");
+
+        mockMvc.perform(put("/v1/proposals/25")
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .header("Authorization", "Bearer "+token)
+            .content(updatedProposal)
+        )
+            .andDo(print())
+            .andExpect(status().isNoContent())
+        ;
+    }
+
+    @Test
+    public void should_not_update_others_proposals() throws Exception {
+
+        User user = new User();
+        user.setId(21);
+        user.setEmail("EMAIL");
+        user.addRole(Role.AUTHENTICATED);
+        String token = Utils.createTokenForUser(user);
+
+        when(userMapper.findByEmail("EMAIL")).thenReturn(user);
+
+        String updatedProposal = Utils.getContent("/json/proposals/other_proposal.json");
+
+        mockMvc.perform(put("/v1/proposals/25")
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .header("Authorization", "Bearer "+token)
+            .content(updatedProposal)
+        )
+            .andDo(print())
+            .andExpect(status().isForbidden())
+        ;
+    }
+
+    @Test
+    public void should_not_update_invalid_proposals() throws Exception {
+
+        User user = new User();
+        user.setId(21);
+        user.setEmail("EMAIL");
+        user.addRole(Role.AUTHENTICATED);
+        String token = Utils.createTokenForUser(user);
+
+        when(userMapper.findByEmail("EMAIL")).thenReturn(user);
+
+        String invalidProposal = Utils.getContent("/json/proposals/invalid_proposal.json");
+
+        mockMvc.perform(put("/v1/proposals/25")
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .header("Authorization", "Bearer "+token)
+            .content(invalidProposal)
+        )
+            .andDo(print())
+            .andExpect(status().isBadRequest())
         ;
     }
 
