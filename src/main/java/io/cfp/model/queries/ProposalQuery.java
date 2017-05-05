@@ -18,6 +18,8 @@ public class ProposalQuery {
     private String track;
     private String room;
     private String format;
+    private String sort;
+    private String order;
 
     public ProposalQuery addStates(Proposal.State... states) {
         this.states.addAll(Arrays.asList(states));

@@ -57,7 +57,10 @@ public class ProposalsController {
     @Secured({Role.REVIEWER, Role.ADMIN})
     public List<Proposal> search(@TenantId String event,
                                  @RequestParam(name = "states", required = false) String states,
-                                 @RequestParam(name = "userId", required = false) Integer userId) {
+                                 @RequestParam(name = "userId", required = false) Integer userId,
+                                 @RequestParam(name = "sort", required = false, defaultValue = "added") String sort,
+                                 @RequestParam(name = "order", required = false, defaultValue = "asc") String order
+                                 ) {
 
         List<Proposal.State> stateList = new ArrayList<>();
         if (states != null) {
@@ -69,7 +72,9 @@ public class ProposalsController {
         ProposalQuery query = new ProposalQuery()
             .setEventId(event)
             .setStates(stateList)
-            .setUserId(userId);
+            .setUserId(userId)
+            .setSort(sort)
+            .setOrder(order.equalsIgnoreCase("desc")?"desc":"asc");
 
         LOGGER.info("Search Proposals : {}", query);
         List<Proposal> p = proposals.findAll(query);

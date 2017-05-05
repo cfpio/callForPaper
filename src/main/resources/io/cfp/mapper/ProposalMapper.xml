@@ -67,6 +67,9 @@
                 </foreach>
             </if>
         </where>
+        <if test="sort">
+            ORDER BY #{sort} #{order}
+        </if>
     </select>
 
     <select id="findById" resultMap="ProposalMap">
