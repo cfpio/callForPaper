@@ -30,7 +30,7 @@ import java.util.List;
 @Mapper
 public interface ProposalMapper {
 
-    List<Proposal> findAll(ProposalQuery userQuery);
+    List<Proposal> findAll(ProposalQuery proposalQuery);
     Proposal findById(@Param("id") int id, @Param("eventId") String eventId);
     int insert(Proposal proposal);
     int updateForEvent(@Param("it") Proposal proposal, @Param("eventId") String eventId);

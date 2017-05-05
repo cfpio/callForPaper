@@ -85,6 +85,25 @@
             <column name="video" value="PROPOSAL_VIDEO"/>
             <column name="slides" value="PROPOSAL_SLIDES"/>
         </insert>
+        <insert tableName="proposals">
+            <column name="id" value="21"/>
+            <column name="name" value="PROPOSAL_NAME_2"/>
+            <column name="event_id" value="EVENT_ID"/>
+            <column name="user" value="10"/>
+            <column name="state" value="CONFIRMED"/>
+            <column name="description" value="PROPOSAL_DESCRIPTION_2"/>
+            <column name="refs" value="PROPOSAL_REFS_2"/>
+            <column name="difficulty" value="1"/>
+            <column name="added" value="2042-12-29"/>
+            <column name="format" value="30"/>
+            <column name="schedule_date" value="2042-12-31"/>
+            <column name="schedule_heure" value="12H00"/>
+            <column name="track" value="40"/>
+            <column name="language" value="PROPOSAL_LANGUAGE_2"/>
+            <column name="room_id" value="50"/>
+            <column name="video" value="PROPOSAL_VIDEO_2"/>
+            <column name="slides" value="PROPOSAL_SLIDES_2"/>
+        </insert>
         <insert tableName="cospeakers">
             <column name="user_id" value="12"/>
             <column name="proposal_id" value="20"/>

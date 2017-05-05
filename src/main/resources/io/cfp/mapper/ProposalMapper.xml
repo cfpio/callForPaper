@@ -60,8 +60,11 @@
             <if test="userId">
                 p.user = #{userId}
             </if>
-            <if test="state">
-                p.state = #{state}
+            <if test="states.size != 0">
+                p.state in
+                <foreach item="item" index="index" collection="states" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
             </if>
         </where>
     </select>
@@ -81,8 +84,11 @@
             <if test="userId">
                 p.user = #{userId}
             </if>
-            <if test="state">
-                p.state = #{state}
+            <if test="states.size != 0">
+                p.state in
+                <foreach item="item" index="index" collection="states" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
             </if>
         </where>
     </select>

@@ -33,6 +33,14 @@ public class ProposalMapperTest {
     }
 
     @Test
+    public void should_find_all_proposals_by_state() {
+        final ProposalQuery proposalQuery = new ProposalQuery();
+        proposalQuery.addStates(Proposal.State.ACCEPTED, Proposal.State.CONFIRMED);
+        List<Proposal> allProposals = proposalMapper.findAll(proposalQuery);
+        assertThat(allProposals).hasSize(2);
+    }
+
+    @Test
     public void should_count_all_proposals() {
         Integer numberOfProposals = proposalMapper.count(new ProposalQuery());
         assertThat(numberOfProposals).isNotZero();
@@ -43,7 +51,7 @@ public class ProposalMapperTest {
         ProposalQuery proposalQuery = new ProposalQuery();
         proposalQuery.setEventId(EVENT_ID);
         Integer numberOfProposals = proposalMapper.count(proposalQuery);
-        assertThat(numberOfProposals).isEqualTo(1);
+        assertThat(numberOfProposals).isEqualTo(2);
     }
 
     @Test
@@ -51,15 +59,15 @@ public class ProposalMapperTest {
         ProposalQuery proposalQuery = new ProposalQuery();
         proposalQuery.setUserId(USER_ID);
         Integer numberOfProposals = proposalMapper.count(proposalQuery);
-        assertThat(numberOfProposals).isEqualTo(1);
+        assertThat(numberOfProposals).isEqualTo(2);
     }
 
     @Test
     public void should_count_all_proposals_by_state() {
         ProposalQuery proposalQuery = new ProposalQuery();
-        proposalQuery.setState(Proposal.State.ACCEPTED.name());
+        proposalQuery.addStates(Proposal.State.ACCEPTED, Proposal.State.CONFIRMED);
         Integer numberOfProposals = proposalMapper.count(proposalQuery);
-        assertThat(numberOfProposals).isEqualTo(1);
+        assertThat(numberOfProposals).isEqualTo(2);
     }
 
     @Test
