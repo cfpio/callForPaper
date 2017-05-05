@@ -20,12 +20,18 @@
 
 package io.cfp.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Data
+@NoArgsConstructor
+@Accessors(chain = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Comment {
 
     private int id;
@@ -35,8 +41,8 @@ public class Comment {
     private Date added;
     private boolean internal;
 
-    private Proposal talk;
     private User user;
-    private Event event;
+    private String eventId;
+    private int proposalId;
 
 }

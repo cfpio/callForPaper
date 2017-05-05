@@ -89,6 +89,24 @@
             <column name="user_id" value="12"/>
             <column name="proposal_id" value="20"/>
         </insert>
+        <insert tableName="comments">
+            <column name="id" value="60"/>
+            <column name="user" value="10"/>
+            <column name="proposal" value="20"/>
+            <column name="event_id" value="EVENT_ID"/>
+            <column name="internal" value="0"/>
+            <column name="added" value="2042-12-31"/>
+            <column name="comment" value="COMMENT"/>
+        </insert>
+        <insert tableName="comments">
+            <column name="id" value="61"/>
+            <column name="user" value="10"/>
+            <column name="proposal" value="20"/>
+            <column name="event_id" value="EVENT_ID"/>
+            <column name="internal" value="1"/>
+            <column name="added" value="2042-12-31"/>
+            <column name="comment" value="COMMENT"/>
+        </insert>
     </changeSet>
 
 </databaseChangeLog>
