@@ -21,6 +21,7 @@ public class ProposalMapperTest {
     private static final int FORMAT_ID = 30;
     private static final int ROOM_ID = 50;
     private static final int TRACK_ID = 40;
+    public static final String EVENT_ID = "EVENT_ID";
 
     @Autowired
     private ProposalMapper proposalMapper;
@@ -40,7 +41,7 @@ public class ProposalMapperTest {
     @Test
     public void should_count_all_proposals_by_eventId() {
         ProposalQuery proposalQuery = new ProposalQuery();
-        proposalQuery.setEventId("EVENT_ID");
+        proposalQuery.setEventId(EVENT_ID);
         Integer numberOfProposals = proposalMapper.count(proposalQuery);
         assertThat(numberOfProposals).isEqualTo(1);
     }
@@ -63,7 +64,7 @@ public class ProposalMapperTest {
 
     @Test
     public void should_find_a_proposal_by_id() {
-        Proposal foundProposal = proposalMapper.findById(PROPOSAL_ID);
+        Proposal foundProposal = proposalMapper.findById(PROPOSAL_ID, EVENT_ID);
         assertThat(foundProposal).isNotNull();
         assertThat(foundProposal.getId()).isEqualTo(20);
         assertThat(foundProposal.getAdded()).isEqualTo("2042-12-29");
@@ -102,18 +103,18 @@ public class ProposalMapperTest {
         Proposal proposal = new Proposal() ;
         proposal.setId(PROPOSAL_ID);
         proposal.setName("UPDATED_NAME");
-        int updatedLines = proposalMapper.updateForEvent(proposal, "EVENT_ID");
+        int updatedLines = proposalMapper.updateForEvent(proposal, EVENT_ID);
 
         assertThat(updatedLines).isEqualTo(1);
 
-        Proposal updatedProposal = proposalMapper.findById(PROPOSAL_ID);
+        Proposal updatedProposal = proposalMapper.findById(PROPOSAL_ID, EVENT_ID);
         assertThat(updatedProposal).isNotNull();
         assertThat(updatedProposal.getName()).isEqualTo("UPDATED_NAME");
     }
 
     @Test
     public void should_delete_a_proposal() {
-        int deletedLines = proposalMapper.deleteForEvent(PROPOSAL_ID, "EVENT_ID");
+        int deletedLines = proposalMapper.deleteForEvent(PROPOSAL_ID, EVENT_ID);
 
         assertThat(deletedLines).isEqualTo(1);
     }

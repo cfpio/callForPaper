@@ -68,7 +68,7 @@
 
     <select id="findById" resultMap="ProposalMap">
         <include refid="proposalColumns"/>
-        WHERE p.id = #{id}
+        WHERE p.id = #{id} AND p.event_id = #{eventId}
     </select>
 
     <select id="count" parameterType="io.cfp.model.queries.ProposalQuery" resultType="int">

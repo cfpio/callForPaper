@@ -20,6 +20,7 @@
 
 package io.cfp.api;
 
+import io.cfp.domain.exception.ForbiddenException;
 import io.cfp.entity.Role;
 import io.cfp.mapper.ProposalMapper;
 import io.cfp.model.Proposal;
@@ -65,9 +66,10 @@ public class ProposalsController {
     }
 
     @GetMapping("/proposals/{id}")
-    public Proposal get(@PathVariable Integer id) {
+    @Secured({Role.REVIEWER, Role.ADMIN})
+    public Proposal get(@TenantId String event, @PathVariable Integer id) {
         LOGGER.info("Get Proposal with id {}", id);
-        Proposal proposal = proposals.findById(id);
+        Proposal proposal = proposals.findById(id, event);
         LOGGER.debug("Found Proposal {}", proposal);
         return proposal;
     }
@@ -90,12 +92,12 @@ public class ProposalsController {
                        @TenantId String event,
                        @PathVariable Integer id, Proposal proposal) {
 
-        if (!user.hasRole(Role.ADMIN)) {
-            // FIXME only ADMIN can set state to ACCEPTED/REJECTED
-            // FIXME simple user can only update his own proposal
+        // A user can only update its proposals
+        if (!user.hasRole(Role.ADMIN) && user.getId() != proposal.getSpeaker().getId()) {
+            throw new ForbiddenException();
         }
         proposal.setId(id);
-        LOGGER.info("Update a Proposal : {}", proposal.getName());
+        LOGGER.info("User {} update a Proposal : {}", user.getId(), proposal.getName());
         proposals.updateForEvent(proposal, event);
     }
 
