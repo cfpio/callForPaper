@@ -20,7 +20,6 @@
 
 package io.cfp.api;
 
-import io.cfp.domain.exception.ForbiddenException;
 import io.cfp.entity.Role;
 import io.cfp.mapper.UserMapper;
 import io.cfp.model.User;
@@ -58,16 +57,4 @@ public class UserController {
         userMapper.update(userUpdate);
     }
 
-    @PutMapping(value = "/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@PathVariable Integer id, @RequestBody User userUpdate, @AuthenticationPrincipal User user) {
-        // A user should only modify his own profil
-        if (!id.equals(userUpdate.getId()) || !id.equals(user.getId())) {
-            throw new ForbiddenException();
-        }
-
-        LOGGER.info("update: {}", userUpdate);
-
-        userMapper.update(userUpdate);
-    }
 }
