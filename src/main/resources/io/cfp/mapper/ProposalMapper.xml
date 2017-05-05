@@ -15,12 +15,10 @@
     <sql id="proposalColumns">
         SELECT
             *,
-            e.id as "eventId",
             p.schedule_date as "schedule",
             p.refs as "references",
-            f.id as "formatId",
-            r.id as "roomId",
-            t.id as "trackId",
+            p.format as "formatId",
+            p.track as "trackId",
             t.libelle as "trackLabel",
             u.id as "speaker.id",
             u.email as "speaker.email",
@@ -42,9 +40,6 @@
             cu.firstname as "cospeaker_firstname",
             cu.lastname as "cospeaker_lastname"
         FROM proposals p
-            left outer join events e on p.event_id = e.id
-            left outer join formats f on p.format = f.id
-            left outer join rooms r on p.room_id = r.id
             left outer join tracks t on p.track = t.id
             left outer join users u on p.user = u.id
             left outer join cospeakers c on c.proposal_id = p.id
