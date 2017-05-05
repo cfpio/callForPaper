@@ -39,7 +39,7 @@ import java.util.List;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
 @RestController
-@RequestMapping(value = { "/v1" }, produces = APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = { "/v1", "/api" }, produces = APPLICATION_JSON_UTF8_VALUE)
 public class ProposalsController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProposalsController.class);

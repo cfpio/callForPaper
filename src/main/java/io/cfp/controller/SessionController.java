@@ -45,7 +45,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = { "/v0", "/api" }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = { "/v0" }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class SessionController  {
 
     @Autowired
