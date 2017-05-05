@@ -45,7 +45,7 @@ import io.cfp.repository.EventRepository;
 import io.cfp.repository.FormatRepo;
 import io.cfp.repository.TalkRepo;
 
-@RestController
+@RestController("formatscontroller_v0")
 @RequestMapping(value = { "/v0/formats" }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class FormatControler {
 

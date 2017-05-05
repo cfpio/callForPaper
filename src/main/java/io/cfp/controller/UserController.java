@@ -36,8 +36,8 @@ import javax.transaction.Transactional;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
-@RestController
-@RequestMapping(value = { "/v0/users", "/api/users" }, produces = APPLICATION_JSON_UTF8_VALUE)
+@RestController("userscontroller_v0")
+@RequestMapping(value = { "/v0/users" }, produces = APPLICATION_JSON_UTF8_VALUE)
 public class UserController {
 
     @Autowired

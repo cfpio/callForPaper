@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
-@RestController
+@RestController("roomscontroller_v0")
 @RequestMapping(value = { "/v0/rooms" }, produces = APPLICATION_JSON_UTF8_VALUE)
 public class RoomsControler {
 

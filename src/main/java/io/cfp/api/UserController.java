@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
 @RestController
-@RequestMapping(value = { "/v1/users" }, produces = APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = { "/api/users", "/v1/users" }, produces = APPLICATION_JSON_UTF8_VALUE)
 public class UserController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
