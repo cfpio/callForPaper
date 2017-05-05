@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController("statscontroller_v0")
-@RequestMapping(value = { "/v0/stats", "/api/stats" }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = { "/v0/stats" }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class StatsController  {
 
     @Autowired
