@@ -35,6 +35,7 @@ public class ProposalMapperTest {
     @Test
     public void should_find_all_proposals_by_state() {
         final ProposalQuery proposalQuery = new ProposalQuery();
+        proposalQuery.setEventId(EVENT_ID);
         proposalQuery.addStates(Proposal.State.ACCEPTED, Proposal.State.CONFIRMED);
         List<Proposal> allProposals = proposalMapper.findAll(proposalQuery);
         assertThat(allProposals).hasSize(2);

@@ -53,10 +53,10 @@
                 p.event_id = #{eventId}
             </if>
             <if test="userId">
-                p.user = #{userId}
+                AND p.user = #{userId}
             </if>
             <if test="states.size != 0">
-                p.state in
+                AND p.state in
                 <foreach item="item" index="index" collection="states" open="(" separator="," close=")">
                     #{item}
                 </foreach>
@@ -80,10 +80,10 @@
                 p.event_id = #{eventId}
             </if>
             <if test="userId">
-                p.user = #{userId}
+                AND p.user = #{userId}
             </if>
             <if test="states.size != 0">
-                p.state in
+                AND p.state in
                 <foreach item="item" index="index" collection="states" open="(" separator="," close=")">
                     #{item}
                 </foreach>
