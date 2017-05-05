@@ -18,7 +18,7 @@ import static io.cfp.model.Proposal.State.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
 @RestController
-@RequestMapping(value = { "/v1/stats" }, produces = APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = { "/v1/stats", "/api/stats" }, produces = APPLICATION_JSON_UTF8_VALUE)
 @Secured({Role.REVIEWER, Role.ADMIN})
 public class StatsController {
 
