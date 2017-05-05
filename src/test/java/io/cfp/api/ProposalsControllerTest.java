@@ -85,7 +85,7 @@ public class ProposalsControllerTest {
         when(userMapper.findByEmail("EMAIL")).thenReturn(user);
 
 
-        mockMvc.perform(get("/v1/proposals")
+        mockMvc.perform(get("/api/proposals")
             .accept(MediaType.APPLICATION_JSON_UTF8)
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .header("Authorization", "Bearer "+token)
@@ -111,7 +111,7 @@ public class ProposalsControllerTest {
         when(userMapper.findByEmail("EMAIL")).thenReturn(user);
 
 
-        mockMvc.perform(get("/v1/proposals/10")
+        mockMvc.perform(get("/api/proposals/10")
             .accept(MediaType.APPLICATION_JSON_UTF8)
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .header("Authorization", "Bearer "+token)
@@ -142,7 +142,7 @@ public class ProposalsControllerTest {
 
         String newProposal = Utils.getContent("/json/proposals/new_proposal.json");
 
-        mockMvc.perform(post("/v1/proposals")
+        mockMvc.perform(post("/api/proposals")
             .accept(MediaType.APPLICATION_JSON_UTF8)
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .content(newProposal)
@@ -165,7 +165,7 @@ public class ProposalsControllerTest {
 
         String newProposal = Utils.getContent("/json/proposals/new_proposal.json");
 
-        mockMvc.perform(post("/v1/proposals")
+        mockMvc.perform(post("/api/proposals")
             .accept(MediaType.APPLICATION_JSON_UTF8)
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .header("Authorization", "Bearer "+token)
@@ -189,7 +189,7 @@ public class ProposalsControllerTest {
 
         String invalidProposal = Utils.getContent("/json/proposals/invalid_proposal.json");
 
-        mockMvc.perform(post("/v1/proposals")
+        mockMvc.perform(post("/api/proposals")
             .accept(MediaType.APPLICATION_JSON_UTF8)
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .header("Authorization", "Bearer "+token)
@@ -213,7 +213,7 @@ public class ProposalsControllerTest {
 
         String updatedProposal = Utils.getContent("/json/proposals/other_proposal.json");
 
-        mockMvc.perform(put("/v1/proposals/25")
+        mockMvc.perform(put("/api/proposals/25")
             .accept(MediaType.APPLICATION_JSON_UTF8)
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .header("Authorization", "Bearer "+token)
@@ -237,7 +237,7 @@ public class ProposalsControllerTest {
 
         String updatedProposal = Utils.getContent("/json/proposals/other_proposal.json");
 
-        mockMvc.perform(put("/v1/proposals/25")
+        mockMvc.perform(put("/api/proposals/25")
             .accept(MediaType.APPLICATION_JSON_UTF8)
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .header("Authorization", "Bearer "+token)
@@ -261,7 +261,7 @@ public class ProposalsControllerTest {
 
         String invalidProposal = Utils.getContent("/json/proposals/invalid_proposal.json");
 
-        mockMvc.perform(put("/v1/proposals/25")
+        mockMvc.perform(put("/api/proposals/25")
             .accept(MediaType.APPLICATION_JSON_UTF8)
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .header("Authorization", "Bearer "+token)
