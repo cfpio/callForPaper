@@ -65,6 +65,7 @@ public class CommentMapperTest {
         comment.setComment("UPDATED_COMMENT");
         comment.setEventId("EVENT_ID");
         comment.setProposalId(20);
+        comment.setUser(new User().setId(10));
         comment.setAdded(new Date());
 
         int updatedLines = commentMapper.update(comment);
@@ -78,6 +79,7 @@ public class CommentMapperTest {
         comment.setId(COMMENT_ID_TO_DELETE);
         comment.setEventId("EVENT_ID");
         comment.setProposalId(20);
+        comment.setUser(new User().setId(10));
 
         int deletedLines = commentMapper.delete(comment);
 

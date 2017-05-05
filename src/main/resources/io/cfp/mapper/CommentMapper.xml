@@ -24,14 +24,14 @@
         WHERE id = #{id}
         AND event_id = #{eventId}
         AND proposal = #{proposalId}
-        AND `user` = #{user}
+        AND `user` = #{user.id}
     </update>
 
     <delete id="delete" parameterType="io.cfp.model.Comment">
         DELETE FROM comments WHERE id = #{id}
         AND event_id = #{eventId}
         AND proposal = #{proposalId}
-        AND `user` = #{user}
+        AND `user` = #{user.id}
     </delete>
 
 </mapper>
