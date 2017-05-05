@@ -127,5 +127,24 @@ public class ProposalMapperTest {
         assertThat(deletedLines).isEqualTo(1);
     }
 
+    @Test
+    public void should_update_the_state_of_a_proposal() {
+        Proposal proposal = new Proposal();
+        proposal.setId(PROPOSAL_ID);
+        proposal.setEventId(EVENT_ID);
+        proposal.setState(Proposal.State.ACCEPTED);
+
+        int updatedLines = proposalMapper.updateState(proposal);
+
+        assertThat(updatedLines).isEqualTo(1);
+    }
+
+    @Test
+    public void should_batch_update_the_state_of_proposals_of_some_state() {
+        int updatedLines = proposalMapper.updateAllStateWhere(EVENT_ID, Proposal.State.REFUSED, Proposal.State.ACCEPTED);
+
+        assertThat(updatedLines).isEqualTo(1);
+    }
+
 
 }

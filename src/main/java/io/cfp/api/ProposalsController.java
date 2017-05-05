@@ -130,4 +130,70 @@ public class ProposalsController {
         proposals.deleteForEvent(id, event);
     }
 
+
+    @PutMapping("/proposals/{id}/accept")
+    @Secured(Role.ADMIN)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void accept(@TenantId String event,
+                       @PathVariable int id) {
+
+        LOGGER.info("Proposal {} change state to ACCEPTED", id);
+        Proposal proposal = new Proposal();
+        proposal.setId(id);
+        proposal.setEventId(event);
+        proposal.setState(Proposal.State.ACCEPTED);
+
+        proposals.updateState(proposal);
+    }
+
+    @PutMapping("/proposals/{id}/backup")
+    @Secured(Role.ADMIN)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void backup(@TenantId String event,
+                       @PathVariable int id) {
+        LOGGER.info("Proposal {} change state to BACKUP", id);
+        Proposal proposal = new Proposal();
+        proposal.setId(id);
+        proposal.setEventId(event);
+        proposal.setState(Proposal.State.BACKUP);
+
+        proposals.updateState(proposal);
+    }
+
+    @PutMapping("/proposals/{id}/reject")
+    @Secured(Role.ADMIN)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void reject(@TenantId String event,
+                       @PathVariable int id) {
+        LOGGER.info("Proposal {} change state to REJECT", id);
+        Proposal proposal = new Proposal();
+        proposal.setId(id);
+        proposal.setEventId(event);
+        proposal.setState(Proposal.State.REFUSED);
+
+        proposals.updateState(proposal);
+    }
+
+    @PutMapping("/proposals/{id}/retract")
+    @Secured(Role.ADMIN)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void retract(@TenantId String event,
+                       @PathVariable int id) {
+        LOGGER.info("Proposal {} change state to CONFIRMED", id);
+        Proposal proposal = new Proposal();
+        proposal.setId(id);
+        proposal.setEventId(event);
+        proposal.setState(Proposal.State.CONFIRMED);
+
+        proposals.updateState(proposal);
+    }
+
+    @PutMapping("/proposals/rejectOthers")
+    @Secured(Role.ADMIN)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void rejectOthers(@TenantId String event) {
+        LOGGER.info("All CONFIRMED Proposal {} change state to REJECT");
+        proposals.updateAllStateWhere(event, Proposal.State.REFUSED, Proposal.State.CONFIRMED);
+    }
+
 }
