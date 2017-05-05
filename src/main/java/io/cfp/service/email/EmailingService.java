@@ -125,6 +125,20 @@ public class EmailingService {
         createAndSendEmail("confirmed.html", user.getEmail(), params, null, null, locale);
     }
 
+    @Async
+    @Transactional
+    public void sendConfirmed(io.cfp.model.User user, TalkUser talk, Locale locale) {
+        log.debug("Sending email confirmation e-mail to '{}'", user.getEmail());
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", user.getFirstname());
+        params.put("talk", talk.getName());
+        params.put("id", String.valueOf(talk.getId()));
+        params.put("subject", getSubject("confirmed", locale));
+
+        createAndSendEmail("confirmed.html", user.getEmail(), params, null, null, locale);
+    }
+
     /**
      * Send an email to a speaker to notify him that an administrator wrote a
      * new comment about his talk.

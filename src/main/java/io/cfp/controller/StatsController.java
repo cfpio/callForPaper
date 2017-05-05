@@ -23,7 +23,7 @@ package io.cfp.controller;
 import io.cfp.domain.exception.NotVerifiedException;
 import io.cfp.dto.RestrictedMeter;
 import io.cfp.entity.Role;
-import io.cfp.entity.User;
+import io.cfp.model.User;
 import io.cfp.service.TalkUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

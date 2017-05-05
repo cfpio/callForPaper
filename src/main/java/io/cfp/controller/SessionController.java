@@ -27,7 +27,7 @@ import io.cfp.dto.TalkAdmin;
 import io.cfp.dto.TalkUser;
 import io.cfp.entity.Role;
 import io.cfp.entity.Talk;
-import io.cfp.entity.User;
+import io.cfp.model.User;
 import io.cfp.repository.TalkRepo;
 import io.cfp.service.TalkUserService;
 import io.cfp.service.email.EmailingService;

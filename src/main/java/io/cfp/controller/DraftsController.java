@@ -21,16 +21,12 @@
 package io.cfp.controller;
 
 import io.cfp.domain.exception.CospeakerNotFoundException;
-import io.cfp.domain.exception.NotFoundException;
 import io.cfp.domain.exception.NotVerifiedException;
-import io.cfp.dto.TalkAdmin;
 import io.cfp.dto.TalkUser;
 import io.cfp.entity.Role;
 import io.cfp.entity.Talk;
-import io.cfp.entity.User;
-import io.cfp.repository.TalkRepo;
+import io.cfp.model.User;
 import io.cfp.service.TalkUserService;
-import io.cfp.service.email.EmailingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;

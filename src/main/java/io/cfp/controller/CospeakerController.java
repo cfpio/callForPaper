@@ -20,26 +20,21 @@
 
 package io.cfp.controller;
 
-import io.cfp.domain.exception.CospeakerNotFoundException;
 import io.cfp.domain.exception.NotVerifiedException;
 import io.cfp.dto.TalkUser;
 import io.cfp.entity.Role;
 import io.cfp.entity.Talk;
-import io.cfp.entity.User;
-import io.cfp.repository.TalkRepo;
+import io.cfp.model.User;
 import io.cfp.service.TalkUserService;
-import io.cfp.service.email.EmailingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
