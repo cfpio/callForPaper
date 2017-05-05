@@ -1,8 +1,11 @@
 package io.cfp.api;
 
+import io.cfp.domain.exception.ForbiddenException;
 import io.cfp.entity.Role;
 import io.cfp.mapper.CommentMapper;
+import io.cfp.mapper.ProposalMapper;
 import io.cfp.model.Comment;
+import io.cfp.model.Proposal;
 import io.cfp.model.User;
 import io.cfp.model.queries.CommentQuery;
 import io.cfp.multitenant.TenantId;
@@ -27,7 +30,11 @@ public class CommentsController {
     @Autowired
     private CommentMapper comments;
 
+    @Autowired
+    private ProposalMapper proposals;
+
     @RequestMapping(method = GET)
+    @Secured(Role.AUTHENTICATED)
     public Collection<Comment> all(@AuthenticationPrincipal User user,
                                    @PathVariable int proposalId,
                                    @TenantId String eventId) {
@@ -44,11 +51,21 @@ public class CommentsController {
 
     @RequestMapping(method = POST)
     @Transactional
-    @Secured(Role.OWNER)
+    @Secured(Role.AUTHENTICATED)
+    @ResponseStatus(HttpStatus.CREATED)
     public Comment create(@AuthenticationPrincipal User user,
                           @PathVariable int proposalId,
                           @RequestBody Comment comment,
                           @TenantId String eventId) {
+
+        Proposal proposal = proposals.findById(proposalId, eventId);
+
+        // si on est pas reviewer, on ne peut poster de commentaires que sur son propre proposal
+        if (!user.hasRole(Role.REVIEWER)) {
+            if (proposal.getSpeaker().getId() != user.getId()) {
+                throw new ForbiddenException();
+            }
+        }
 
         comment.setEventId(eventId);
         comment.setUser(user);
@@ -60,7 +77,7 @@ public class CommentsController {
 
     @RequestMapping(value = "/{id}", method = PUT)
     @Transactional
-    @Secured(Role.OWNER)
+    @Secured(Role.AUTHENTICATED)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable int proposalId,
                        @PathVariable int id,
