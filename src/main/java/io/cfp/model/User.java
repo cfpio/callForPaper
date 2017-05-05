@@ -24,9 +24,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 @Data
@@ -83,6 +85,20 @@ public class User {
         }
 
         return res;
+    }
+
+    /**
+     * Used to trace current user in application logs
+     */
+    public String toLog() {
+        return email + '(' + StringUtils.join(roles) + ')';
+    }
+
+    public Locale getLocale() {
+        if (language != null && language.equalsIgnoreCase("français")) {
+            return Locale.FRENCH;
+        }
+        return Locale.ENGLISH;
     }
 }
 

@@ -1,7 +1,7 @@
 package io.cfp.domain.common;
 
 import io.cfp.entity.Role;
-import io.cfp.entity.User;
+import io.cfp.model.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

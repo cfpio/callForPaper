@@ -20,8 +20,6 @@
 
 package io.cfp.model;
 
-import io.cfp.entity.*;
-import io.cfp.entity.Event;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,6 +30,12 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @Accessors(chain = true)
 public class Role {
+
+    public static final String MAINTAINER = "ROLE_MAINTAINER";
+    public static final String OWNER = "ROLE_OWNER";
+    public static final String ADMIN = "ROLE_ADMIN";
+    public static final String REVIEWER = "ROLE_REVIEWER";
+    public static final String AUTHENTICATED = "ROLE_AUTHENTICATED";
 
     private int id;
     private String name;

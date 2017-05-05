@@ -24,7 +24,7 @@ import com.google.common.annotations.VisibleForTesting;
 import io.cfp.domain.common.UserAuthentication;
 import io.cfp.entity.Event;
 import io.cfp.entity.Role;
-import io.cfp.entity.User;
+import io.cfp.model.User;
 import io.cfp.repository.RoleRepository;
 import io.cfp.service.auth.AuthUtils;
 import org.apache.log4j.MDC;
@@ -64,13 +64,7 @@ public class AuthFilter implements Filter {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
-        // FIXME Hack temporaire le temps de basculer l'ensemble du modele
-        io.cfp.model.User newUser = authUtils.getAuthUser(httpRequest);
-        User user = null;
-        if (newUser != null) {
-            user = new User(newUser);
-        }
-        User.setCurrent(user);
+        User user = authUtils.getAuthUser(httpRequest);
 
         if (user != null) {
             List<Role> roles = roleRepository.findByUserIdAndEventId(user.getId(), Event.current());
@@ -90,7 +84,6 @@ public class AuthFilter implements Filter {
         } finally {
             MDC.remove(USER);
             SecurityContextHolder.getContext().setAuthentication(null);
-            User.resetCurrent();
         }
     }
 
