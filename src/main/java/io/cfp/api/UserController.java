@@ -49,7 +49,16 @@ public class UserController {
         return user;
     }
 
-    @PutMapping(value = "/users/{id}")
+    @PutMapping(value = "/me")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateMyProfil(@RequestBody User userUpdate, @AuthenticationPrincipal User user) {
+        LOGGER.info("update: {}", userUpdate);
+        userUpdate.setId(user.getId());
+
+        userMapper.update(userUpdate);
+    }
+
+    @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable Integer id, @RequestBody User userUpdate, @AuthenticationPrincipal User user) {
         // A user should only modify his own profil
