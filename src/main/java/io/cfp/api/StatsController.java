@@ -38,22 +38,22 @@ public class StatsController {
         AdminMeter meter = new AdminMeter();
         meter.setSpeakers(submissions.countByEventId(event));
 
-        ProposalQuery totalQuery = new ProposalQuery().setEventId(event).setStates(CONFIRMED, ACCEPTED, REFUSED, BACKUP);
-        meter.setTalks(proposals.count(totalQuery);
+        ProposalQuery totalQuery = new ProposalQuery().setEventId(event).addStates(CONFIRMED, ACCEPTED, REFUSED, BACKUP);
+        meter.setTalks(proposals.count(totalQuery));
 
-        ProposalQuery draftQuery = new ProposalQuery().setEventId(event).setStates(DRAFT);
+        ProposalQuery draftQuery = new ProposalQuery().setEventId(event).addStates(DRAFT);
         meter.setDrafts(proposals.count(draftQuery));
 
-        ProposalQuery submittedQuery = new ProposalQuery().setEventId(event).setStates(CONFIRMED);
+        ProposalQuery submittedQuery = new ProposalQuery().setEventId(event).addStates(CONFIRMED);
         meter.setSubmitted(proposals.count(submittedQuery));
 
-        ProposalQuery acceptedQuery = new ProposalQuery().setEventId(event).setStates(ACCEPTED);
+        ProposalQuery acceptedQuery = new ProposalQuery().setEventId(event).addStates(ACCEPTED);
         meter.setAccepted(proposals.count(acceptedQuery));
 
-        ProposalQuery rejectedQuery = new ProposalQuery().setEventId(event).setStates(REFUSED);
+        ProposalQuery rejectedQuery = new ProposalQuery().setEventId(event).addStates(REFUSED);
         meter.setRejected(proposals.count(rejectedQuery));
 
-        ProposalQuery backupQuery = new ProposalQuery().setEventId(event).setStates(BACKUP);
+        ProposalQuery backupQuery = new ProposalQuery().setEventId(event).addStates(BACKUP);
         meter.setBackup(proposals.count(backupQuery));
 
         return meter;

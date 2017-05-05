@@ -55,7 +55,7 @@ public class TalksController {
     public List<Proposal> search(@TenantId String event, @RequestParam(name = "userId", required = false) Integer userId) {
         ProposalQuery query = new ProposalQuery()
             .setEventId(event)
-            .setState(Proposal.State.ACCEPTED.name())
+            .addStates(Proposal.State.ACCEPTED)
             .setUserId(userId);
 
         LOGGER.info("Search accepted Proposals : {}", query);
