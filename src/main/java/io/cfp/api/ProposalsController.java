@@ -96,7 +96,7 @@ public class ProposalsController {
     @Secured(io.cfp.entity.Role.AUTHENTICATED)
     public Proposal create(@TenantId String event,
                            @Valid @RequestBody Proposal proposal) {
-        LOGGER.info("Create a Proposal : {}", proposal.getName());
+        LOGGER.info("User {} create a proposal : {}", proposal.getName());
         proposals.insert(proposal.setEventId(event));
 
         return proposal;
@@ -116,7 +116,7 @@ public class ProposalsController {
             throw new ForbiddenException();
         }
         proposal.setId(id);
-        LOGGER.info("User {} update a Proposal : {}", user.getId(), proposal.getName());
+        LOGGER.info("User {} update the proposal {}", user.getId(), proposal.getName());
         proposals.updateForEvent(proposal, event);
     }
 
@@ -126,7 +126,7 @@ public class ProposalsController {
     public void delete(@AuthenticationPrincipal User user,
                        @TenantId String event,
                        @PathVariable Integer id) {
-        LOGGER.info("Delete a Proposal with id {}", id);
+        LOGGER.info("User {} delete the Proposal {}", user.getId(), id);
         proposals.deleteForEvent(id, event);
     }
 

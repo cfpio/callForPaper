@@ -9,6 +9,8 @@ import io.cfp.model.Proposal;
 import io.cfp.model.User;
 import io.cfp.model.queries.CommentQuery;
 import io.cfp.multitenant.TenantId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
@@ -26,6 +28,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 @RequestMapping(value = { "/v1/proposals/{proposalId}/comments", "/api/proposals/{proposalId}/comments" }, produces = APPLICATION_JSON_UTF8_VALUE)
 public class CommentsController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CommentsController.class);
 
     @Autowired
     private CommentMapper comments;
@@ -38,6 +41,7 @@ public class CommentsController {
     public Collection<Comment> all(@AuthenticationPrincipal User user,
                                    @PathVariable int proposalId,
                                    @TenantId String eventId) {
+        LOGGER.info("Get comments of proposal {}", proposalId);
         CommentQuery query = new CommentQuery();
         query.setEventId(eventId);
         query.setProposalId(proposalId);
@@ -45,6 +49,7 @@ public class CommentsController {
         if (user.hasRole(ADMIN)) {
             query.setInternal(true);
         }
+
 
         return comments.findByEventAndProposal(query);
     }
@@ -57,7 +62,6 @@ public class CommentsController {
                           @PathVariable int proposalId,
                           @RequestBody Comment comment,
                           @TenantId String eventId) {
-
         Proposal proposal = proposals.findById(proposalId, eventId);
 
         // si on est pas reviewer, on ne peut poster de commentaires que sur son propre proposal
@@ -67,6 +71,7 @@ public class CommentsController {
             }
         }
 
+        LOGGER.info("User {} add a comment on proposal {}", user.getId(), proposalId);
         comment.setEventId(eventId);
         comment.setUser(user);
         comment.setProposalId(proposalId);
@@ -84,10 +89,15 @@ public class CommentsController {
                        @AuthenticationPrincipal User user,
                        @RequestBody Comment comment,
                        @TenantId String eventId) {
+        LOGGER.info("User {} update its comment on proposal {}", user.getId(), proposalId);
         comment.setId(id);
         comment.setEventId(eventId);
         comment.setUser(user);
         comment.setProposalId(proposalId);
+
+        if (!user.hasRole(ADMIN)) {
+            comment.setInternal(false);
+        }
 
         comments.update(comment);
     }
@@ -100,6 +110,7 @@ public class CommentsController {
                        @PathVariable int id,
                        @AuthenticationPrincipal User user,
                        @TenantId String eventId) {
+        LOGGER.info("User {} delete its comment", user.getId());
         Comment comment = new Comment();
         comment.setId(id);
         comment.setUser(user);
