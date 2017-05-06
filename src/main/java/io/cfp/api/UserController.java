@@ -53,7 +53,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateMyProfil(@RequestBody User userUpdate, @AuthenticationPrincipal User user) {
         LOGGER.info("update: {}", userUpdate);
-        userUpdate.setId(user.getId());
+        userUpdate.setId(user.getId()).setEmail(user.getEmail());
 
         userMapper.update(userUpdate);
     }
