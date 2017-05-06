@@ -2,6 +2,9 @@
     "id": 25,
     "name": "NAME",
     "language": "LANGUAGE",
+    "speaker": {
+        "id": 666
+    },
     "eventId": "EVENT_ID",
     "trackId": 13,
     "trackLabel": "TRACK_LABEL",

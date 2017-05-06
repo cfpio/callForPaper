@@ -20,6 +20,7 @@
 
 package io.cfp.api;
 
+import io.cfp.domain.exception.BadRequestException;
 import io.cfp.domain.exception.ForbiddenException;
 import io.cfp.entity.Role;
 import io.cfp.mapper.ProposalMapper;
@@ -105,7 +106,18 @@ public class ProposalsController {
                            @Valid @RequestBody Proposal proposal) {
         LOGGER.info("User {} create a proposal : {}", proposal.getName());
         // FIXME manage drfat state client side without use of /drafts API
-        proposal.setEventId(event).setSpeaker(user);
+        proposal.setEventId(event);
+
+        if (proposal.getSpeaker() == null) {
+            proposal.setSpeaker(user);
+        }
+
+        // A user can only create proposals for himself
+        if (!user.hasRole(Role.ADMIN)
+            && user.getId() != proposal.getSpeaker().getId()) {
+            throw new BadRequestException();
+        }
+
         if (proposal.getState() == null) proposal.setState(Proposal.State.CONFIRMED);
         proposals.insert(proposal);
 
@@ -127,7 +139,7 @@ public class ProposalsController {
         // A user can only update his proposals
         if (!user.hasRole(Role.ADMIN)
             && user.getId() != proposal.getSpeaker().getId()) {
-            throw new ForbiddenException();
+            throw new BadRequestException();
         }
         proposal.setId(id);
         LOGGER.info("User {} update the proposal {}", user.getId(), proposal.getName());
