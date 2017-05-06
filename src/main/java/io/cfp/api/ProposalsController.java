@@ -54,8 +54,9 @@ public class ProposalsController {
 
 
     @GetMapping("/proposals")
-    @Secured({Role.REVIEWER, Role.ADMIN})
-    public List<Proposal> search(@TenantId String event,
+    @Secured(Role.AUTHENTICATED)
+    public List<Proposal> search(@AuthenticationPrincipal User user,
+                                 @TenantId String event,
                                  @RequestParam(name = "states", required = false) String states,
                                  @RequestParam(name = "userId", required = false) Integer userId,
                                  @RequestParam(name = "sort", required = false, defaultValue = "added") String sort,
@@ -75,6 +76,11 @@ public class ProposalsController {
             .setUserId(userId)
             .setSort(sort)
             .setOrder(order.equalsIgnoreCase("desc")?"desc":"asc");
+
+        if (!user.hasRole(Role.REVIEWER)) {
+            // Only can access own proposals
+            query.setUserId(user.getId());
+        }
 
         LOGGER.info("Search Proposals : {}", query);
         List<Proposal> p = proposals.findAll(query);
