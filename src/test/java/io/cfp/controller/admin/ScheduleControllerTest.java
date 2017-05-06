@@ -82,7 +82,7 @@ public class ScheduleControllerTest {
     public void testGetScheduleList() throws Exception {
 
         // Given
-        UserProfil userProfil = new UserProfil("John", "Doe");
+        UserProfil userProfil = new UserProfil(0,"John", "Doe");
         // TalkUser 1
         TalkUser talkUser1 = new TalkUser();
         talkUser1.setId(1);
