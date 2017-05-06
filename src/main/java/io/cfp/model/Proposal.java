@@ -49,7 +49,7 @@ public class Proposal {
     private String references;
     private Integer difficulty;
     private Date added;
-    private Integer formatId;
+    private Integer format;
     private User speaker;
 
     private Date schedule;
