@@ -141,14 +141,17 @@ public class ProposalsController {
             proposal.setSpeaker(user);
         }
 
-        // A user can only update his proposals
+        // A user can't change proposal's speaker
         if (!user.hasRole(Role.ADMIN)
             && user.getId() != proposal.getSpeaker().getId()) {
             throw new ForbiddenException();
         }
         proposal.setId(id);
         LOGGER.info("User {} update the proposal {}", user.getId(), proposal.getName());
-        proposals.updateForEvent(proposal, event);
+
+        // A non-admin user can only update his proposals
+        Integer userId = !user.hasRole(Role.ADMIN) ? user.getId() : null;
+        proposals.updateForEvent(proposal, event, userId);
     }
 
     @DeleteMapping("/proposals/{id}")

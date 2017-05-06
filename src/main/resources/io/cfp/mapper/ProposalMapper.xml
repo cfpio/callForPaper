@@ -142,7 +142,11 @@
             room_id=#{it.roomId},
             video=#{it.video},
             slides=#{it.slides}
-        WHERE id = #{it.id}  AND event_id = #{eventId}
+        WHERE id = #{it.id}
+        AND event_id = #{eventId}
+        <if test="userId">
+            AND `user` = #{userId}
+        </if>
     </update>
 
     <update id="updateState" parameterType="io.cfp.model.Proposal">

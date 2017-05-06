@@ -112,7 +112,7 @@ public class ProposalMapperTest {
         Proposal proposal = new Proposal() ;
         proposal.setId(PROPOSAL_ID);
         proposal.setName("UPDATED_NAME");
-        int updatedLines = proposalMapper.updateForEvent(proposal, EVENT_ID);
+        int updatedLines = proposalMapper.updateForEvent(proposal, EVENT_ID, null);
 
         assertThat(updatedLines).isEqualTo(1);
 
