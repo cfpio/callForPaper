@@ -38,7 +38,6 @@ public class Proposal {
     public enum State { DRAFT, CONFIRMED, ACCEPTED, REFUSED, BACKUP }
 
     private int id;
-    @NotNull
     private State state;
     @NotNull(message = "Session name field is required")
     private String name;

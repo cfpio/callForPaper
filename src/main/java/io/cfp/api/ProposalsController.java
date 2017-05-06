@@ -104,7 +104,10 @@ public class ProposalsController {
                            @AuthenticationPrincipal User user,
                            @Valid @RequestBody Proposal proposal) {
         LOGGER.info("User {} create a proposal : {}", proposal.getName());
-        proposals.insert(proposal.setEventId(event).setSpeaker(user));
+        // FIXME manage drfat state client side without use of /drafts API
+        proposal.setEventId(event).setSpeaker(user);
+        if (proposal.getState() == null) proposal.setState(Proposal.State.CONFIRMED);
+        proposals.insert(proposal);
 
         return proposal;
     }
