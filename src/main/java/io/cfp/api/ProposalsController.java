@@ -139,7 +139,7 @@ public class ProposalsController {
         // A user can only update his proposals
         if (!user.hasRole(Role.ADMIN)
             && user.getId() != proposal.getSpeaker().getId()) {
-            throw new BadRequestException();
+            throw new ForbiddenException();
         }
         proposal.setId(id);
         LOGGER.info("User {} update the proposal {}", user.getId(), proposal.getName());
