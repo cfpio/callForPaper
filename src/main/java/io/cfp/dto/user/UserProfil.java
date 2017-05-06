@@ -51,8 +51,9 @@ public class UserProfil {
         super();
     }
 
-    public UserProfil(String firstname, String lastname) {
+    public UserProfil(int id, String firstname, String lastname) {
         super();
+        this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
     }
