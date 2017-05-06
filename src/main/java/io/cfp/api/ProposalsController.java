@@ -28,6 +28,7 @@ import io.cfp.model.Proposal;
 import io.cfp.model.User;
 import io.cfp.model.queries.ProposalQuery;
 import io.cfp.multitenant.TenantId;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +60,7 @@ public class ProposalsController {
     public List<Proposal> search(@AuthenticationPrincipal User user,
                                  @TenantId String event,
                                  @RequestParam(name = "states", required = false) String states,
-                                 @RequestParam(name = "userId", required = false) Integer userId,
+                                 @RequestParam(name = "user", required = false) String userfilter,
                                  @RequestParam(name = "sort", required = false, defaultValue = "added") String sort,
                                  @RequestParam(name = "order", required = false, defaultValue = "asc") String order
                                  ) {
@@ -70,6 +71,10 @@ public class ProposalsController {
                 .map(Proposal.State::valueOf)
                 .collect(Collectors.toList());
         }
+
+        Integer userId = null;
+        if ("me".equals(userfilter)) userId = user.getId();
+        else if (StringUtils.isNotBlank(userfilter)) userId = Integer.parseInt(userfilter);
 
         ProposalQuery query = new ProposalQuery()
             .setEventId(event)
