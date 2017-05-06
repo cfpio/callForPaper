@@ -165,6 +165,23 @@ public class ProposalsController {
     }
 
 
+    @PutMapping("/proposals/{id}/confirm")
+    @Secured(Role.AUTHENTICATED)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void confirm(@TenantId String event,
+                       @PathVariable int id) {
+
+        LOGGER.info("Proposal {} change state to CONFIRMED", id);
+        Proposal proposal = new Proposal();
+        proposal.setId(id);
+        proposal.setEventId(event);
+        proposal.setState(Proposal.State.CONFIRMED);
+
+        //FIXME check proposal is in DRAFT state
+        proposals.updateState(proposal);
+    }
+
+
     @PutMapping("/proposals/{id}/accept")
     @Secured(Role.ADMIN)
     @ResponseStatus(HttpStatus.NO_CONTENT)
