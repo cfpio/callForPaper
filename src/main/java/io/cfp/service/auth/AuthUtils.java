@@ -87,7 +87,7 @@ public final class AuthUtils {
                 if (user == null) throw e; // other error
             }
         }
-        return user;
+        return user.addRole(Role.AUTHENTICATED);
     }
 
     /**
