@@ -27,6 +27,7 @@ import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -86,6 +87,11 @@ public class User {
 
         return res;
     }
+
+    public Set<String> getRoles() {
+        return roles != null ? roles : Collections.EMPTY_SET;
+    }
+
 
     /**
      * Used to trace current user in application logs
