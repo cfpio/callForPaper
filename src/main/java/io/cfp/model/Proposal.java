@@ -51,7 +51,6 @@ public class Proposal {
     private Integer difficulty;
     private Date added;
     private Integer formatId;
-    @NotNull(message = "Speaker field is required")
     private User speaker;
 
     private Date schedule;

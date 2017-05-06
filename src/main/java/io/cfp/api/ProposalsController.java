@@ -101,9 +101,10 @@ public class ProposalsController {
     @ResponseStatus(HttpStatus.CREATED)
     @Secured(io.cfp.entity.Role.AUTHENTICATED)
     public Proposal create(@TenantId String event,
+                           @AuthenticationPrincipal User user,
                            @Valid @RequestBody Proposal proposal) {
         LOGGER.info("User {} create a proposal : {}", proposal.getName());
-        proposals.insert(proposal.setEventId(event));
+        proposals.insert(proposal.setEventId(event).setSpeaker(user));
 
         return proposal;
     }
