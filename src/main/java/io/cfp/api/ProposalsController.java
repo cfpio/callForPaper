@@ -120,7 +120,11 @@ public class ProposalsController {
                        @PathVariable Integer id,
                        @Valid @RequestBody Proposal proposal) {
 
-        // A user can only update its proposals
+        if (proposal.getSpeaker() == null) {
+            proposal.setSpeaker(user);
+        }
+
+        // A user can only update his proposals
         if (!user.hasRole(Role.ADMIN)
             && user.getId() != proposal.getSpeaker().getId()) {
             throw new ForbiddenException();
