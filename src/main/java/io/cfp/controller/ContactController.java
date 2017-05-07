@@ -25,7 +25,7 @@ import io.cfp.domain.exception.NotVerifiedException;
 import io.cfp.dto.CommentUser;
 import io.cfp.dto.TalkUser;
 import io.cfp.entity.Role;
-import io.cfp.entity.User;
+import io.cfp.model.User;
 import io.cfp.service.CommentUserService;
 import io.cfp.service.TalkUserService;
 import io.cfp.service.email.EmailingService;
@@ -33,16 +33,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Locale;
 
 @RestController
 @RequestMapping(value = { "/v0/proposals/{talkId}/contacts", "/api/proposals/{talkId}/contacts" }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -79,7 +73,8 @@ public class ContactController  {
         if (talk != null) {
             saved = commentService.addComment(user.getId(), talkId, commentUser);
 
-            emailingService.sendNewCommentToAdmins(user, talk, user.getLocale());
+            io.cfp.entity.User entityUser = new io.cfp.entity.User(user);
+            emailingService.sendNewCommentToAdmins(entityUser, talk, user.getLocale());
         }
 
         return saved;
