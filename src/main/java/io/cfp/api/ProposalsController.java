@@ -28,7 +28,6 @@ import io.cfp.model.Proposal;
 import io.cfp.model.User;
 import io.cfp.model.queries.ProposalQuery;
 import io.cfp.multitenant.TenantId;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +39,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,11 +56,11 @@ public class ProposalsController {
 
 
     @GetMapping("/proposals")
-    @Secured(Role.AUTHENTICATED)
+    @Secured({Role.REVIEWER, Role.ADMIN})
     public List<Proposal> search(@AuthenticationPrincipal User user,
                                  @TenantId String event,
                                  @RequestParam(name = "states", required = false) String states,
-                                 @RequestParam(name = "user", required = false) String userfilter,
+                                 @RequestParam(name = "userId", required = false) Integer userId,
                                  @RequestParam(name = "sort", required = false, defaultValue = "added") String sort,
                                  @RequestParam(name = "order", required = false, defaultValue = "asc") String order
                                  ) {
@@ -72,21 +72,12 @@ public class ProposalsController {
                 .collect(Collectors.toList());
         }
 
-        Integer userId = null;
-        if ("me".equals(userfilter)) userId = user.getId();
-        else if (StringUtils.isNotBlank(userfilter)) userId = Integer.parseInt(userfilter);
-
         ProposalQuery query = new ProposalQuery()
             .setEventId(event)
             .setStates(stateList)
             .setUserId(userId)
             .setSort(sort)
             .setOrder(order.equalsIgnoreCase("desc")?"desc":"asc");
-
-        if (!user.hasRole(Role.REVIEWER)) {
-            // Only can access own proposals
-            query.setUserId(user.getId());
-        }
 
         LOGGER.info("Search Proposals : {}", query);
         List<Proposal> p = proposals.findAll(query);
@@ -124,6 +115,8 @@ public class ProposalsController {
         }
 
         if (proposal.getState() == null) proposal.setState(Proposal.State.CONFIRMED);
+
+        proposal.setAdded(new Date());
         proposals.insert(proposal);
 
         return proposal;
