@@ -88,6 +88,19 @@ public class User {
         return res;
     }
 
+
+    public boolean isReviewer() {
+        return hasRole(Role.REVIEWER);
+    }
+
+    public boolean isAdmin() {
+        return hasRole(Role.ADMIN);
+    }
+
+    public boolean isOwner() {
+        return hasRole(Role.OWNER);
+    }
+
     public Set<String> getRoles() {
         return roles != null ? roles : Collections.EMPTY_SET;
     }
