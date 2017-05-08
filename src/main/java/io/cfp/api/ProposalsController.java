@@ -22,6 +22,7 @@ package io.cfp.api;
 
 import io.cfp.domain.exception.BadRequestException;
 import io.cfp.domain.exception.ForbiddenException;
+import io.cfp.domain.exception.NotFoundException;
 import io.cfp.entity.Role;
 import io.cfp.mapper.ProposalMapper;
 import io.cfp.model.Proposal;
@@ -86,10 +87,23 @@ public class ProposalsController {
     }
 
     @GetMapping("/proposals/{id}")
-    @Secured({Role.REVIEWER, Role.ADMIN})
-    public Proposal get(@TenantId String event, @PathVariable Integer id) {
+    @Secured({Role.AUTHENTICATED})
+    public Proposal get(@AuthenticationPrincipal User user,
+                        @TenantId String event,
+                        @PathVariable Integer id) {
         LOGGER.info("Get Proposal with id {}", id);
         Proposal proposal = proposals.findById(id, event);
+
+        if (proposal == null) {
+            throw new NotFoundException();
+        }
+
+        if (!user.hasRole(Role.REVIEWER)
+            && !user.hasRole(Role.ADMIN)
+            && user.getId() != proposal.getSpeaker().getId()) {
+            throw new ForbiddenException();
+        }
+
         LOGGER.debug("Found Proposal {}", proposal);
         return proposal;
     }
@@ -100,7 +114,7 @@ public class ProposalsController {
     public Proposal create(@TenantId String event,
                            @AuthenticationPrincipal User user,
                            @Valid @RequestBody Proposal proposal) {
-        LOGGER.info("User {} create a proposal : {}", proposal.getName());
+        LOGGER.info("User {} create a proposal : {}", user.getId(), proposal.getName());
         // FIXME manage drfat state client side without use of /drafts API
         proposal.setEventId(event);
 
