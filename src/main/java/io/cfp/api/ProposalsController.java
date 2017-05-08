@@ -128,9 +128,8 @@ public class ProposalsController {
             throw new BadRequestException();
         }
 
-        if (proposal.getState() == null) proposal.setState(Proposal.State.CONFIRMED);
-
-        proposal.setAdded(new Date());
+        proposal.setState(Proposal.State.DRAFT) // when created, a talk is a Draft. Need to be confirmed
+                .setAdded(new Date());
         proposals.insert(proposal);
 
         return proposal;
