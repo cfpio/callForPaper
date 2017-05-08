@@ -28,11 +28,8 @@ import io.cfp.service.RateAdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -68,8 +65,9 @@ public class AdminRateController {
      */
     @RequestMapping(method=RequestMethod.POST)
     @Secured({Role.REVIEWER, Role.ADMIN})
-    public RateAdmin postRate(@Valid @RequestBody RateAdmin rate) throws NotFoundException {
-        return rateService.add(rate, User.getCurrent(), rate.getTalkId());
+    public RateAdmin postRate(@AuthenticationPrincipal io.cfp.model.User user, @Valid @RequestBody RateAdmin rate) throws NotFoundException {
+        User currentUser = new User(user);
+        return rateService.add(rate, currentUser, rate.getTalkId());
     }
 
     /**
@@ -117,8 +115,8 @@ public class AdminRateController {
      */
     @RequestMapping(value= "/proposals/{talkId}/me", method = RequestMethod.GET)
     @Secured({Role.REVIEWER, Role.ADMIN})
-    public RateAdmin getRateByRowIdAndUserId(@PathVariable int talkId) throws NotFoundException {
-        int adminId = User.getCurrent().getId();
+    public RateAdmin getRateByRowIdAndUserId(@AuthenticationPrincipal io.cfp.model.User user, @PathVariable int talkId) throws NotFoundException {
+        int adminId = user.getId();
         return rateService.findForTalkAndAdmin(talkId, adminId);
     }
 
