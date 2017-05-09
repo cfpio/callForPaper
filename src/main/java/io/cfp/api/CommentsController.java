@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.Date;
 
 import static io.cfp.model.Role.ADMIN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
@@ -75,6 +76,7 @@ public class CommentsController {
         comment.setEventId(eventId);
         comment.setUser(user);
         comment.setProposalId(proposalId);
+        comment.setAdded(new Date());
 
         comments.insert(comment);
         return comment;
