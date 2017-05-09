@@ -17,7 +17,7 @@
         LEFT OUTER JOIN users u on c.user = u.id
         WHERE c.event_id = #{eventId}
         AND c.proposal = #{proposalId}
-        <if test="internal">
+        <if test="internal != null">
             AND c.internal = #{internal};
         </if>
     </select>

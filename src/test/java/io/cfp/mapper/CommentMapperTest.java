@@ -29,6 +29,7 @@ public class CommentMapperTest {
         CommentQuery query = new CommentQuery();
         query.setEventId("EVENT_ID");
         query.setProposalId(20);
+        query.setInternal(false);
         Collection<Comment> publicComments = commentMapper.findByEventAndProposal(query);
         assertThat(publicComments).hasSize(1);
     }
@@ -38,7 +39,6 @@ public class CommentMapperTest {
         CommentQuery query = new CommentQuery();
         query.setEventId("EVENT_ID");
         query.setProposalId(20);
-        query.setInternal(true);
         Collection<Comment> allComments = commentMapper.findByEventAndProposal(query);
         assertThat(allComments).hasSize(2);
     }
