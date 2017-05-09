@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Date;
 
 import static io.cfp.model.Role.ADMIN;
+import static io.cfp.model.Role.REVIEWER;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
@@ -47,10 +48,11 @@ public class CommentsController {
         query.setEventId(eventId);
         query.setProposalId(proposalId);
 
-        if (user.hasRole(ADMIN)) {
-            query.setInternal(true);
-        }
+        if (!user.hasRole(REVIEWER)) {
+            query.setInternal(false);
 
+            // FIXME speaker should not be able to read comments on other's proposals
+        }
 
         return comments.findByEventAndProposal(query);
     }

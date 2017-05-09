@@ -8,5 +8,5 @@ public class CommentQuery {
 
     private String eventId;
     private int proposalId;
-    private boolean internal = false;
+    private Boolean internal;
 }
