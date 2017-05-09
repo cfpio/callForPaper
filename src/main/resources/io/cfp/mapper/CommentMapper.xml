@@ -9,11 +9,16 @@
     </insert>
 
     <select id="findByEventAndProposal" parameterType="io.cfp.model.queries.CommentQuery" resultType="io.cfp.model.Comment">
-        SELECT * FROM comments
-        WHERE event_id = #{eventId}
-        AND proposal = #{proposalId}
+        SELECT *,
+        u.email as "user.email",
+        u.firstname as "user.firstname",
+        u.lastname as "user.lastname"
+        FROM comments c
+        LEFT OUTER JOIN users u on c.user = u.id
+        WHERE c.event_id = #{eventId}
+        AND c.proposal = #{proposalId}
         <if test="internal == false">
-            AND internal = #{internal};
+            AND c.internal = #{internal};
         </if>
     </select>
 
