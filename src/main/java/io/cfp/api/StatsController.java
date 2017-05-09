@@ -35,43 +35,47 @@ public class StatsController {
     /**
      * Get meter stats (talks count, draft count, ...)
      */
-    @GetMapping(value="/meter")
+    @GetMapping(value="/me")
     @ResponseBody
     @Secured(Role.AUTHENTICATED)
     @Transactional(readOnly = true)
-    public Serializable getMeter(@AuthenticationPrincipal User user,
-                                 @TenantId String event) {
+    public Serializable me(@AuthenticationPrincipal User user,
+                           @TenantId String event) {
+        RestrictedMeter meter = new RestrictedMeter();
 
-        if (user.hasRole(Role.REVIEWER)) {
-            AdminMeter meter = new AdminMeter();
-            meter.setSpeakers(submissions.countByEventId(event));
+        ProposalQuery mine = new ProposalQuery().setEventId(event).setUserId(user.getId()).addStates(CONFIRMED, ACCEPTED, REFUSED, BACKUP);
+        meter.setTalks(proposals.count(mine));
+        return meter;
+    }
 
-            ProposalQuery totalQuery = new ProposalQuery().setEventId(event).addStates(CONFIRMED, ACCEPTED, REFUSED, BACKUP);
-            meter.setTalks(proposals.count(totalQuery));
+    @GetMapping(value="/event")
+    @ResponseBody
+    @Secured(Role.REVIEWER)
+    @Transactional(readOnly = true)
+    public Serializable event(@TenantId String event) {
+        AdminMeter meter = new AdminMeter();
+        meter.setSpeakers(submissions.countByEventId(event));
 
-            ProposalQuery draftQuery = new ProposalQuery().setEventId(event).addStates(DRAFT);
-            meter.setDrafts(proposals.count(draftQuery));
+        ProposalQuery totalQuery = new ProposalQuery().setEventId(event).addStates(CONFIRMED, ACCEPTED, REFUSED, BACKUP);
+        meter.setTalks(proposals.count(totalQuery));
 
-            ProposalQuery submittedQuery = new ProposalQuery().setEventId(event).addStates(CONFIRMED);
-            meter.setSubmitted(proposals.count(submittedQuery));
+        ProposalQuery draftQuery = new ProposalQuery().setEventId(event).addStates(DRAFT);
+        meter.setDrafts(proposals.count(draftQuery));
 
-            ProposalQuery acceptedQuery = new ProposalQuery().setEventId(event).addStates(ACCEPTED);
-            meter.setAccepted(proposals.count(acceptedQuery));
+        ProposalQuery submittedQuery = new ProposalQuery().setEventId(event).addStates(CONFIRMED);
+        meter.setSubmitted(proposals.count(submittedQuery));
 
-            ProposalQuery rejectedQuery = new ProposalQuery().setEventId(event).addStates(REFUSED);
-            meter.setRejected(proposals.count(rejectedQuery));
+        ProposalQuery acceptedQuery = new ProposalQuery().setEventId(event).addStates(ACCEPTED);
+        meter.setAccepted(proposals.count(acceptedQuery));
 
-            ProposalQuery backupQuery = new ProposalQuery().setEventId(event).addStates(BACKUP);
-            meter.setBackup(proposals.count(backupQuery));
+        ProposalQuery rejectedQuery = new ProposalQuery().setEventId(event).addStates(REFUSED);
+        meter.setRejected(proposals.count(rejectedQuery));
 
-            return meter;
-        } else {
-            RestrictedMeter meter = new RestrictedMeter();
+        ProposalQuery backupQuery = new ProposalQuery().setEventId(event).addStates(BACKUP);
+        meter.setBackup(proposals.count(backupQuery));
 
-            ProposalQuery mine = new ProposalQuery().setEventId(event).setUserId(user.getId()).addStates(CONFIRMED, ACCEPTED, REFUSED, BACKUP);
-            meter.setTalks(proposals.count(mine));
-            return meter;
-        }
+        return meter;
+
     }
 
 }
