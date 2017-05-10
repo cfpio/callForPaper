@@ -34,6 +34,9 @@ public class UserMapperTest {
         user.setId(USER_ID);
         User foundUser = userMapper.findById(user);
         assertThat(foundUser).isNotNull();
+        assertThat(foundUser.getEmail()).isEqualTo("EMAIL");
+        assertThat(foundUser.getGender()).isEqualTo(User.Gender.FEMALE);
+        assertThat(foundUser.getTshirtSize()).isEqualTo(User.TshirtSize.L);
     }
 
     @Test
@@ -77,9 +80,18 @@ public class UserMapperTest {
         User user = new User();
         user.setId(USER_ID);
         user.setEmail("UPDATED_EMAIL");
+        user.setGender(User.Gender.MALE);
+        user.setTshirtSize(User.TshirtSize.M);
+
         int updatedLines = userMapper.update(user);
 
         assertThat(updatedLines).isEqualTo(1);
+
+        User foundUser = userMapper.findById(user);
+        assertThat(foundUser).isNotNull();
+        assertThat(foundUser.getEmail()).isEqualTo("UPDATED_EMAIL");
+        assertThat(foundUser.getGender()).isEqualTo(User.Gender.MALE);
+        assertThat(foundUser.getTshirtSize()).isEqualTo(User.TshirtSize.M);
     }
 
     @Test

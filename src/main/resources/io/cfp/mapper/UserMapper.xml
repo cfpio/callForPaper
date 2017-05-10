@@ -39,8 +39,8 @@
     </select>
 
     <insert id="insert" parameterType="io.cfp.model.User" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
-        INSERT INTO users (email, lastname, firstname, company, phone, bio, twitter, googleplus, github, social, image_profil_url, language)
-        VALUES (#{email}, #{lastname}, #{firstname}, #{company}, #{phone}, #{bio}, #{twitter}, #{googleplus}, #{github}, #{social}, #{imageProfilURL}, #{language})
+        INSERT INTO users (email, lastname, firstname, company, phone, bio, twitter, googleplus, github, social, image_profil_url, language, tshirt_size, gender)
+        VALUES (#{email}, #{lastname}, #{firstname}, #{company}, #{phone}, #{bio}, #{twitter}, #{googleplus}, #{github}, #{social}, #{imageProfilURL}, #{language}, #{tshirtSize}, #{gender})
     </insert>
 
     <update id="update" parameterType="io.cfp.model.User">
@@ -56,7 +56,9 @@
             github=#{github},
             social=#{social},
             image_profil_url=#{imageProfilURL},
-            language=#{language}
+            language=#{language},
+            tshirt_size=#{tshirtSize},
+            gender=#{gender}
         WHERE id = #{id}
     </update>
 
