@@ -25,9 +25,12 @@ import io.cfp.domain.exception.ForbiddenException;
 import io.cfp.domain.exception.NotFoundException;
 import io.cfp.entity.Role;
 import io.cfp.mapper.ProposalMapper;
+import io.cfp.mapper.RateMapper;
 import io.cfp.model.Proposal;
+import io.cfp.model.Rate;
 import io.cfp.model.User;
 import io.cfp.model.queries.ProposalQuery;
+import io.cfp.model.queries.RateQuery;
 import io.cfp.multitenant.TenantId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +47,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static io.cfp.entity.Role.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
 @RestController
@@ -55,9 +59,12 @@ public class ProposalsController {
     @Autowired
     private ProposalMapper proposals;
 
+    @Autowired
+    private RateMapper rates;
+
 
     @GetMapping("/proposals")
-    @Secured({Role.REVIEWER, Role.ADMIN})
+    @Secured({REVIEWER, ADMIN})
     public List<Proposal> search(@AuthenticationPrincipal User user,
                                  @TenantId String event,
                                  @RequestParam(name = "states", required = false) String states,
@@ -87,7 +94,7 @@ public class ProposalsController {
     }
 
     @GetMapping("/proposals/{id}")
-    @Secured({Role.AUTHENTICATED})
+    @Secured({AUTHENTICATED})
     public Proposal get(@AuthenticationPrincipal User user,
                         @TenantId String event,
                         @PathVariable Integer id) {
@@ -98,8 +105,8 @@ public class ProposalsController {
             throw new NotFoundException();
         }
 
-        if (!user.hasRole(Role.REVIEWER)
-            && !user.hasRole(Role.ADMIN)
+        if (!user.hasRole(REVIEWER)
+            && !user.hasRole(ADMIN)
             && user.getId() != proposal.getSpeaker().getId()) {
             throw new ForbiddenException();
         }
@@ -110,7 +117,7 @@ public class ProposalsController {
 
     @PostMapping("/proposals")
     @ResponseStatus(HttpStatus.CREATED)
-    @Secured(io.cfp.entity.Role.AUTHENTICATED)
+    @Secured(AUTHENTICATED)
     public Proposal create(@TenantId String event,
                            @AuthenticationPrincipal User user,
                            @Valid @RequestBody Proposal proposal) {
@@ -123,7 +130,7 @@ public class ProposalsController {
         }
 
         // A user can only create proposals for himself
-        if (!user.hasRole(Role.ADMIN)
+        if (!user.hasRole(ADMIN)
             && user.getId() != proposal.getSpeaker().getId()) {
             throw new BadRequestException();
         }
@@ -137,7 +144,7 @@ public class ProposalsController {
 
     @PutMapping("/proposals/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Secured(io.cfp.entity.Role.AUTHENTICATED)
+    @Secured(AUTHENTICATED)
     public void update(@AuthenticationPrincipal User user,
                        @TenantId String event,
                        @PathVariable Integer id,
@@ -148,7 +155,7 @@ public class ProposalsController {
         }
 
         // A user can't change proposal's speaker
-        if (!user.hasRole(Role.ADMIN)
+        if (!user.hasRole(ADMIN)
             && user.getId() != proposal.getSpeaker().getId()) {
             throw new ForbiddenException();
         }
@@ -156,13 +163,13 @@ public class ProposalsController {
         LOGGER.info("User {} update the proposal {}", user.getId(), proposal.getName());
 
         // A non-admin user can only update his proposals
-        Integer userId = !user.hasRole(Role.ADMIN) ? user.getId() : null;
+        Integer userId = !user.hasRole(ADMIN) ? user.getId() : null;
         proposals.updateForEvent(proposal, event, userId);
     }
 
     @DeleteMapping("/proposals/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Secured(io.cfp.entity.Role.ADMIN)
+    @Secured(ADMIN)
     public void delete(@AuthenticationPrincipal User user,
                        @TenantId String event,
                        @PathVariable Integer id) {
@@ -172,7 +179,7 @@ public class ProposalsController {
 
 
     @PutMapping("/proposals/{id}/confirm")
-    @Secured(Role.AUTHENTICATED)
+    @Secured(AUTHENTICATED)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void confirm(@TenantId String event,
                        @PathVariable int id) {
@@ -189,7 +196,7 @@ public class ProposalsController {
 
 
     @PutMapping("/proposals/{id}/accept")
-    @Secured(Role.ADMIN)
+    @Secured(ADMIN)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void accept(@TenantId String event,
                        @PathVariable int id) {
@@ -204,7 +211,7 @@ public class ProposalsController {
     }
 
     @PutMapping("/proposals/{id}/backup")
-    @Secured(Role.ADMIN)
+    @Secured(ADMIN)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void backup(@TenantId String event,
                        @PathVariable int id) {
@@ -218,7 +225,7 @@ public class ProposalsController {
     }
 
     @PutMapping("/proposals/{id}/reject")
-    @Secured(Role.ADMIN)
+    @Secured(ADMIN)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void reject(@TenantId String event,
                        @PathVariable int id) {
@@ -232,10 +239,10 @@ public class ProposalsController {
     }
 
     @PutMapping("/proposals/{id}/retract")
-    @Secured(Role.ADMIN)
+    @Secured(ADMIN)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void retract(@TenantId String event,
-                       @PathVariable int id) {
+                        @PathVariable int id) {
         LOGGER.info("Proposal {} change state to CONFIRMED", id);
         Proposal proposal = new Proposal();
         proposal.setId(id);
@@ -246,11 +253,72 @@ public class ProposalsController {
     }
 
     @PutMapping("/proposals/rejectOthers")
-    @Secured(Role.ADMIN)
+    @Secured(ADMIN)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void rejectOthers(@TenantId String event) {
         LOGGER.info("All CONFIRMED Proposal {} change state to REJECT");
         proposals.updateAllStateWhere(event, Proposal.State.REFUSED, Proposal.State.CONFIRMED);
     }
+
+    /**
+     * Add a new rating
+     */
+    @PostMapping("/proposals/{proposalId}/rates")
+    @Secured({REVIEWER, ADMIN})
+    public Rate addRate(@PathVariable int proposalId,
+                        @AuthenticationPrincipal User user,
+                        @Valid @RequestBody Rate rate,
+                        @TenantId String eventId) {
+        rate.setEventId(eventId);
+        rate.setUser(user);
+        rate.setTalk(new Proposal().setId(proposalId));
+        rate.setAdded(new Date());
+        rates.insert(rate);
+        return rate;
+    }
+
+    /**
+     * Edit a rating
+     */
+    @PutMapping("/proposals/{proposalId}/rates/{rateId}")
+    @Secured({REVIEWER, ADMIN})
+    public Rate update(@PathVariable int proposalId,
+                       @PathVariable int rateId,
+                       @AuthenticationPrincipal User user,
+                       @Valid @RequestBody Rate rate,
+                       @TenantId String eventId) {
+        rate.setId(rateId);
+        rate.setUser(user);
+        rate.setEventId(eventId);
+        rate.setTalk(new Proposal().setId(proposalId));
+        rates.update(rate);
+        return rate;
+    }
+
+
+    /**
+     * Get a specific rating
+     */
+    @GetMapping("/proposals/{proposalId}/rates")
+    @Secured(Role.ADMIN)
+    public List<Rate> getRate(@PathVariable int proposalId,
+                              @TenantId String eventId) {
+        RateQuery rateQuery = new RateQuery()
+                                    .setEventId(eventId)
+                                    .setProposalId(proposalId);
+        return rates.findAll(rateQuery);
+    }
+
+    /**
+     * Get a specific rating
+     */
+    @GetMapping("/proposals/{proposalId}/rates/me")
+    @Secured({REVIEWER, ADMIN})
+    public Rate getMyRate(@PathVariable int proposalId,
+                        @AuthenticationPrincipal User user,
+                        @TenantId String eventId) {
+        return rates.findMyRate(proposalId, user.getId(), eventId);
+    }
+
 
 }

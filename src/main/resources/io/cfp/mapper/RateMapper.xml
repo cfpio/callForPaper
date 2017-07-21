@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.cfp.mapper.RateMapper">
+
+   <select id="findAll" parameterType="io.cfp.model.queries.RateQuery" resultType="io.cfp.model.Rate">
+        SELECT
+            *,
+            u.id as "user.id",
+            u.email as "user.email",
+            u.firstname as "user.firstname",
+            u.lastname as "user.lastname"
+        FROM rates r
+        LEFT OUTER JOIN users u ON r.admin = u.id
+        <where>
+            <if test="eventId">
+                r.event_id = #{eventId}
+            </if>
+            <if test="proposalId">
+                AND r.proposal = #{proposalId}
+            </if>
+        </where>
+    </select>
+
+    <select id="findMyRate" resultType="io.cfp.model.Rate">
+        SELECT
+            *,
+            u.id as "user.id",
+            u.email as "user.email",
+            u.firstname as "user.firstname",
+            u.lastname as "user.lastname"
+        FROM rates r
+            LEFT OUTER JOIN users u ON r.admin = u.id
+
+        WHERE
+            r.event_id = #{eventId}
+        AND r.admin = #{user}
+        AND r.proposal = #{proposalId}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into rates (rate, added, love, hate, proposal, admin, event_id)
+        values (#{rate}, #{added}, #{love}, #{hate}, #{talk.id}, #{user.id}, #{eventId})
+    </insert>
+
+    <update id="update" parameterType="io.cfp.model.Rate">
+        UPDATE rates SET
+            rate = #{rate},
+            added = #{added},
+            love = #{love},
+            hate = #{hate}
+        WHERE id = #{id} and event_id = #{eventId} and admin = #{user.id}
+    </update>
+
+    <delete id="deleteForEvent">
+        DELETE FROM rates WHERE id = #{id} and event_id = #{eventId}
+    </delete>
+
+
+    <select id="getRateByEmailUsers" resultType="io.cfp.model.Stat">
+        SELECT
+            u.email as name,
+            COUNT(r.id) as count
+        FROM rates r
+        LEFT OUTER JOIN users u on r.admin = u.id
+        WHERE r.event_id = #{eventId}
+        GROUP BY u.email
+    </select>
+
+</mapper>

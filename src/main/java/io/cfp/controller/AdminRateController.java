@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping(value = {"/v0/rates", "/api/rates" }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = {"/v0/rates"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class AdminRateController {
 
     @Autowired

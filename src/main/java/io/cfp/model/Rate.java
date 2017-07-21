@@ -20,113 +20,31 @@
 
 package io.cfp.model;
 
-import io.cfp.dto.RateAdmin;
-import io.cfp.entity.Event;
-import io.cfp.entity.Talk;
-import io.cfp.entity.User;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
+@Data
+@NoArgsConstructor
+@Accessors(chain = true)
 public class Rate {
 
     private int id;
+    @Max(5)
+    @Min(0)
+    @NotNull
     private int rate;
     private Date added;
     private boolean love;
     private boolean hate;
 
-    private Talk talk;
-    private User adminUser;
-    private Event event;
+    private Proposal talk;
+    private User user;
+    private String eventId;
 
-    public int getId() {
-        return id;
-    }
-
-    public Event getEvent() {
-        return event;
-    }
-
-    public void setEvent(Event event) {
-        this.event = event;
-    }
-
-    @Max(5)
-    @Min(0)
-    @NotNull
-    public int getRate() {
-        return rate;
-    }
-
-    @NotNull
-    public Date getAdded() {
-        return added;
-    }
-
-    public boolean isLove() {
-        return love;
-    }
-
-    public boolean isHate() {
-        return hate;
-    }
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "proposal")
-    public Talk getTalk() {
-        return talk;
-    }
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "admin")
-    public User getAdminUser() {
-        return adminUser;
-    }
-
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setRate(int rate) {
-        this.rate = rate;
-    }
-
-    public void setAdded(Date added) {
-        this.added = added;
-    }
-
-    public void setLove(boolean love) {
-        this.love = love;
-    }
-
-    public void setHate(boolean hate) {
-        this.hate = hate;
-    }
-
-    public void setTalk(Talk talk) {
-        this.talk = talk;
-    }
-
-    public void setAdminUser(User adminUser) {
-        this.adminUser = adminUser;
-    }
-
-    public RateAdmin toRateAdmin() {
-        RateAdmin result = new RateAdmin();
-        result.setId(this.getId());
-        result.setAdded(this.getAdded());
-        result.setHate(this.isHate());
-        result.setLove(this.isLove());
-        result.setRate(this.getRate());
-        result.setTalkId(this.getTalk().getId());
-        result.setUser(this.getAdminUser().toAdminUserDTO());
-        return result;
-    }
 }
