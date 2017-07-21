@@ -26,11 +26,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 
 @Data
 @NoArgsConstructor
@@ -86,6 +82,10 @@ public class User {
         }
 
         return res;
+    }
+
+    public String getFullName() {
+        return firstname+" "+lastname;
     }
 
 
