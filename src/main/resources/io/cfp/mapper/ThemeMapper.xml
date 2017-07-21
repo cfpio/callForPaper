@@ -12,6 +12,15 @@
         SELECT * FROM tracks WHERE event_id = #{eventId}
     </select>
 
+    <select id="countProposalsByTheme" resultType="io.cfp.model.Stat">
+        SELECT
+            t.libelle as name,
+            COUNT(p.id) as count
+        FROM tracks t
+        LEFT OUTER JOIN proposals p on t.id = p.track
+        WHERE t.event_id = #{eventId} GROUP BY t.libelle
+    </select>
+
     <update id="updateForEvent">
         UPDATE tracks SET
         libelle = #{it.libelle},

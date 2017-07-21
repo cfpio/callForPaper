@@ -1,10 +1,12 @@
 package io.cfp.mapper;
 
+import io.cfp.model.Stat;
 import io.cfp.model.Theme;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Collection;
+import java.util.List;
 
 
 /**
@@ -17,7 +19,9 @@ public interface ThemeMapper {
 
     void insert(Theme theme);
 
-    void updateForEvent(@Param("it") Theme theme, @Param("eventId") String eventId);
+    int updateForEvent(@Param("it") Theme theme, @Param("eventId") String eventId);
 
-    void deleteForEvent(@Param("id") int id, @Param("eventId") String eventId);
+    int deleteForEvent(@Param("id") int id, @Param("eventId") String eventId);
+
+    List<Stat> countProposalsByTheme(String eventId);
 }

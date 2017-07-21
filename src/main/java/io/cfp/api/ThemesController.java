@@ -2,17 +2,17 @@ package io.cfp.api;
 
 import io.cfp.entity.Role;
 import io.cfp.mapper.ThemeMapper;
+import io.cfp.model.Stat;
 import io.cfp.model.Theme;
 import io.cfp.multitenant.TenantId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
@@ -53,6 +53,14 @@ public class ThemesController {
     @Secured(Role.OWNER)
     public void delete(@PathVariable int id, @TenantId String eventId) {
         themes.deleteForEvent(id, eventId);
+    }
+
+    @GetMapping(value = "/stats")
+    @Secured(Role.ADMIN)
+    public Map<String, Long> getStats(@TenantId String eventId) {
+        return themes.countProposalsByTheme(eventId)
+            .stream()
+            .collect(Collectors.toMap(Stat::getName, Stat::getCount));
     }
 
 }

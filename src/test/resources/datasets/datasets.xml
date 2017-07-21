@@ -63,6 +63,12 @@
         <insert tableName="tracks">
             <column name="id" value="40"/>
             <column name="libelle" value="TRACK_LIBELLE"/>
+            <column name="event_id" value="EVENT_ID"/>
+        </insert>
+        <insert tableName="tracks">
+            <column name="id" value="41"/>
+            <column name="libelle" value="TRACK_LIBELLE"/>
+            <column name="event_id" value="EVENT_ID"/>
         </insert>
         <insert tableName="rooms">
             <column name="id" value="50"/>
@@ -127,6 +133,14 @@
             <column name="internal" value="1"/>
             <column name="added" value="2042-12-31"/>
             <column name="comment" value="COMMENT"/>
+        </insert>
+        <insert tableName="rates">
+            <column name="id" value="71"/>
+            <column name="admin" value="10"/>
+            <column name="rate" value="2"/>
+            <column name="added" value="2017-06-30"/>
+            <column name="event_id" value="EVENT_ID"/>
+            <column name="proposal" value="20"/>
         </insert>
     </changeSet>
 
