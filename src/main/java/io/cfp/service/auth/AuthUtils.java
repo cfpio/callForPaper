@@ -101,7 +101,8 @@ public final class AuthUtils {
 	    	for (Cookie cookie : httpRequest.getCookies()) {
 	    		if (TOKEN_COOKIE_NAME.equals(cookie.getName())) {
 	    			tokenValue = cookie.getValue();
-	    			break;
+                    LOGGER.debug("Found token in Cookie with value {}", tokenValue);
+                    break;
 	    		}
 	    	}
     	}
@@ -117,8 +118,8 @@ public final class AuthUtils {
     	if (tokenValue != null) {
     		try {
                 return decodeToken(tokenValue);
-            }
-    		catch (Exception ex) {
+            } catch (ExpiredJwtException ex) {
+                LOGGER.warn("Token has expired", ex);
             }
         }
         return null;
