@@ -177,6 +177,16 @@ public class ProposalsController {
         proposals.deleteForEvent(id, event);
     }
 
+    /**
+     * Delete all sessions (aka reset CFP)
+     */
+    @DeleteMapping(value="/proposals")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Secured(Role.ADMIN)
+    public void deleteAll(@TenantId String event) {
+        proposals.deleteAllByEventId(event);
+    }
+
 
     @PutMapping("/proposals/{id}/confirm")
     @Secured(AUTHENTICATED)

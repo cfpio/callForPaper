@@ -167,4 +167,9 @@
         WHERE id = #{id} AND event_id = #{eventId}
     </delete>
 
+    <delete id="deleteAllByEventId">
+        DELETE FROM proposals
+        WHERE event_id = #{eventId}
+    </delete>
+
 </mapper>
