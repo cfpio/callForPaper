@@ -40,6 +40,7 @@ import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
 
+import static io.cfp.model.Role.OWNER;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
 /**
@@ -74,7 +75,8 @@ public class EventsController {
     @Secured(io.cfp.entity.Role.MAINTAINER)
     @RequestMapping(value = "/events", method = RequestMethod.POST)
     @Transactional
-    public Event create(@RequestParam(name = "id", required=true) String id, @RequestParam(name = "owner", required=true) String owner) throws EntityExistsException {
+    public Event create(@RequestParam(name = "id") String id,
+                        @RequestParam(name = "owner") String owner) throws EntityExistsException {
 
         if (events.exists(id)) {
             throw new EntityExistsException();
@@ -104,7 +106,7 @@ public class EventsController {
         }
 
         roles.insert(new Role()
-            .setName(io.cfp.entity.Role.OWNER.toString())
+            .setName(OWNER)
             .setEvent(id)
             .setUser(u.getId()));
 
