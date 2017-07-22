@@ -84,11 +84,6 @@ public class User {
         return res;
     }
 
-    public String getFullName() {
-        return firstname+" "+lastname;
-    }
-
-
     public boolean isReviewer() {
         return hasRole(Role.REVIEWER);
     }
