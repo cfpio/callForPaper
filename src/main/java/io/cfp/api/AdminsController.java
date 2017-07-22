@@ -18,57 +18,49 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.cfp.controller;
+package io.cfp.api;
 
-import java.util.List;
-
+import io.cfp.mapper.RoleMapper;
+import io.cfp.mapper.UserMapper;
+import io.cfp.model.Role;
+import io.cfp.model.User;
+import io.cfp.model.queries.RoleQuery;
+import io.cfp.multitenant.TenantId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import io.cfp.entity.Event;
-import io.cfp.entity.Role;
-import io.cfp.entity.User;
-import io.cfp.repository.EventRepository;
-import io.cfp.repository.RoleRepository;
-import io.cfp.repository.UserRepo;
+import java.util.List;
 
 @RestController
 @Secured(Role.OWNER)
-@RequestMapping(value= { "/v0/admins", "api/admins" }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-public class OwnerAdminController {
+@RequestMapping(value= { "/v1/admins", "api/admins" }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+public class AdminsController {
 
     @Autowired
-    private UserRepo users;
+    private UserMapper users;
 
     @Autowired
-    private RoleRepository roles;
+    private RoleMapper roles;
 
-    @Autowired
-    private EventRepository events;
-
-    @RequestMapping(method=RequestMethod.GET)
-    @ResponseBody
-    public List<String> getAdmins() {
-        return users.findEmailByRole(Role.ADMIN, Event.current());
+    @GetMapping
+    public List<String> getAdmins(@TenantId String eventId) {
+        return users.findEmailByRole(Role.ADMIN, eventId);
     }
 
-    @RequestMapping(method=RequestMethod.POST)
-    public boolean addAdmin(@RequestBody String email) {
+    @PostMapping
+    public boolean addAdmin(@RequestBody String email,
+                            @TenantId String eventId) {
     	User user = users.findByEmail(email);
     	if (user == null) {
     		user = new User();
     		user.setEmail(email);
-    		user = users.save(user);
+    		users.insert(user);
     	}
 
-    	List<Role> userRoles = roles.findByUserIdAndEventId(user.getId(), Event.current());
+        RoleQuery roleQuery = new RoleQuery().setUserId(user.getId()).setEventId(eventId);
+    	List<Role> userRoles = roles.findAll(roleQuery);
     	boolean alreadyAdmin = false;
     	for (Role role : userRoles) {
     		if (Role.ADMIN.equals(role.getName())) {
@@ -80,22 +72,25 @@ public class OwnerAdminController {
     	if (!alreadyAdmin) {
     		Role adminRole = new Role();
     		adminRole.setName(Role.ADMIN);
-    		adminRole.setUser(user);
-    		adminRole.setEvent(events.getOne(Event.current()));
-    		roles.save(adminRole);
+    		adminRole.setUser(user.getId());
+    		adminRole.setEvent(eventId);
+    		roles.insert(adminRole);
     		return true;
     	}
     	return false;
     }
 
-    @RequestMapping(value="/{email:.+}", method=RequestMethod.DELETE)
-    public boolean deleteAdmin(@PathVariable String email) {
+    @DeleteMapping(value="/{email:.+}")
+    public boolean deleteAdmin(@PathVariable String email,
+                               @TenantId String eventId) {
     	User user = users.findByEmail(email);
     	if (user != null) {
-    		List<Role> userRoles = roles.findByUserIdAndEventId(user.getId(), Event.current());
+            RoleQuery roleQuery = new RoleQuery().setUserId(user.getId()).setEventId(eventId);
+            List<Role> userRoles = roles.findAll(roleQuery);
+
         	for (Role role : userRoles) {
         		if (Role.ADMIN.equals(role.getName())) {
-        			roles.delete(role.getId());
+        			roles.delete(role);
         			return true;
         		}
         	}

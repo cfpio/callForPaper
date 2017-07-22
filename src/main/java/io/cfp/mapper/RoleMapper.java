@@ -1,8 +1,10 @@
 package io.cfp.mapper;
 
 import io.cfp.model.Role;
-import io.cfp.model.User;
+import io.cfp.model.queries.RoleQuery;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * @author <a href="mailto:nicolas.deloof@gmail.com">Nicolas De Loof</a>
@@ -10,5 +12,7 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface RoleMapper {
 
-    void insert(Role role);
+    int insert(Role role);
+    int delete(Role role);
+    List<Role> findAll(RoleQuery roleQuery);
 }

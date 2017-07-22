@@ -2,10 +2,28 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="io.cfp.mapper.RoleMapper">
 
-    <insert id="insert" parameterType="io.cfp.model.Role"
-            useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    <insert id="insert" parameterType="io.cfp.model.Role" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         insert into roles (name, user_id, event_id)
         values (#{name}, #{user}, #{event})
     </insert>
+
+    <delete id="delete">
+        DELETE FROM roles WHERE id = #{id} and event_id = #{event}
+    </delete>
+
+    <select id="findAll" parameterType="io.cfp.model.queries.RoleQuery" resultType="io.cfp.model.Role">
+        SELECT
+            *,
+            event_id as "event"
+        FROM roles
+        <where>
+            <if test="eventId">
+                event_id = #{eventId}
+            </if>
+            <if test="userId">
+                AND user_id = #{userId}
+            </if>
+        </where>
+    </select>
 
 </mapper>
