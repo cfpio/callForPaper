@@ -61,15 +61,15 @@ public class ReviewersController {
 
         RoleQuery roleQuery = new RoleQuery().setUserId(user.getId()).setEventId(eventId);
     	List<Role> userRoles = roles.findAll(roleQuery);
-    	boolean alreadyAdmin = false;
+    	boolean alreadyReviewer = false;
     	for (Role role : userRoles) {
-    		if (Role.ADMIN.equals(role.getName())) {
-    			alreadyAdmin = true;
+    		if (Role.REVIEWER.equals(role.getName())) {
+                alreadyReviewer = true;
     			break;
     		}
     	}
 
-    	if (!alreadyAdmin) {
+    	if (!alreadyReviewer) {
     		Role adminRole = new Role();
     		adminRole.setName(Role.REVIEWER);
     		adminRole.setUser(user.getId());
