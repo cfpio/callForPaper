@@ -20,6 +20,7 @@
 
 package io.cfp.api;
 
+import io.cfp.domain.exception.ForbiddenException;
 import io.cfp.entity.Role;
 import io.cfp.mapper.ProposalMapper;
 import io.cfp.mapper.UserMapper;
@@ -51,7 +52,7 @@ public class UserController {
     @Autowired
     private UserMapper userMapper;
 
-     @Autowired
+    @Autowired
     private ProposalMapper proposals;
 
     @GetMapping(value = "/me")
@@ -88,10 +89,17 @@ public class UserController {
         return p;
     }
 
-    @PutMapping(value = "/me")
+    @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateMyProfil(@RequestBody User userUpdate, @AuthenticationPrincipal User user) {
+    public void updateMyProfil(@PathVariable int id,
+                               @RequestBody User userUpdate,
+                               @AuthenticationPrincipal User user) {
         LOGGER.info("update: {}", userUpdate);
+
+        if (id != user.getId()) {
+            throw new ForbiddenException();
+        }
+
         userUpdate.setId(user.getId()).setEmail(user.getEmail());
 
         userMapper.update(userUpdate);
