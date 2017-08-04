@@ -116,7 +116,7 @@ public class EmailingServiceTest {
         talkUser.setId(1);
         talkUser.setName("My amazing user talk 1");
 
-        UserProfil speaker = new UserProfil(0, "john", "Doe");
+        UserProfil speaker = new UserProfil(0, "john", "Doe", "john@doe.net");
         speaker.setEmail(JOHN_DOE_EMAIL);
         talkUser.setSpeaker(speaker);
 

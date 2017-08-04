@@ -20,10 +20,14 @@
 
 package io.cfp.controller;
 
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.itextpdf.text.DocumentException;
 import io.cfp.domain.exception.CospeakerNotFoundException;
 import io.cfp.dto.EventSched;
 import io.cfp.dto.TalkAdmin;
+import io.cfp.dto.TalkAdminCsv;
 import io.cfp.entity.Event;
 import io.cfp.entity.Role;
 import io.cfp.entity.Talk;
@@ -177,5 +181,22 @@ public class AdminSessionController {
             states = new Talk.State[] { Talk.State.ACCEPTED };
         }
         return talkService.exportSched(states);
+    }
+
+    @RequestMapping(path = "/sessions/export/sessions.csv", produces = "text/csv")
+    @Secured(Role.ADMIN)
+    public void exportCsv(HttpServletResponse response, @RequestParam(name = "status", required = false) String status) throws IOException {
+        response.addHeader(HttpHeaders.CONTENT_TYPE, "text/csv");
+
+        CsvMapper mapper = new CsvMapper();
+        mapper.addMixIn(TalkAdmin.class, TalkAdminCsv.class);
+
+        CsvSchema schema = mapper.schemaFor(TalkAdmin.class).withHeader();
+        ObjectWriter writer = mapper.writer(schema);
+
+        List<TalkAdmin> sessions = getAllSessions(status);
+        for (TalkAdmin s : sessions) {
+            writer.writeValue(response.getOutputStream(), s);
+        }
     }
 }

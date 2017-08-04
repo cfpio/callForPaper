@@ -72,7 +72,7 @@ public class TalkUser {
         this.references = t.getReferences();
         this.difficulty = t.getDifficulty();
         this.added = t.getAdded();
-        this.speaker = new UserProfil(t.getId(), t.getUser().getFirstname(), t.getUser().getLastname());
+        this.speaker = new UserProfil(t.getId(), t.getUser().getFirstname(), t.getUser().getLastname(),  t.getUser().getEmail());
         this.cospeakers = t.getCospeakers().stream().map( u -> new CospeakerProfil(u.getEmail()) ).collect(Collectors.toSet());
         this.room = t.getRoom() != null ? t.getRoom().getId() : null;
         if (t.getDate() != null) {
