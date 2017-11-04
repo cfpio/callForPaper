@@ -20,11 +20,12 @@
 
 package io.cfp.controller;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-
+import io.cfp.domain.exception.BadRequestException;
+import io.cfp.domain.exception.NotFoundException;
+import io.cfp.dto.ApplicationSettings;
+import io.cfp.entity.Event;
 import io.cfp.entity.Role;
+import io.cfp.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -34,18 +35,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.cfp.domain.exception.BadRequestException;
-import io.cfp.domain.exception.NotFoundException;
-import io.cfp.dto.ApplicationSettings;
-import io.cfp.entity.Event;
-import io.cfp.repository.EventRepository;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 /**
  * Created by tmaugin on 07/05/2015.
  */
 @RestController
-@RequestMapping(value = { "/v0", "/api" }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-public class ApplicationController {
+@RequestMapping(value = { "/v0" }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+public class ApplicationControllerOld {
 
     @Autowired
     private EventRepository events;
