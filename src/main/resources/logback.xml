@@ -29,7 +29,9 @@
         </encoder>
     </appender>
 
-    <logger name="io.cfp" level="INFO"/>
+    <logger name="io.cfp" level="DEBUG"/>
+    <logger name="io.cfp.config.filter" level="INFO"/>
+    <logger name="org.springframework.security.web.access" level="INFO"/>
 
     <!-- root -->
     <root level="INFO">
