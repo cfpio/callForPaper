@@ -56,6 +56,28 @@ public class WebConfiguration extends WebMvcConfigurerAdapter {
         argumentResolvers.add(new TenantIdHandlerMethodArgumentResolver());
     }
 
+//    @Bean
+//    public WebMvcConfigurer corsConfigurer() {
+//        return new WebMvcConfigurerAdapter() {
+//            @Override
+//            public void addCorsMappings(CorsRegistry registry) {
+//                registry.addMapping("/api/articles")
+//                    .allowedOrigins("*")
+//                    .allowedMethods("POST");
+//                registry.addMapping("/api/articles/bulk")
+//                    .allowedOrigins("*")
+//                    .allowedMethods("POST");
+//                registry.addMapping("/api/sessions")
+//                    .allowedOrigins("*")
+//                    .allowedMethods("POST", "DELETE");
+//                registry.addMapping("/api/users/current")
+//                    .allowedOrigins("*")
+//                    .allowedMethods("GET");
+//            }
+//        };
+//    }
+
+
     @Bean
     public InternalResourceViewResolver getInternalResourceViewResolver() {
         InternalResourceViewResolver resolver = new InternalResourceViewResolver();
@@ -83,7 +105,7 @@ public class WebConfiguration extends WebMvcConfigurerAdapter {
         return registrationBean;
     }
 
-    @Bean
+//    @Bean
     public FilterRegistrationBean corsFilter() {
         FilterRegistrationBean registrationBean = new FilterRegistrationBean();
         Filter authFilter = new CorsFilter();
