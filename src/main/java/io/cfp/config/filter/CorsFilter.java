@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -37,10 +36,12 @@ import java.io.IOException;
  * @author <a href="mailto:nicolas.deloof@gmail.com">Nicolas De Loof</a>
  */
 public class CorsFilter extends OncePerRequestFilter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CorsFilter.class);
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
         if (CorsUtils.isCorsRequest(request)) {
+            LOGGER.trace("Cors request : {}", request.getRequestURI());
             String origin = request.getHeader(HttpHeaders.ORIGIN);
             if (origin != null)
                 response.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
@@ -51,7 +52,5 @@ public class CorsFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(request, response);
     }
-
-    private static final Logger logger = LoggerFactory.getLogger(CorsFilter.class);
 
 }
