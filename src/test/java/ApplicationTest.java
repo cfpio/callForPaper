@@ -20,7 +20,7 @@
 
 import com.jayway.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.cfp.JpaTestConfig;
-import io.cfp.controller.ApplicationController;
+import io.cfp.controller.ApplicationControllerOld;
 import io.cfp.repository.EventRepository;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -46,11 +46,11 @@ public class ApplicationTest {
     @Autowired
     private EventRepository events;
 
-    private ApplicationController applicationController;
+    private ApplicationControllerOld applicationController;
 
     @Before
     public void setUp() {
-        applicationController = new ApplicationController();
+        applicationController = new ApplicationControllerOld();
         ReflectionTestUtils.setField(applicationController, "events", events);
         RestAssuredMockMvc.standaloneSetup(applicationController);
     }
