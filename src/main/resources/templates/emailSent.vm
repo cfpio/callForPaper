@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>cfp.io</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width">
+
+	<link rel="stylesheet" href="/webjars/bootstrap/3.3.6/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/style/login.css">
+    <link rel="icon" href="favicon.ico" />
+</head>
+<body>
+
+<div class="container">
+
+	<div class="row">
+		<div class="col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4 title">
+			<h1>cfp.io</h1>
+			<h4>Check your mailbox to validate your access</h4>
+		</div>
+	</div>
+
+</div>
+
+</body>
+</html>

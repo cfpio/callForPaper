@@ -28,10 +28,7 @@ import io.cfp.dto.TalkAdmin;
 import io.cfp.dto.TalkUser;
 import io.cfp.dto.user.CospeakerProfil;
 import io.cfp.dto.user.UserProfil;
-import io.cfp.entity.Event;
-import io.cfp.entity.Role;
-import io.cfp.entity.Talk;
-import io.cfp.entity.User;
+import io.cfp.entity.*;
 import io.cfp.repository.EventRepository;
 import io.cfp.repository.UserRepo;
 import org.apache.commons.io.FileUtils;
@@ -102,6 +99,24 @@ public class EmailingService {
                 subjects.put(matcher.group(1), subs);
             }
         }
+    }
+
+    /**
+     * Send validation of your email.
+     *
+     * @param user
+     * @param locale
+     */
+    @Async
+    @Transactional
+    public void sendEmailValidation(Humanity user, Locale locale) throws IOException {
+        log.debug("Sending email validation to [{}]", user.getEmail());
+
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("user", user);
+        parameters.put("subject", getSubject("emailValidation", locale));
+
+        createAndSendEmail("verify.html", user.getEmail(), parameters, null, null, locale);
     }
 
     /**
@@ -289,7 +304,7 @@ public class EmailingService {
 
         StringWriter writer;
         try {
-            freemarker.template.Template tpl = freemarker.getTemplate(templatePath);
+            freemarker.template.Template tpl = freemarker.getTemplate(templatePath, "UTF-8");
             writer = new StringWriter();
             tpl.process(parameters, writer);
         } catch (IOException e) {

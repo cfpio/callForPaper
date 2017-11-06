@@ -395,5 +395,26 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="21" author="mimah" failOnError="false">
+        <createTable tableName="humanity">
+
+            <column name="id" type="int">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+
+            <column name="email" type="varchar(255)">
+                <constraints unique="true"/>
+            </column>
+
+            <column name="password" type="varchar(62)"/>
+            <column name="verify_token" type="varchar(255)"/>
+            <column name="super_admin" type="boolean" defaultValueBoolean="false"/>
+
+        </createTable>
+
+        <addAutoIncrement tableName="humanity" columnName="id" columnDataType="int"/>
+
+    </changeSet>
+
 
 </databaseChangeLog>

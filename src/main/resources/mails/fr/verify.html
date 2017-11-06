@@ -1,0 +1,419 @@
+#set ($subject="Confirmation de votre adresse e-mail") 
+
+<!DOCTYPE html "-//w3c//dtd xhtml 1.0 transitional //en" "http://www.w3.org/tr/xhtml1/dtd/xhtml1-transitional.dtd">
+<!--
+  ~ Copyright (c) 2016 BreizhCamp
+  ~ [http://breizhcamp.org]
+  ~
+  ~ This file is part of CFP.io.
+  ~
+  ~ CFP.io is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"><head>
+  <!--[if gte mso 9]><xml>
+  <o:OfficeDocumentSettings>
+  <o:AllowPNG/>
+  <o:PixelsPerInch>96</o:PixelsPerInch>
+  </o:OfficeDocumentSettings>
+  </xml><![endif]-->
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width">
+  <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
+  <title>$subject</title>
+
+</head>
+<body style="width: 100% !important;min-width: 100%;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100% !important;margin: 0;padding: 0;background-color: #E5E5E5">
+  <style id="media-query">
+  /*  Media Queries */
+  @media only screen and (max-width: 600px) {
+  table[class="body"] img {
+  width: 100% !important;
+  height: auto !important; }
+  table[class="body"] center {
+  min-width: 0 !important; }
+  table[class="body"] .container {
+  width: 95% !important; }
+  table[class="body"] .row {
+  width: 100% !important;
+  display: block !important; }
+  table[class="body"] .wrapper {
+  display: block !important;
+  padding-right: 0 !important; }
+  table[class="body"] .columns, table[class="body"] .column {
+  table-layout: fixed !important;
+  float: none !important;
+  width: 100% !important;
+  padding-right: 0px !important;
+  padding-left: 0px !important;
+  display: block !important; }
+  table[class="body"] .wrapper.first .columns, table[class="body"] .wrapper.first .column {
+  display: table !important; }
+  table[class="body"] table.columns td, table[class="body"] table.column td {
+  width: 100% !important; }
+  table[class="body"] .columns td.one, table[class="body"] .column td.one {
+  width: 8.33333% !important; }
+  table[class="body"] .columns td.two, table[class="body"] .column td.two {
+  width: 16.66667% !important; }
+  table[class="body"] .columns td.three, table[class="body"] .column td.three {
+  width: 25% !important; }
+  table[class="body"] .columns td.four, table[class="body"] .column td.four {
+  width: 33.33333% !important; }
+  table[class="body"] .columns td.five, table[class="body"] .column td.five {
+  width: 41.66667% !important; }
+  table[class="body"] .columns td.six, table[class="body"] .column td.six {
+  width: 50% !important; }
+  table[class="body"] .columns td.seven, table[class="body"] .column td.seven {
+  width: 58.33333% !important; }
+  table[class="body"] .columns td.eight, table[class="body"] .column td.eight {
+  width: 66.66667% !important; }
+  table[class="body"] .columns td.nine, table[class="body"] .column td.nine {
+  width: 75% !important; }
+  table[class="body"] .columns td.ten, table[class="body"] .column td.ten {
+  width: 83.33333% !important; }
+  table[class="body"] .columns td.eleven, table[class="body"] .column td.eleven {
+  width: 91.66667% !important; }
+  table[class="body"] .columns td.twelve, table[class="body"] .column td.twelve {
+  width: 100% !important; }
+  table[class="body"] td.offset-by-one, table[class="body"] td.offset-by-two, table[class="body"] td.offset-by-three, table[class="body"] td.offset-by-four, table[class="body"] td.offset-by-five, table[class="body"] td.offset-by-six, table[class="body"] td.offset-by-seven, table[class="body"] td.offset-by-eight, table[class="body"] td.offset-by-nine, table[class="body"] td.offset-by-ten, table[class="body"] td.offset-by-eleven {
+  padding-left: 0 !important; }
+  table[class="body"] table.columns td.expander {
+  width: 1px !important; }
+  table[class="body"] .right-text-pad, table[class="body"] .text-pad-right {
+  padding-left: 10px !important; }
+  table[class="body"] .left-text-pad, table[class="body"] .text-pad-left {
+  padding-right: 10px !important; }
+  table[class="body"] .hide-for-small, table[class="body"] .show-for-desktop {
+  display: none !important; }
+  table[class="body"] .show-for-small, table[class="body"] .hide-for-desktop {
+  display: inherit !important; }
+  table[class="icon-table"] {
+  width: 100% !important; }
+  table[class="icon-table"] table {
+  display: block !important;
+  width: 100% !important; }
+  table[class="icon-table"] table td {
+  padding-bottom: 10px !important; }
+  .mixed-two-up .col {
+  width: 100% !important; } }
+
+  @media screen and (max-width: 600px) {
+  div[class="col"] {
+  width: 100% !important;
+  }
+  }
+  @media screen and (min-width: 601px) {
+  table[class="block-grid"] {
+  width: 600px !important;
+  }
+  }
+  </style>
+  <table class="body" style="border-spacing: 0;border-collapse: collapse;padding: 0;vertical-align: top;height: 100%;width: 100%;margin: 0;table-layout: fixed" cellpadding="0" cellspacing="0" width="100%" border="0">
+    <tbody><tr style="padding: 0;vertical-align: top">
+      <td class="center" style="word-break: break-word;-webkit-hyphens: auto;-moz-hyphens: auto;hyphens: auto;border-collapse: collapse !important;padding: 0;vertical-align: top;margin: 0;text-align: center;background-color: #E5E5E5" align="center" valign="top">
+
+        <!--[if (gte mso 9)|(IE)]>
+        <table width='600' class="ieCell" align="center" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            <td>
+              <![endif]-->
+              <table style="border-spacing: 0;border-collapse: collapse;padding: 0;vertical-align: top;background-color: transparent" cellpadding="0" cellspacing="0" align="center" width="100%" border="0">
+                <tbody><tr style="padding: 0;vertical-align: top">
+                  <td style="word-break: break-word;-webkit-hyphens: auto;-moz-hyphens: auto;hyphens: auto;border-collapse: collapse !important;padding: 0;vertical-align: top;margin: 0" width="100%">
+                    <table class="container" style="border-spacing: 0;border-collapse: collapse;padding: 0;vertical-align: top;max-width: 600px;margin: 0 auto;text-align: inherit" cellpadding="0" cellspacing="0" align="center" width="100%" border="0">
+                      <tbody><tr style="padding: 0;vertical-align: top">
+                        <td style="word-break: break-word;-webkit-hyphens: auto;-moz-hyphens: auto;hyphens: auto;border-collapse: collapse !important;padding: 0;vertical-align: top;margin: 0" width="100%">
+                          <table class="block-grid" style="border-spacing: 0;border-collapse: collapse;padding: 0;vertical-align: top;width: 100%;max-width: 600px;color: #333;background-color: #FFFFFF" cellpadding="0" cellspacing="0" width="100%" bgcolor="#FFFFFF">
+                            <tbody><tr style="padding: 0;vertical-align: top">
+                              <td style="word-break: break-word;-webkit-hyphens: auto;-moz-hyphens: auto;hyphens: auto;border-collapse: collapse !important;padding: 0;vertical-align: top;margin: 0;text-align: center;font-size: 0">
+                                <!--[if (gte mso 9)|(IE)]>
+                                <table width="100%" align="center" cellpadding="0" cellspacing="0" border="0">
+                                  <tr>
+                                    <td valign="top">
+                                      <![endif]-->
+                                      <div class="col num12" style="display: inline-block;vertical-align: top;width: 100%">
+                                        <table style="border-spacing: 0;border-collapse: collapse;padding: 0;vertical-align: top" cellpadding="0" cellspacing="0" align="center" width="100%" border="0">
+                                          <tbody><tr style="padding: 0;vertical-align: top">
+                                            <td style="word-break: break-word;-webkit-hyphens: auto;-moz-hyphens: auto;hyphens: auto;border-collapse: collapse !important;padding: 0;vertical-align: top;margin: 0;background-color: transparent;padding-top: 0px;padding-right: 0px;padding-bottom: 0px;padding-left: 0px;border-top: 0px none transparent;border-right: 0px none transparent;border-bottom: 0px none transparent;border-left: 0px none transparent">
+                                              <table style="border-spacing: 0;border-collapse: collapse;padding: 0;vertical-align: top" cellpadding="0" cellspacing="0" width="100%" border="0" align="center fullwidth">
+                                                <tbody><tr style="padding: 0;vertical-align: top">
+                                                  <td style="word-break: break-word;-webkit-hyphens: auto;-moz-hyphens: auto;hyphens: auto;border-collapse: collapse !important;padding: 0;vertical-align: top;margin: 0;width: 100%;text-align: center fullwidth" align="center fullwidth">
+                                                    <div style="max-width: 100%;padding-top: 10px;padding-right: 10px;padding-left: 10px" align="center fullwidth">
+                                                      <a href="http://www.cfp.io/" target="_blank">
+                                                        <img class="center fullwidth" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;width: 100%;clear: both;display: block;border: none;height: auto;line-height: 100%;margin: 0 auto;float: none;max-width: 600px" border="0" width="100%" align="center fullwidth" src="$hostname/lib/images/header.png" alt="Image" title="Image">
+                                                      </a>
+                                                    </div>
+                                                  </td>
+                                                </tr>
+                                              </tbody></table>
+                                            </td>
+                                          </tr>
+                                        </tbody></table>
+                                      </div>
+                                      <!--[if (gte mso 9)|(IE)]>
+                                    </td><td>
+                                    <![endif]-->
+                                    <!--[if (gte mso 9)|(IE)]>
+                                  </td>
+                                </tr>
+                              </table>
+                              <![endif]-->
+                            </td>
+                          </tr>
+                        </tbody></table>
+                      </td>
+                    </tr>
+                  </tbody></table>
+                </td>
+              </tr>
+            </tbody></table>
+            <!--[if (gte mso 9)|(IE)]>
+          </td>
+        </tr>
+      </table>
+      <![endif]-->
+      <!--[if (gte mso 9)|(IE)]>
+      <table width='600' class="ieCell" align="center" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td>
+            <![endif]-->
+            <table style="border-spacing: 0;border-collapse: collapse;padding: 0;vertical-align: top;background-color: transparent" cellpadding="0" cellspacing="0" align="center" width="100%" border="0">
+              <tbody><tr style="padding: 0;vertical-align: top">
+                <td style="word-break: break-word;-webkit-hyphens: auto;-moz-hyphens: auto;hyphens: auto;border-collapse: collapse !important;padding: 0;vertical-align: top;margin: 0" width="100%">
+                  <table class="container" style="border-spacing: 0;border-collapse: collapse;padding: 0;vertical-align: top;max-width: 600px;margin: 0 auto;text-align: inherit" cellpadding="0" cellspacing="0" align="center" width="100%" border="0">
+                    <tbody><tr style="padding: 0;vertical-align: top">
+                      <td style="word-break: break-word;-webkit-hyphens: auto;-moz-hyphens: auto;hyphens: auto;border-collapse: collapse !important;padding: 0;vertical-align: top;margin: 0" width="100%">
+                        <table class="block-grid" style="border-spacing: 0;border-collapse: collapse;padding: 0;vertical-align: top;width: 100%;max-width: 600px;color: #000000;background-color: #FFFFFF" cellpadding="0" cellspacing="0" width="100%" bgcolor="#F4F4F4">
+                          <tbody><tr style="padding: 0;vertical-align: top">
+                            <td style="word-break: break-word;-webkit-hyphens: auto;-moz-hyphens: auto;hyphens: auto;border-collapse: collapse !important;padding: 0;vertical-align: top;margin: 0;text-align: center;font-size: 0">
+                              <!--[if (gte mso 9)|(IE)]>
+                              <table width="100%" align="center" cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                  <td valign="top">
+                                    <![endif]-->
+                                    <div class="col num12" style="display: inline-block;vertical-align: top;width: 100%">
+                                      <table style="border-spacing: 0;border-collapse: collapse;padding: 0;vertical-align: top" cellpadding="0" cellspacing="0" align="center" width="100%" border="0">
+                                        <tbody><tr style="padding: 0;vertical-align: top">
+                                          <td style="word-break: break-word;-webkit-hyphens: auto;-moz-hyphens: auto;hyphens: auto;border-collapse: collapse !important;padding: 0;vertical-align: top;margin: 0;background-color: transparent;padding-top: 0px;padding-right: 0px;padding-bottom: 30px;padding-left: 0px;border-top: 0px none transparent;border-right: 0px none transparent;border-bottom: 0px none transparent;border-left: 0px none transparent">
+                                            <table style="border-spacing: 0;border-collapse: collapse;padding: 0;vertical-align: top" cellpadding="0" cellspacing="0" width="100%">
+                                              <tbody><tr style="padding: 0;vertical-align: top">
+                                                <td style="word-break: break-word;-webkit-hyphens: auto;-moz-hyphens: auto;hyphens: auto;border-collapse: collapse !important;padding: 0;vertical-align: top;margin: 0;padding-top: 30px;padding-right: 10px;padding-bottom: 10px;padding-left: 10px">
+                                                  <div style="color:#767676;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;">
+                                                    <div style="text-align: center; font-size: 12px; line-height: 14px;color: #f36f21;font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height: 14px" data-mce-style="text-align: center;"><span style="font-size:36px; line-height:43px;" mce-data-marked="1">Validation de votre email</span></div>
+                                                  </div>
+                                                </td>
+                                              </tr>
+                                            </tbody></table>
+                                            <table style="border-spacing: 0;border-collapse: collapse;padding: 0;vertical-align: top" cellpadding="0" cellspacing="0" width="100%">
+                                              <tbody><tr style="padding: 0;vertical-align: top">
+                                                <td style="word-break: break-word;-webkit-hyphens: auto;-moz-hyphens: auto;hyphens: auto;border-collapse: collapse !important;padding: 0;vertical-align: top;margin: 0;padding-top: 10px;padding-right: 10px;padding-bottom: 10px;padding-left: 10px">
+                                                  <div style="color:#767676;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;">
+                                                    <div style="text-align: center; line-height: 14px; font-size: 12px;color: #767676;font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height: 14px" data-mce-style="text-align: center;"><span style="font-size:24px; line-height:29px;" mce-data-marked="1">Pour valider votre adresse veuillez cliquer sur le bouton suivant :</span></div>
+                                                  </div>
+                                                </td>
+                                              </tr>
+                                            </tbody></table>
+                                          </td>
+                                        </tr>
+                                      </tbody></table>
+                                    </div>
+                                    <!--[if (gte mso 9)|(IE)]>
+                                  </td><td>
+                                  <![endif]-->
+                                  <!--[if (gte mso 9)|(IE)]>
+                                </td>
+                              </tr>
+                            </table>
+                            <![endif]-->
+                          </td>
+                        </tr>
+                      </tbody></table>
+                    </td>
+                  </tr>
+                </tbody></table>
+              </td>
+            </tr>
+          </tbody></table>
+          <!--[if (gte mso 9)|(IE)]>
+        </td>
+      </tr>
+    </table>
+    <![endif]-->
+    <!--[if (gte mso 9)|(IE)]>
+    <table width='600' class="ieCell" align="center" cellpadding="0" cellspacing="0" border="0">
+      <tr>
+        <td>
+          <![endif]-->
+          <table style="border-spacing: 0;border-collapse: collapse;padding: 0;vertical-align: top;background-color: transparent" cellpadding="0" cellspacing="0" align="center" width="100%" border="0">
+            <tbody><tr style="padding: 0;vertical-align: top">
+              <td style="word-break: break-word;-webkit-hyphens: auto;-moz-hyphens: auto;hyphens: auto;border-collapse: collapse !important;padding: 0;vertical-align: top;margin: 0" width="100%">
+                <table class="container" style="border-spacing: 0;border-collapse: collapse;padding: 0;vertical-align: top;max-width: 600px;margin: 0 auto;text-align: inherit" cellpadding="0" cellspacing="0" align="center" width="100%" border="0">
+                  <tbody><tr style="padding: 0;vertical-align: top">
+                    <td style="word-break: break-word;-webkit-hyphens: auto;-moz-hyphens: auto;hyphens: auto;border-collapse: collapse !important;padding: 0;vertical-align: top;margin: 0" width="100%">
+                      <table class="block-grid" style="border-spacing: 0;border-collapse: collapse;padding: 0;vertical-align: top;width: 100%;max-width: 600px;color: #000000;background-color: #FFFFFF" cellpadding="0" cellspacing="0" width="100%" bgcolor="#FFFFFF">
+                        <tbody><tr style="padding: 0;vertical-align: top">
+                          <td style="word-break: break-word;-webkit-hyphens: auto;-moz-hyphens: auto;hyphens: auto;border-collapse: collapse !important;padding: 0;vertical-align: top;margin: 0;text-align: center;font-size: 0">
+                            <!--[if (gte mso 9)|(IE)]>
+                            <table width="100%" align="center" cellpadding="0" cellspacing="0" border="0">
+                              <tr>
+                                <td valign="top">
+                                  <![endif]-->
+                                  <div class="col num12" style="display: inline-block;vertical-align: top;width: 100%">
+                                    <table style="border-spacing: 0;border-collapse: collapse;padding: 0;vertical-align: top" cellpadding="0" cellspacing="0" align="center" width="100%" border="0">
+                                      <tbody><tr style="padding: 0;vertical-align: top">
+                                        <td style="word-break: break-word;-webkit-hyphens: auto;-moz-hyphens: auto;hyphens: auto;border-collapse: collapse !important;padding: 0;vertical-align: top;margin: 0;background-color: transparent;padding-top: 20px;padding-right: 10px;padding-bottom: 30px;padding-left: 10px;border-top: 0px none transparent;border-right: 0px none transparent;border-bottom: 0px none transparent;border-left: 0px none transparent">
+                                          <table style="border-spacing: 0;border-collapse: collapse;padding: 0;vertical-align: top" width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tbody><tr style="padding: 0;vertical-align: top">
+                                              <td class="button-container" style="word-break: break-word;-webkit-hyphens: auto;-moz-hyphens: auto;hyphens: auto;border-collapse: collapse !important;padding: 10px 10px 10px 10px;vertical-align: top;margin: 0" align="center">
+                                                <table style="border-spacing: 0;border-collapse: collapse;padding: 0;vertical-align: top" border="0" cellspacing="0" cellpadding="0" align="center">
+                                                  <tbody><tr style="padding: 0;vertical-align: top">
+                                                    <td class="button" style="word-break: break-word;-webkit-hyphens: auto;-moz-hyphens: auto;hyphens: auto;border-collapse: collapse !important;padding: 0;vertical-align: top;margin: 0;text-align: center;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px" bgcolor="#3AAEE0" width="318">
+                                                      <a style="display: inline-block;text-decoration: none;-webkit-text-size-adjust: none;mso-hide: all;text-align: center;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px;border-top: 0px none transparent;border-right: 0px none transparent;border-bottom: 0px none transparent;border-left: 0px none transparent;color: #ffffff !important;padding: 15px 20px 15px 20px;vertical-align: middle" href="$hostname/local/register?email=$esc.url($user.email)&token=$user.verifyToken" target="_blank">
+                                                        <!--[if gte mso 9]>&nbsp;<![endif]-->
+                                                        <div style="text-align: left;font-family: Arial, Helvetica, sans-serif;font-size: 16px;line-height: 32px;color: #ffffff" data-mce-style="font-family: Arial,Helvetica,sans-serif; font-size: 16px; line-height: 28px;"><span style="font-family:Arial, 'Helvetica Neue', Helvetica, sans-serifpx; line-height:56px; font-size:28px;" mce-data-marked="1">Valider mon e-mail</span></div>
+                                                        <!--[if gte mso 9]>&nbsp;<![endif]-->
+                                                      </a>
+                                                    </td>
+                                                  </tr>
+                                                </tbody></table>
+                                              </td>
+                                            </tr>
+                                          </tbody></table>                                              </td>
+                                        </tr>
+                                      </tbody></table>
+                                    </div>
+                                    <!--[if (gte mso 9)|(IE)]>
+                                  </td><td>
+                                  <![endif]-->
+                                  <!--[if (gte mso 9)|(IE)]>
+                                </td>
+                              </tr>
+                            </table>
+                            <![endif]-->
+                          </td>
+                        </tr>
+                      </tbody></table>
+                    </td>
+                  </tr>
+                </tbody></table>
+              </td>
+            </tr>
+          </tbody></table>
+          <!--[if (gte mso 9)|(IE)]>
+        </td>
+      </tr>
+    </table>
+    <![endif]-->
+    <!--[if (gte mso 9)|(IE)]>
+    <table width='600' class="ieCell" align="center" cellpadding="0" cellspacing="0" border="0">
+      <tr>
+        <td>
+          <![endif]-->
+          <table style="border-spacing: 0;border-collapse: collapse;padding: 0;vertical-align: top;background-color: transparent" cellpadding="0" cellspacing="0" align="center" width="100%" border="0">
+            <tbody><tr style="padding: 0;vertical-align: top">
+              <td style="word-break: break-word;-webkit-hyphens: auto;-moz-hyphens: auto;hyphens: auto;border-collapse: collapse !important;padding: 0;vertical-align: top;margin: 0" width="100%">
+                <table class="container" style="border-spacing: 0;border-collapse: collapse;padding: 0;vertical-align: top;max-width: 600px;margin: 0 auto;text-align: inherit" cellpadding="0" cellspacing="0" align="center" width="100%" border="0">
+                  <tbody><tr style="padding: 0;vertical-align: top">
+                    <td style="word-break: break-word;-webkit-hyphens: auto;-moz-hyphens: auto;hyphens: auto;border-collapse: collapse !important;padding: 0;vertical-align: top;margin: 0" width="100%">
+                      <table class="block-grid three-up" style="border-spacing: 0;border-collapse: collapse;padding: 0;vertical-align: top;width: 100%;max-width: 600px;color: #000000;background-color: #555555" cellpadding="0" cellspacing="0" width="100%" bgcolor="#555555">
+                        <tbody><tr style="padding: 0;vertical-align: top">
+                          <td style="word-break: break-word;-webkit-hyphens: auto;-moz-hyphens: auto;hyphens: auto;border-collapse: collapse !important;padding: 0;vertical-align: top;margin: 0;text-align: center;font-size: 0">
+                            <!--[if (gte mso 9)|(IE)]>
+                            <table width="100%" align="center" cellpadding="0" cellspacing="0" border="0">
+                              <tr>
+                                <td valign="top">
+                                  <![endif]-->
+                                  <div style="display: inline-block;vertical-align: top;width: 200px;text-align: center">
+                                    <table style="border-spacing: 0;border-collapse: collapse;padding: 0;vertical-align: top" cellpadding="0" cellspacing="0" align="center" width="100%" border="0">
+                                      <tbody><tr style="padding: 0;vertical-align: top">
+                                        <td style="word-break: break-word;-webkit-hyphens: auto;-moz-hyphens: auto;hyphens: auto;border-collapse: collapse !important;padding: 0;vertical-align: top;margin: 0;background-color: transparent;padding-top: 5px;padding-right: 0px;padding-bottom: 5px;padding-left: 0px;border-top: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-left: 0px solid transparent">
+                                          <table style="border-spacing: 0;border-collapse: collapse;padding: 0;vertical-align: top" cellpadding="0" cellspacing="0" width="100%">
+                                            <tbody><tr style="padding: 0;vertical-align: top">
+                                              <td style="word-break: break-word;-webkit-hyphens: auto;-moz-hyphens: auto;hyphens: auto;border-collapse: collapse !important;padding: 0;vertical-align: top;margin: 0;padding-top: 10px;padding-right: 10px;padding-bottom: 10px;padding-left: 10px">
+                                                <div style="color:#FFFFFF;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;">
+                                                  <div style="font-size: 14px; line-height: 16px; text-align: center;color: #f36f21;font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height: 14px" data-mce-style="font-size: 12px; line-height: 16px; text-align: center;">Contacts</div><div style="font-size: 12px; line-height: 16px; text-align: center;color: #FFFFFF;font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height: 16px" data-mce-style="font-size: 12px; line-height: 16px; text-align: center;"><a style="color: white;text-decoration: none;" data-mce-style="color: white;text-decoration: none;" href="mailto:contact@cfp.io" target="_blank" data-mce-href="mailto:contact@cfp.io">contact@cfp.io</a></div>
+                                                </div>
+                                              </td>
+                                            </tr>
+                                          </tbody></table>
+                                        </td>
+                                      </tr>
+                                    </tbody></table>
+                                  </div>
+                                  <!--[if (gte mso 9)|(IE)]>
+                                </td><td>
+                                <![endif]-->
+                               <!--  <div class="col num4" style="display: inline-block;vertical-align: top;width: 200px;text-align: center">
+                                  <table style="border-spacing: 0;border-collapse: collapse;padding: 0;vertical-align: top" cellpadding="0" cellspacing="0" align="center" width="100%" border="0">
+                                    <tbody><tr style="padding: 0;vertical-align: top">
+                                      <td style="word-break: break-word;-webkit-hyphens: auto;-moz-hyphens: auto;hyphens: auto;border-collapse: collapse !important;padding: 0;vertical-align: top;margin: 0;background-color: transparent;padding-top: 5px;padding-right: 0px;padding-bottom: 5px;padding-left: 0px;border-top: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-left: 0px solid transparent">
+                                        <table style="border-spacing: 0;border-collapse: collapse;padding: 0;vertical-align: top" cellpadding="0" cellspacing="0" width="100%" border="0" align="center">
+                                          <tbody><tr style="padding: 0;vertical-align: top">
+                                            <td style="word-break: break-word;-webkit-hyphens: auto;-moz-hyphens: auto;hyphens: auto;border-collapse: collapse !important;padding: 0;vertical-align: top;margin: 0;width: 100%;text-align: center" align="center">
+                                              <div style="max-width: 100%;" align="center">
+                                                <img class="center" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;width: 100%;clear: both;display: block;border: none;height: auto;line-height: 100%;margin: 0 auto;float: none;max-width: 170px" border="0" width="100%" align="center" src="$hostname/lib/images/footer.png" alt="Image" title="Image">
+                                              </div>
+                                            </td>
+                                          </tr>
+                                        </tbody></table>
+                                      </td>
+                                    </tr>
+                                  </tbody></table>
+                                </div>
+                                <!--[if (gte mso 9)|(IE)]>
+                              </td><td>
+                              <![endif]
+                              <div class="col num4" style="display: inline-block;vertical-align: top;width: 200px;text-align: center">
+                                <table style="border-spacing: 0;border-collapse: collapse;padding: 0;vertical-align: top" cellpadding="0" cellspacing="0" align="center" width="100%" border="0">
+                                  <tbody><tr style="padding: 0;vertical-align: top">
+                                    <td style="word-break: break-word;-webkit-hyphens: auto;-moz-hyphens: auto;hyphens: auto;border-collapse: collapse !important;padding: 0;vertical-align: top;margin: 0;background-color: transparent;padding-top: 5px;padding-right: 0px;padding-bottom: 5px;padding-left: 0px;border-top: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-left: 0px solid transparent">
+                                      <table style="border-spacing: 0;border-collapse: collapse;padding: 0;vertical-align: top" cellpadding="0" cellspacing="0" width="100%">
+                                        <tbody><tr style="padding: 0;vertical-align: top">
+                                          <td style="word-break: break-word;-webkit-hyphens: auto;-moz-hyphens: auto;hyphens: auto;border-collapse: collapse !important;padding: 0;vertical-align: top;margin: 0;padding-top: 10px;padding-right: 10px;padding-bottom: 10px;padding-left: 10px">
+                                            <div style="color:#FFFFFF;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;">
+                                              <div style="font-size: 12px; line-height: 14px; text-align: center;color: #FFFFFF;font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height: 14px" data-mce-style="font-size: 12px; line-height: 14px; text-align: center;"><a style="color: white;text-decoration: none;" data-mce-style="color: white;text-decoration: none;" href="http://devfest.gdgnantes.com/cod" target="_blank" data-mce-href="http://devfest.gdgnantes.com/cod">Code of Conduct</a></div>
+                                            </div>
+                                          </td>
+                                        </tr>
+                                      </tbody></table>
+                                    </td>
+                                  </tr>
+                                </tbody></table>
+                              </div> -->
+                              <!--[if (gte mso 9)|(IE)]>
+                            </td><td>
+                            <![endif]-->
+                            <!--[if (gte mso 9)|(IE)]>
+                          </td>
+                        </tr>
+                      </table>
+                      <![endif]-->
+                    </td>
+                  </tr>
+                </tbody></table>
+              </td>
+            </tr>
+          </tbody></table>
+        </td>
+      </tr>
+    </tbody></table>
+    <!--[if (gte mso 9)|(IE)]>
+  </td>
+</tr>
+</table>
+<![endif]-->
+</td>
+</tr>
+</tbody></table>
+</body></html>

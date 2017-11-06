@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>cfp.io</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width">
+
+	<script src="//www.google.com/recaptcha/api.js" async defer></script>
+
+	<link rel="stylesheet" href="/webjars/bootstrap/3.3.6/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/style/login.css">
+    <link rel="icon" href="favicon.ico" />
+</head>
+<body>
+
+<div class="container">
+
+	<div class="row">
+		<div class="col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4 title">
+			<h1>cfp.io</h1>
+			<h4>Please enter your email to signup to cfp.io</h4>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4 main-text">
+
+			<form class="form-signin" role="form" action="/local/signup" method="POST">
+				<img src="/img/avatar.png" class="hidden-xs">
+
+				#if ($error == "invalidCaptcha")			
+				<div class="alert alert-danger">Invalid captcha response</div>
+				#end
+				#if ($error == "mailError")
+					<div class="alert alert-danger">Unable to send validation mail, the team is notified.</div>
+				#end
+
+				<input type="text" name="email" class="form-control" placeholder="E-mail" required autofocus>
+
+				<div class="g-recaptcha" data-sitekey="$recaptchaKey"></div>
+
+				<button class="btn btn-lg btn-primary btn-block" type="submit">Signup</button>
+			</form>
+		</div>
+	</div>
+</div>
+
+</body>
+</html>
