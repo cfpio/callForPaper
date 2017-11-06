@@ -24,5 +24,5 @@ public interface EventMapper {
 
     int insert(Event event);
 
-    io.cfp.entity.Event findOne(String eventId);
+    Event findOne(String eventId);
 }

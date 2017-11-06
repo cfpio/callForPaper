@@ -45,6 +45,19 @@ public class ApplicationSettings {
 
     public ApplicationSettings() { }
 
+    public ApplicationSettings(io.cfp.model.Event event) {
+        eventName = event.getName();
+        date = sf.format(event.getDate());
+        this.duration = event.getDuration();
+        releaseDate = sf.format(event.getReleaseDate());
+        decisionDate = sf.format(event.getDecisionDate());
+        shortDescription = event.getShortDescription();
+        website = event.getUrl();
+        this.logo = event.getLogoUrl() != null ? event.getLogoUrl() : "/images/logo.png";
+        this.contact = event.getContactMail();
+        open = event.isOpen();
+    }
+
     public ApplicationSettings(Event event) {
 
         eventName = event.getName();

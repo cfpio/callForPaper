@@ -22,8 +22,8 @@ package io.cfp.api;
 
 import io.cfp.domain.exception.NotFoundException;
 import io.cfp.dto.ApplicationSettings;
-import io.cfp.entity.Event;
 import io.cfp.mapper.EventMapper;
+import io.cfp.model.Event;
 import io.cfp.multitenant.TenantId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
