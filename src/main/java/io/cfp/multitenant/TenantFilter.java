@@ -20,19 +20,18 @@
 
 package io.cfp.multitenant;
 
-import java.io.IOException;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.lang3.StringUtils;
+import io.cfp.entity.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * @author <a href="mailto:nicolas.deloof@gmail.com">Nicolas De Loof</a>
@@ -46,6 +45,7 @@ public class TenantFilter extends OncePerRequestFilter {
         final String eventId =  extractTenant(request);
         MDC.put("event.id", eventId);
         request.setAttribute("tenantId", eventId.toLowerCase());
+        Event.setCurrent(eventId.toLowerCase());
         try {
             filterChain.doFilter(request, response);
         } finally {
