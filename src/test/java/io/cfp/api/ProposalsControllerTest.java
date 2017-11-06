@@ -1,6 +1,7 @@
 package io.cfp.api;
 
 import io.cfp.mapper.ProposalMapper;
+import io.cfp.mapper.RateMapper;
 import io.cfp.mapper.UserMapper;
 import io.cfp.model.Proposal;
 import io.cfp.model.Role;
@@ -36,6 +37,9 @@ public class ProposalsControllerTest {
 
     @MockBean
     private UserMapper userMapper;
+
+    @MockBean
+    private RateMapper rateMapper;
 
     @Autowired
     private MockMvc mockMvc;
