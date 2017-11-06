@@ -22,6 +22,7 @@ package io.cfp.api;
 
 import io.cfp.domain.exception.NotFoundException;
 import io.cfp.dto.ApplicationSettings;
+import io.cfp.entity.Event;
 import io.cfp.mapper.EventMapper;
 import io.cfp.multitenant.TenantId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,15 +49,14 @@ public class ApplicationController {
     @GetMapping
     public ApplicationSettings getApplicationSettings(@TenantId String eventId) throws NotFoundException {
 
-//        Event event = events.findOne(eventId);
-//        if (event == null) {
-//            throw new NotFoundException("No event with ID: "+name);
-//        }
-//
-//        ApplicationSettings applicationSettings = new ApplicationSettings(event);
-//        applicationSettings.setAuthServer(authServer);
-//        return applicationSettings;
-        return null;
+        Event event = events.findOne(eventId);
+        if (event == null) {
+            throw new NotFoundException("No event with ID: "+eventId);
+        }
+
+        ApplicationSettings applicationSettings = new ApplicationSettings(event);
+        applicationSettings.setAuthServer(authServer);
+        return applicationSettings;
     }
 
 }

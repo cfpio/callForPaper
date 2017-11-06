@@ -23,4 +23,6 @@ public interface EventMapper {
     boolean exists(String id);
 
     int insert(Event event);
+
+    io.cfp.entity.Event findOne(String eventId);
 }

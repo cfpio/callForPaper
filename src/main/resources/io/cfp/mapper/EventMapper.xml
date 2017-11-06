@@ -10,6 +10,11 @@
         select * from events where date &lt; current_date()
     </select>
 
+    <select id="findOne" parameterType="String" resultType="io.cfp.model.Event">
+        select * from events e where id=#{id}
+    </select>
+
+
     <select id="findByUser" parameterType="int" resultType="io.cfp.model.Event">
         select * from events e where exists (select * from roles r where r.event_id = e.id AND r.user_id = #{user})
     </select>
