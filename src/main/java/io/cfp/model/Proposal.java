@@ -27,6 +27,7 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -59,5 +60,8 @@ public class Proposal {
 
     private String video;
     private String slides;
+
+    private List<String> voteUsersEmail;
+    private String mean;
 
 }

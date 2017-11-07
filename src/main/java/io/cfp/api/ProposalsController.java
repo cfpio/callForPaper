@@ -90,6 +90,24 @@ public class ProposalsController {
         LOGGER.info("Search Proposals : {}", query);
         List<Proposal> p = proposals.findAll(query);
         LOGGER.debug("Found {} Proposals", p.size());
+
+        for (Proposal proposal : p) {
+            List<String> emails = new ArrayList<>();
+            float total = 0;
+            int votes = 0;
+            for (Rate rate : rates.findAll(new RateQuery().setProposalId(proposal.getId()))) {
+                emails.add(rate.getUser().getEmail());
+                if (rate.getRate() > 0) {
+                    total += rate.getRate();
+                    votes++;
+                }
+            }
+            proposal.setVoteUsersEmail(emails);
+            if (votes > 0) {
+                proposal.setMean(String.valueOf(total/votes));
+            }
+        }
+
         return p;
     }
 
