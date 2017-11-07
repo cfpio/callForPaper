@@ -24,7 +24,7 @@
     <update id="updateEventId">
         UPDATE formats SET
         event_id = #{eventId},
-        WHERE id = #{it.id}
+        WHERE id = #{id}
     </update>
 
     <delete id="deleteForEvent">

@@ -32,7 +32,7 @@
     <update id="updateEventId">
         UPDATE tracks SET
         event_id = #{eventId},
-        WHERE id = #{it.id}
+        WHERE id = #{id}
     </update>
 
     <delete id="deleteForEvent" >

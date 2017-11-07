@@ -54,7 +54,7 @@
     <update id="updateEventId">
         UPDATE rates SET
         event_id = #{eventId},
-        WHERE id = #{it.id}
+        WHERE id = #{id}
     </update>
 
     <delete id="deleteForEvent">

@@ -157,6 +157,7 @@ public class EventsController {
 
     @Secured(io.cfp.entity.Role.OWNER)
     @RequestMapping(value = "/events/{id}/archive", method = RequestMethod.POST)
+    @Transactional
     public void archive(@AuthenticationPrincipal User user,
                         @PathVariable String id,
                         @RequestParam(name = "edition") String edition) {
