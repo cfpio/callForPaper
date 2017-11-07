@@ -13,7 +13,8 @@
 
     <select id="findAll" parameterType="io.cfp.model.queries.RoleQuery" resultType="io.cfp.model.Role">
         SELECT
-            *,
+            name,
+            user_id as "user",
             event_id as "event"
         FROM roles
         <where>
