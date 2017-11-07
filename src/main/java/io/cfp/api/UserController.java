@@ -89,14 +89,22 @@ public class UserController {
         return p;
     }
 
+    @PutMapping(value = "/me")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateMyProfil(@RequestBody User userUpdate,
+                               @AuthenticationPrincipal User user) {
+        update(user.getId(), userUpdate, user);
+    }
+
+
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateMyProfil(@PathVariable int id,
+    public void update(@PathVariable int id,
                                @RequestBody User userUpdate,
                                @AuthenticationPrincipal User user) {
         LOGGER.info("update: {}", userUpdate);
 
-        if (id != user.getId()) {
+        if (id != user.getId() && !user.hasRole(Role.MAINTAINER)) {
             throw new ForbiddenException();
         }
 
