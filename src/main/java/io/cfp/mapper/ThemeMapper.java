@@ -21,6 +21,8 @@ public interface ThemeMapper {
 
     int updateForEvent(@Param("it") Theme theme, @Param("eventId") String eventId);
 
+    void updateEventId(@Param("id") int id, @Param("eventId") String eventId);
+
     int deleteForEvent(@Param("id") int id, @Param("eventId") String eventId);
 
     List<Stat> countProposalsByTheme(String eventId);

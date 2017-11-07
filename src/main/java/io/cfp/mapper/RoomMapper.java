@@ -18,6 +18,7 @@ public interface RoomMapper {
 
     void updateForEvent(@Param("it") Room room, @Param("eventId") String eventId);
 
-    void deleteForEvent(@Param("id") int id, @Param("eventId") String eventId);
+    void updateEventId(@Param("id") int id, @Param("eventId") String eventId);
 
+    void deleteForEvent(@Param("id") int id, @Param("eventId") String eventId);
 }

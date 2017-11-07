@@ -19,5 +19,7 @@ public interface FormatMapper {
 
     void updateForEvent(@Param("it") Format format, @Param("eventId") String eventId);
 
+    void updateEventId(@Param("id") int id, @Param("eventId") String eventId);
+
     void deleteForEvent(@Param("id") int id, @Param("eventId") String eventId);
 }

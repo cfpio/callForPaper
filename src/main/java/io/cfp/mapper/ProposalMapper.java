@@ -36,9 +36,13 @@ public interface ProposalMapper {
     int updateForEvent(@Param("it") Proposal proposal, @Param("eventId") String eventId, @Param("userId") Integer userId);
     int deleteForEvent(@Param("id") int id, @Param("eventId") String eventId);
     int updateState(Proposal proposal);
+
     int updateAllStateWhere(@Param("eventId") String event, @Param("newState") Proposal.State refused, @Param("oldState") Proposal.State confirmed);
 
     int count(ProposalQuery proposalQuery);
 
     int deleteAllByEventId(String event);
+
+    void updateEventId(@Param("id") int id, @Param("eventId") String eventId);
+
 }

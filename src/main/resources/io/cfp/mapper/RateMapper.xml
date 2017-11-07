@@ -51,6 +51,12 @@
         WHERE id = #{id} and event_id = #{eventId} and admin = #{user.id}
     </update>
 
+    <update id="updateEventId">
+        UPDATE rates SET
+        event_id = #{eventId},
+        WHERE id = #{it.id}
+    </update>
+
     <delete id="deleteForEvent">
         DELETE FROM rates WHERE id = #{id} and event_id = #{eventId}
     </delete>

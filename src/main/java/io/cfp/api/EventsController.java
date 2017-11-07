@@ -22,15 +22,32 @@ package io.cfp.api;
 
 import io.cfp.domain.exception.BadRequestException;
 import io.cfp.domain.exception.EntityExistsException;
+import io.cfp.mapper.CommentMapper;
 import io.cfp.mapper.EventMapper;
+import io.cfp.mapper.FormatMapper;
+import io.cfp.mapper.ProposalMapper;
+import io.cfp.mapper.RateMapper;
 import io.cfp.mapper.RoleMapper;
+import io.cfp.mapper.RoomMapper;
+import io.cfp.mapper.ThemeMapper;
 import io.cfp.mapper.UserMapper;
+import io.cfp.model.Comment;
 import io.cfp.model.Event;
+import io.cfp.model.Format;
+import io.cfp.model.Proposal;
+import io.cfp.model.Rate;
 import io.cfp.model.Role;
+import io.cfp.model.Room;
+import io.cfp.model.Theme;
 import io.cfp.model.User;
+import io.cfp.model.queries.CommentQuery;
+import io.cfp.model.queries.ProposalQuery;
+import io.cfp.model.queries.RateQuery;
+import io.cfp.model.queries.RoleQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -58,6 +75,24 @@ public class EventsController {
 
     @Autowired
     private UserMapper users;
+
+    @Autowired
+    private FormatMapper formats;
+
+    @Autowired
+    private ThemeMapper themes;
+
+    @Autowired
+    private RoomMapper rooms;
+
+    @Autowired
+    private ProposalMapper proposals;
+
+    @Autowired
+    private RateMapper rates;
+
+    @Autowired
+    private CommentMapper comments;
 
 
     @RequestMapping(value = "/events", method = RequestMethod.GET)
@@ -118,6 +153,56 @@ public class EventsController {
     @RequestMapping(value = "/users/me/events", method = RequestMethod.GET)
     public List<Event> mines(@AuthenticationPrincipal User user) throws BadRequestException {
         return events.findByUser(user.getId());
+    }
+
+    @Secured(io.cfp.entity.Role.OWNER)
+    @RequestMapping(value = "/events/{id}/archive", method = RequestMethod.POST)
+    public void archive(@AuthenticationPrincipal User user,
+                        @PathVariable String id,
+                        @RequestParam(name = "edition") String edition) {
+
+        String archive = id + '-' + edition;
+
+        // Clone Event with archived eventId
+        final Event event = events.findOne(id);
+        events.insert(event.setId(archive));
+
+        // Clone roles for archive event
+        for (Role role : roles.findAll(new RoleQuery().setEventId(id))) {
+            role.setEvent(archive);
+            roles.insert(role);
+        }
+
+        // Move formats|themes|room|roles to archive event
+        // Then re-create for the 'new' one
+        // we update existing rows to set archived event ID so we don't have to update FKs
+        for (Format format : formats.findByEvent(id)) {
+            formats.updateEventId(format.getId(), archive);
+            formats.insert(format);
+        }
+
+        for (Theme theme : themes.findByEvent(id)) {
+            themes.updateEventId(theme.getId(), archive);
+            themes.insert(theme);
+        }
+
+        for (Room room : rooms.findByEvent(id)) {
+            rooms.updateEventId(room.getId(), archive);
+            rooms.insert(room);
+        }
+
+        // Move Proposals|Rates|Comments to archived event
+        for (Proposal proposal : proposals.findAll(new ProposalQuery().setEventId(id))) {
+            proposals.updateEventId(proposal.getId(), archive);
+        }
+
+        for (Rate rate : rates.findAll(new RateQuery().setEventId(id))) {
+            rates.updateEventId(rate.getId(), archive);
+        }
+
+        for (Comment comment : comments.findAll(new CommentQuery().setEventId(id))) {
+            comments.updateEventId(comment.getId(), archive);
+        }
     }
 
 }

@@ -162,6 +162,12 @@
         AND state = #{oldState}
     </update>
 
+    <update id="updateEventId">
+        UPDATE proposals SET
+        event_id = #{eventId},
+        WHERE id = #{it.id}
+    </update>
+
     <delete id="deleteForEvent">
         DELETE FROM proposals
         WHERE id = #{id} AND event_id = #{eventId}

@@ -21,6 +21,12 @@
         WHERE id = #{it.id} and event_id = #{eventId}
     </update>
 
+    <update id="updateEventId">
+        UPDATE formats SET
+        event_id = #{eventId},
+        WHERE id = #{it.id}
+    </update>
+
     <delete id="deleteForEvent">
         DELETE FROM formats WHERE id = #{id} and event_id = #{eventId}
     </delete>

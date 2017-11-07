@@ -54,7 +54,7 @@ public class CommentsController {
             // FIXME speaker should not be able to read comments on other's proposals
         }
 
-        return comments.findByEventAndProposal(query);
+        return comments.findAll(query);
     }
 
     @RequestMapping(method = POST)

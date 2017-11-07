@@ -8,18 +8,24 @@
         values (#{comment}, #{added}, #{internal}, #{proposalId}, #{user.id}, #{eventId})
     </insert>
 
-    <select id="findByEventAndProposal" parameterType="io.cfp.model.queries.CommentQuery" resultType="io.cfp.model.Comment">
+    <select id="findAll" parameterType="io.cfp.model.queries.CommentQuery" resultType="io.cfp.model.Comment">
         SELECT *,
         u.email as "user.email",
         u.firstname as "user.firstname",
         u.lastname as "user.lastname"
         FROM comments c
         LEFT OUTER JOIN users u on c.user = u.id
-        WHERE c.event_id = #{eventId}
-        AND c.proposal = #{proposalId}
-        <if test="internal != null">
-            AND c.internal = #{internal};
-        </if>
+        <where>
+            <if test="eventId">
+                c.event_id = #{eventId}
+            </if>
+            <if test="proposalId">
+                AND c.proposal = #{proposalId}
+            </if>
+            <if test="internal != null">
+                AND c.internal = #{internal};
+            </if>
+        </where>
     </select>
 
     <update id="update" parameterType="io.cfp.model.Comment">
@@ -30,6 +36,12 @@
         AND event_id = #{eventId}
         AND proposal = #{proposalId}
         AND `user` = #{user.id}
+    </update>
+
+    <update id="updateEventId">
+        UPDATE comments SET
+        event_id = #{eventId},
+        WHERE id = #{it.id}
     </update>
 
     <delete id="delete" parameterType="io.cfp.model.Comment">

@@ -54,7 +54,7 @@ public class CommentsControllerTest {
 
         comments.add(comment);
 
-        when(commentMapper.findByEventAndProposal(any(CommentQuery.class))).thenReturn(comments);
+        when(commentMapper.findAll(any(CommentQuery.class))).thenReturn(comments);
 
         User user = new User();
         user.setEmail("EMAIL");

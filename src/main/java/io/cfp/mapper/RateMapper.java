@@ -22,4 +22,6 @@ public interface RateMapper {
 
 
     List<Stat> getRateByEmailUsers(String eventId);
+
+    void updateEventId(@Param("id") int id, @Param("eventId") String eventId);
 }
