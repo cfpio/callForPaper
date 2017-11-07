@@ -3,6 +3,7 @@ package io.cfp.mapper;
 import io.cfp.model.Event;
 import io.cfp.model.queries.EventQuery;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -25,4 +26,6 @@ public interface EventMapper {
     int insert(Event event);
 
     Event findOne(String eventId);
+
+    void update(@Param("it") Event event);
 }

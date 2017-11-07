@@ -46,4 +46,19 @@
         values (#{id}, #{name}, #{shortDescription}, #{date}, #{releaseDate}, #{decisionDate}, #{open})
     </insert>
 
+    <update id="update">
+        UPDATE proposals
+        SET name=#{it.name},
+        shortDescription=#{it.shortDescription},
+        date=#{it.date},
+        duration=#{it.duration}
+        releaseDate=#{it.releaseDate},
+        decisionDate=#{it.decisionDate},
+        open=#{it.open},
+        url=#{it.url},
+        logoUrl=#{it.logoUrl},
+        contactMail=#{it.contactMail}
+        WHERE id = #{it.id}
+    </update>
+
 </mapper>

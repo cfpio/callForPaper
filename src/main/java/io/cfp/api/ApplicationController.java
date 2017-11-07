@@ -20,17 +20,26 @@
 
 package io.cfp.api;
 
+import io.cfp.domain.exception.BadRequestException;
 import io.cfp.domain.exception.NotFoundException;
 import io.cfp.dto.ApplicationSettings;
+import io.cfp.entity.Role;
 import io.cfp.mapper.EventMapper;
 import io.cfp.model.Event;
 import io.cfp.multitenant.TenantId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 @RestController
 @RequestMapping(value = { "/v1/application", "/api/application" }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -59,4 +68,33 @@ public class ApplicationController {
         return applicationSettings;
     }
 
+
+    @PostMapping()
+    @Secured(Role.OWNER)
+    public void setApplicationSettings(@RequestBody ApplicationSettings settings) throws NotFoundException, BadRequestException {
+
+        final String name = io.cfp.entity.Event.current();
+        Event event = events.findOne(name);
+        if (event == null) {
+            throw new NotFoundException("No event with ID: " + name);
+        }
+
+        DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+
+        try {
+            event = event.setDate(format.parse(settings.getDate()))
+                .setDuration(settings.getDuration())
+                .setName(settings.getEventName())
+                .setLogoUrl(settings.getLogo())
+                .setContactMail(settings.getContact())
+                .setUrl(settings.getWebsite())
+                .setShortDescription(settings.getShortDescription())
+                .setDecisionDate(format.parse(settings.getDecisionDate()))
+                .setReleaseDate(format.parse(settings.getReleaseDate()))
+                .setOpen(settings.isOpen());
+        } catch (ParseException e) {
+            throw new BadRequestException("Invalid data " + e.getMessage());
+        }
+        events.update(event);
+    }
 }
