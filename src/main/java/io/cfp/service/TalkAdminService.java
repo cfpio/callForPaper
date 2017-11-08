@@ -96,16 +96,15 @@ public class TalkAdminService {
      * @param states List of states the talk must be
      * @return List of talks
      */
-    public List<TalkAdmin> findAll(Talk.State... states) {
+    public List<TalkAdmin> findAll(int userId, Talk.State... states) {
         List<TalkAdmin> talks = talkRepo.findByEventIdAndStatesFetch(Event.current(), Arrays.asList(states))
             .stream().map(TalkAdmin::new)
             .collect(Collectors.toList());
 
         List<Rate> rates = rateRepo.findAllFetchAdmin(Event.current());
 
-        User user = User.getCurrent();
         Map<Integer, List<Rate>> reviewed = rates.stream()
-            .filter(r -> user.getId() == r.getAdminUser().getId())
+            .filter(r -> userId == r.getAdminUser().getId())
             .collect(groupingBy(r -> r.getTalk().getId()));
 
         Map<Integer, Double> averages = rates.stream()

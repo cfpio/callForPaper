@@ -31,6 +31,7 @@ import io.cfp.dto.TalkAdminCsv;
 import io.cfp.entity.Event;
 import io.cfp.entity.Role;
 import io.cfp.entity.Talk;
+import io.cfp.model.User;
 import io.cfp.repository.TalkRepo;
 import io.cfp.service.PdfCardService;
 import io.cfp.service.TalkAdminService;
@@ -38,6 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,7 +68,8 @@ public class AdminSessionController {
     @Secured({Role.REVIEWER, Role.ADMIN})
     @ResponseBody
     @Deprecated
-    public List<TalkAdmin> getAllSessions(@RequestParam(name = "status", required = false) String status) {
+    public List<TalkAdmin> getAllSessions(@AuthenticationPrincipal User user,
+                                          @RequestParam(name = "status", required = false) String status) {
 
         Talk.State[] accept;
         if (status == null) {
@@ -75,7 +78,7 @@ public class AdminSessionController {
             accept = new Talk.State[] { Talk.State.valueOf(status) };
         }
 
-        return talkService.findAll(accept);
+        return talkService.findAll(user.getId(), accept);
     }
 
     /**
@@ -84,8 +87,8 @@ public class AdminSessionController {
     @RequestMapping(value="/drafts", method= RequestMethod.GET)
     @Secured(Role.ADMIN)
     @ResponseBody
-    public List<TalkAdmin> getAllDrafts() {
-        return talkService.findAll(Talk.State.DRAFT);
+    public List<TalkAdmin> getAllDrafts(@AuthenticationPrincipal User user) {
+        return talkService.findAll(user.getId(), Talk.State.DRAFT);
     }
 
     /**
@@ -168,9 +171,10 @@ public class AdminSessionController {
 
     @RequestMapping(path = "/sessions/export/cards.pdf", produces = "application/pdf")
     @Secured(Role.ADMIN)
-    public void exportPdf(HttpServletResponse response) throws IOException, DocumentException {
+    public void exportPdf(@AuthenticationPrincipal User user,
+                          HttpServletResponse response) throws IOException, DocumentException {
         response.addHeader(HttpHeaders.CONTENT_TYPE, "application/pdf");
-        pdfCardService.export(response.getOutputStream());
+        pdfCardService.export(user.getId(), response.getOutputStream());
     }
 
     @RequestMapping(path = "/sessions/export/sched.json", produces = "application/json")
@@ -185,7 +189,8 @@ public class AdminSessionController {
 
     @RequestMapping(path = "/sessions/export/sessions.csv", produces = "text/csv")
     @Secured(Role.ADMIN)
-    public void exportCsv(HttpServletResponse response, @RequestParam(name = "status", required = false) String status) throws IOException {
+    public void exportCsv(@AuthenticationPrincipal User user,
+                          HttpServletResponse response, @RequestParam(name = "status", required = false) String status) throws IOException {
         response.addHeader(HttpHeaders.CONTENT_TYPE, "text/csv");
 
         CsvMapper mapper = new CsvMapper();
@@ -194,7 +199,7 @@ public class AdminSessionController {
         CsvSchema schema = mapper.schemaFor(TalkAdmin.class).withHeader();
         ObjectWriter writer = mapper.writer(schema);
 
-        List<TalkAdmin> sessions = getAllSessions(status);
+        List<TalkAdmin> sessions = getAllSessions(user, status);
         for (TalkAdmin s : sessions) {
             writer.writeValue(response.getOutputStream(), s);
         }

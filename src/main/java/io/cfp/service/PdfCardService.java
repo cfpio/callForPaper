@@ -40,7 +40,7 @@ public class PdfCardService {
      * Export all talks from the current event
      * @param out OutputStream to write PDF into
      */
-    public void export(OutputStream out) throws DocumentException {
+    public void export(int userId, OutputStream out) throws DocumentException {
         Document document = new Document(PageSize.A4, 10, 10, 10, 10);
         PdfWriter writer = PdfWriter.getInstance(document, out);
 
@@ -57,7 +57,7 @@ public class PdfCardService {
         Map<Integer, Format> formats = formatRepo.findByEventId(Event.current()).stream()
             .collect(toMap(Format::getId, Function.identity()));
 
-        List<TalkAdmin> talks = talkAdminService.findAll(Talk.State.CONFIRMED).stream()
+        List<TalkAdmin> talks = talkAdminService.findAll(userId, Talk.State.CONFIRMED).stream()
             .sorted(comparing(TalkAdmin::getMean, nullsLast(reverseOrder())))
             .sorted(comparing(TalkAdmin::getFormat))
             .collect(toList());
