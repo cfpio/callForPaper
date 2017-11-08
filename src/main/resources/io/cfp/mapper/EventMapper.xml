@@ -49,15 +49,15 @@
     <update id="update">
         UPDATE proposals
         SET name=#{it.name},
-        shortDescription=#{it.shortDescription},
+        short_description=#{it.shortDescription},
         date=#{it.date},
         duration=#{it.duration}
-        releaseDate=#{it.releaseDate},
-        decisionDate=#{it.decisionDate},
+        release_date=#{it.releaseDate},
+        decision_date=#{it.decisionDate},
         open=#{it.open},
         url=#{it.url},
-        logoUrl=#{it.logoUrl},
-        contactMail=#{it.contactMail}
+        logo_url=#{it.logoUrl},
+        contact_mail=#{it.contactMail}
         WHERE id = #{it.id}
     </update>
 
