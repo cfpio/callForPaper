@@ -18,3 +18,5 @@ docker push cfpio/callforpapers:latest
 #
 docker rmi cfpio/callforpapers
 docker rmi cfpio/callforpapers:1.0.${BUILD_NUMBER}
+
+docker run cfpio/clever /root/restart.sh $CC_TOKEN $CC_SECRET $CC_APPLICATION
