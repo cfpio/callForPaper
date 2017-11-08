@@ -51,12 +51,14 @@
         SET name=#{it.name},
         short_description=#{it.shortDescription},
         date=#{it.date},
-        duration=#{it.duration}
+        duration=#{it.duration},
         release_date=#{it.releaseDate},
         decision_date=#{it.decisionDate},
         open=#{it.open},
+        published=#{it.published},
         url=#{it.url},
         logo_url=#{it.logoUrl},
+        videos_url=#{it.videosUrl},
         contact_mail=#{it.contactMail}
         WHERE id = #{it.id}
     </update>
