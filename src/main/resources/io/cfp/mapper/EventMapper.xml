@@ -47,7 +47,7 @@
     </insert>
 
     <update id="update">
-        UPDATE proposals
+        UPDATE events
         SET name=#{it.name},
         short_description=#{it.shortDescription},
         date=#{it.date},
