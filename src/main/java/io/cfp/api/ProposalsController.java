@@ -24,6 +24,7 @@ import io.cfp.domain.exception.BadRequestException;
 import io.cfp.domain.exception.ForbiddenException;
 import io.cfp.domain.exception.NotFoundException;
 import io.cfp.entity.Role;
+import io.cfp.mapper.CoSpeakerMapper;
 import io.cfp.mapper.ProposalMapper;
 import io.cfp.mapper.RateMapper;
 import io.cfp.model.Proposal;
@@ -38,7 +39,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -61,6 +71,9 @@ public class ProposalsController {
 
     @Autowired
     private RateMapper rates;
+
+    @Autowired
+    private CoSpeakerMapper cospeakers;
 
 
     @GetMapping("/proposals")
@@ -155,7 +168,13 @@ public class ProposalsController {
 
         proposal.setState(Proposal.State.DRAFT) // when created, a talk is a Draft. Need to be confirmed
                 .setAdded(new Date());
-        proposals.insert(proposal);
+        int id = proposals.insert(proposal);
+
+        if (proposal.getCospeakers() != null) {
+            for (User cs : proposal.getCospeakers()) {
+                cospeakers.insert(id, cs.getEmail());
+            }
+        }
 
         return proposal;
     }
