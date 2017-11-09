@@ -20,6 +20,7 @@
 
 package io.cfp.controller;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
@@ -41,8 +42,14 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
@@ -198,10 +205,13 @@ public class AdminSessionController {
 
         CsvSchema schema = mapper.schemaFor(TalkAdmin.class).withHeader();
         ObjectWriter writer = mapper.writer(schema);
+        writer.getFactory().disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
 
         List<TalkAdmin> sessions = getAllSessions(user, status);
+
+        final ServletOutputStream out = response.getOutputStream();
         for (TalkAdmin s : sessions) {
-            writer.writeValue(response.getOutputStream(), s);
+            writer.writeValue(out, s);
         }
     }
 }
