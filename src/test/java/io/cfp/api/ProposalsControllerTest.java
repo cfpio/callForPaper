@@ -1,5 +1,6 @@
 package io.cfp.api;
 
+import io.cfp.mapper.CoSpeakerMapper;
 import io.cfp.mapper.ProposalMapper;
 import io.cfp.mapper.RateMapper;
 import io.cfp.mapper.UserMapper;
@@ -40,6 +41,9 @@ public class ProposalsControllerTest {
 
     @MockBean
     private RateMapper rateMapper;
+
+    @MockBean
+    private CoSpeakerMapper coSpeakerMapper;
 
     @Autowired
     private MockMvc mockMvc;
