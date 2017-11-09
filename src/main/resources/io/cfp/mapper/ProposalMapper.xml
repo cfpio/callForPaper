@@ -6,9 +6,9 @@
         <id property="id" column="id" jdbcType="VARCHAR"/>
         <collection property="cospeakers" ofType="io.cfp.model.User">
             <id property="id" column="cospeaker_id" jdbcType="INTEGER"/>
-            <result property="name" column="category_email" jdbcType="VARCHAR"/>
-            <result property="firstname" column="category_firstname" jdbcType="VARCHAR"/>
-            <result property="lastname" column="category_lastname" jdbcType="VARCHAR"/>
+            <result property="email" column="cospeaker_email" jdbcType="VARCHAR"/>
+            <result property="firstname" column="cospeaker_firstname" jdbcType="VARCHAR"/>
+            <result property="lastname" column="cospeaker_lastname" jdbcType="VARCHAR"/>
         </collection>
     </resultMap>
 

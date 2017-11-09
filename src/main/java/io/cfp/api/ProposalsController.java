@@ -21,12 +21,15 @@
 package io.cfp.api;
 
 import io.cfp.domain.exception.BadRequestException;
+import io.cfp.domain.exception.CospeakerNotFoundException;
 import io.cfp.domain.exception.ForbiddenException;
 import io.cfp.domain.exception.NotFoundException;
+import io.cfp.dto.user.CospeakerProfil;
 import io.cfp.entity.Role;
 import io.cfp.mapper.CoSpeakerMapper;
 import io.cfp.mapper.ProposalMapper;
 import io.cfp.mapper.RateMapper;
+import io.cfp.mapper.UserMapper;
 import io.cfp.model.Proposal;
 import io.cfp.model.Rate;
 import io.cfp.model.User;
@@ -39,6 +42,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -74,6 +78,9 @@ public class ProposalsController {
 
     @Autowired
     private CoSpeakerMapper cospeakers;
+
+    @Autowired
+    private UserMapper users;
 
 
     @GetMapping("/proposals")
@@ -149,6 +156,7 @@ public class ProposalsController {
     @PostMapping("/proposals")
     @ResponseStatus(HttpStatus.CREATED)
     @Secured(AUTHENTICATED)
+    @Transactional
     public Proposal create(@TenantId String event,
                            @AuthenticationPrincipal User user,
                            @Valid @RequestBody Proposal proposal) {
@@ -170,18 +178,26 @@ public class ProposalsController {
                 .setAdded(new Date());
         int id = proposals.insert(proposal);
 
-        if (proposal.getCospeakers() != null) {
-            for (User cs : proposal.getCospeakers()) {
-                cospeakers.insert(id, cs.getEmail());
-            }
-        }
+        createCospeakers(proposal, id);
 
         return proposal;
+    }
+
+    private void createCospeakers(@Valid @RequestBody Proposal proposal, int id) {
+        cospeakers.delete(proposal.getId());
+        if (proposal.getCospeakers() != null) {
+            for (User cs : proposal.getCospeakers()) {
+                final User cospeaker = users.findByEmail(cs.getEmail());
+                if (cospeaker == null) throw new CospeakerNotFoundException(new CospeakerProfil(cs.getEmail()));
+                cospeakers.insert(id, cospeaker.getId());
+            }
+        }
     }
 
     @PutMapping("/proposals/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Secured(AUTHENTICATED)
+    @Transactional
     public void update(@AuthenticationPrincipal User user,
                        @TenantId String event,
                        @PathVariable Integer id,
@@ -202,6 +218,8 @@ public class ProposalsController {
         // A non-admin user can only update his proposals
         Integer userId = !user.hasRole(ADMIN) ? user.getId() : null;
         proposals.updateForEvent(proposal, event, userId);
+
+        createCospeakers(proposal, id);
     }
 
     @DeleteMapping("/proposals/{id}")

@@ -1,6 +1,7 @@
 package io.cfp.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * @author <a href="mailto:nicolas.deloof@gmail.com">Nicolas De Loof</a>
@@ -8,5 +9,7 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface CoSpeakerMapper {
 
-    void insert(int proposal, String user);
+    void insert(@Param("proposal") int proposal, @Param("user") int user);
+
+    void delete(@Param("proposal") int id);
 }

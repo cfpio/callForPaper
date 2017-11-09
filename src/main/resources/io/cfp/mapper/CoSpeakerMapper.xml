@@ -7,6 +7,9 @@
         values (#{proposal}, #{user})
     </insert>
 
+    <delete id="delete">
+        delete from cospeakers where proposal_id = #{proposal}
+    </delete>
 
 
 </mapper>
