@@ -158,7 +158,7 @@ public class EmailingServiceTest {
         String templatePath = emailingService.getTemplatePath("confirmed.html", Locale.FRENCH);
 
         // When
-        emailingService.sendConfirmed(user, talkUser, Locale.FRENCH);
+        emailingService.sendConfirmed(user.getFirstname(), user.getEmail(), talkUser.getName(), talkUser.getId(), Locale.FRENCH);
 
         // Then
         verify(emailingService).processTemplate(eq(templatePath), anyMap());

@@ -8,6 +8,7 @@ import io.cfp.model.Proposal;
 import io.cfp.model.Role;
 import io.cfp.model.User;
 import io.cfp.model.queries.ProposalQuery;
+import io.cfp.service.email.EmailingService;
 import io.cfp.utils.Utils;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,6 +45,9 @@ public class ProposalsControllerTest {
 
     @MockBean
     private CoSpeakerMapper coSpeakerMapper;
+
+    @MockBean
+    private EmailingService emailingService;
 
     @Autowired
     private MockMvc mockMvc;
