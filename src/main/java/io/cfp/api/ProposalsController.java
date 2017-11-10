@@ -36,6 +36,7 @@ import io.cfp.model.User;
 import io.cfp.model.queries.ProposalQuery;
 import io.cfp.model.queries.RateQuery;
 import io.cfp.multitenant.TenantId;
+import io.cfp.service.email.EmailingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,6 +83,8 @@ public class ProposalsController {
     @Autowired
     private UserMapper users;
 
+    @Autowired
+    private EmailingService emailingService;
 
     @GetMapping("/proposals")
     @Secured({REVIEWER, ADMIN})
@@ -179,6 +182,8 @@ public class ProposalsController {
         int id = proposals.insert(proposal);
 
         createCospeakers(proposal, id);
+
+        emailingService.sendConfirmed(user.getFirstname(), user.getEmail(), proposal.getName(), id, user.getLocale());
 
         return proposal;
     }

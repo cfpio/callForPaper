@@ -106,23 +106,19 @@ public class EmailingService {
 
     /**
      * Send Confirmation of your session.
-     *
-     * @param user
-     * @param talk
-     * @param locale
      */
     @Async
     @Transactional
-    public void sendConfirmed(User user, TalkUser talk, Locale locale) {
-        log.debug("Sending email confirmation e-mail to '{}'", user.getEmail());
+    public void sendConfirmed(String name, String email, String proposal, int id, Locale locale) {
+        log.debug("Sending email confirmation e-mail to '{}'", email);
 
         Map<String, Object> params = new HashMap<>();
-        params.put("name", user.getFirstname());
-        params.put("talk", talk.getName());
-        params.put("id", String.valueOf(talk.getId()));
+        params.put("name", name);
+        params.put("talk", proposal);
+        params.put("id", String.valueOf(id));
         params.put("subject", getSubject("confirmed", locale));
 
-        createAndSendEmail("confirmed.html", user.getEmail(), params, null, null, locale);
+        createAndSendEmail("confirmed.html", email, params, null, null, locale);
     }
 
     @Async
