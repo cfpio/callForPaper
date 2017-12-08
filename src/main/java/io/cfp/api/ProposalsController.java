@@ -44,16 +44,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -179,22 +170,22 @@ public class ProposalsController {
 
         proposal.setState(Proposal.State.DRAFT) // when created, a talk is a Draft. Need to be confirmed
                 .setAdded(new Date());
-        int id = proposals.insert(proposal);
+        proposals.insert(proposal);
 
-        createCospeakers(proposal, id);
+        createCospeakers(proposal);
 
-        emailingService.sendConfirmed(user.getFirstname(), user.getEmail(), proposal.getName(), id, user.getLocale());
+        emailingService.sendConfirmed(user.getFirstname(), user.getEmail(), proposal.getName(), proposal.getId(), user.getLocale());
 
         return proposal;
     }
 
-    private void createCospeakers(@Valid @RequestBody Proposal proposal, int id) {
+    private void createCospeakers(Proposal proposal) {
         cospeakers.delete(proposal.getId());
         if (proposal.getCospeakers() != null) {
             for (User cs : proposal.getCospeakers()) {
                 final User cospeaker = users.findByEmail(cs.getEmail());
                 if (cospeaker == null) throw new CospeakerNotFoundException(new CospeakerProfil(cs.getEmail()));
-                cospeakers.insert(id, cospeaker.getId());
+                cospeakers.insert(proposal.getId(), cospeaker.getId());
             }
         }
     }
@@ -224,7 +215,7 @@ public class ProposalsController {
         Integer userId = !user.hasRole(ADMIN) ? user.getId() : null;
         proposals.updateForEvent(proposal, event, userId);
 
-        createCospeakers(proposal, id);
+        createCospeakers(proposal);
     }
 
     @DeleteMapping("/proposals/{id}")
