@@ -29,7 +29,7 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-@SpringBootApplication(exclude = FreeMarkerAutoConfiguration.class)
+@SpringBootApplication
 @EnableCaching
 @ServletComponentScan(basePackages = "io.cfp.config.filter")
 @EnableJpaRepositories(basePackages = "io.cfp.repository")

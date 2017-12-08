@@ -30,8 +30,8 @@
     </appender>
 
     <logger name="io.cfp" level="DEBUG"/>
-    <logger name="io.cfp.config.filter" level="INFO"/>
-    <logger name="org.springframework.security.web.access" level="INFO"/>
+    <logger name="io.cfp.config.filter" level="DEBUG"/>
+    <logger name="org.springframework.security.web.access" level="DEBUG"/>
 
     <!-- root -->
     <root level="INFO">

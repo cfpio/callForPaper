@@ -47,7 +47,7 @@ public abstract class AuthController {
 
 	protected RestTemplate restTemplate = new RestTemplate();
 
-	@Value("${cfp.app.hostname}")
+	@Value("${authServer}")
     protected String hostname;
 
 	/**

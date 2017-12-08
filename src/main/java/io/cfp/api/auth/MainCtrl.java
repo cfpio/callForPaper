@@ -22,6 +22,8 @@ package io.cfp.api.auth;
 
 import io.cfp.service.CookieService;
 import io.cfp.service.TokenService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -38,7 +40,10 @@ import static org.springframework.http.HttpHeaders.*;
  * Main controller
  */
 @Controller
+@RequestMapping("/auth")
 public class MainCtrl {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MainCtrl.class);
 
 	@Autowired
 	private TokenService tokenSrv;
@@ -51,6 +56,7 @@ public class MainCtrl {
                        @RequestParam(required=false, value="target") String targetParam,
                        @CookieValue(required=false) String returnTo,
                        @RequestHeader(required = false, value = REFERER) String referer) {
+	    LOGGER.info("AUTH");
 		response.setHeader(CACHE_CONTROL,"no-cache,no-store,must-revalidate");
 		response.setHeader(PRAGMA,"no-cache");
 		response.setDateHeader(EXPIRES, 0);
@@ -67,9 +73,10 @@ public class MainCtrl {
 		response.addCookie(new Cookie("returnTo", target));
 
 		if (token == null || !tokenSrv.isValid(token)) {
-			return "login";
+            LOGGER.info("Forward to login page");
+		    return "login";
 		}
-
+        LOGGER.info("Redirect to {}", target);
 		// token is valid
 		return "redirect:"+target;
 	}
@@ -77,13 +84,13 @@ public class MainCtrl {
 	@RequestMapping("/logout")
 	public String logout(HttpServletResponse response, @CookieValue(required=false) String token,
                          @CookieValue(required=false) String returnTo) {
-
+        LOGGER.info("LOGOUT");
 		Cookie tokenCookie = cookieService.getTokenCookie("");
 		tokenCookie.setMaxAge(0);
 		response.addCookie(tokenCookie);
 
 		tokenSrv.remove(token);
 
-		return "redirect:/";
+		return "redirect:/auth";
 	}
 }

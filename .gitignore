@@ -7,7 +7,7 @@ target-grunt
 **/node_modules
 **/npm-debug.log
 **/bower_components
-src/main/webapp/WEB-INF/static/
+src/main/webapp2/WEB-INF/static/
 
 ### Eclipse ###
 *.pydevproject

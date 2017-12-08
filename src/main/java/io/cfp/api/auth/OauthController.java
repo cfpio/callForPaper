@@ -58,8 +58,9 @@ public abstract class OauthController extends AuthController {
 
     @RequestMapping(value = "/login")
     public String login() {
-		OAuth1RequestToken requestToken = authService.getRequestToken();
-		return "redirect:" + authService.getAuthorizationUrl(requestToken);
+        OAuth1RequestToken requestToken = authService.getRequestToken();
+        logger.info("[OAUTH_GET_TOKEN] Redirect to login page : {}", authService.getAuthorizationUrl(requestToken));
+        return "redirect:" + authService.getAuthorizationUrl(requestToken);
     }
 
     @RequestMapping(value = "/auth", method = RequestMethod.GET)

@@ -10,14 +10,14 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MailConfig {
 
-    @Bean(name = "mailTemplate")
-    public freemarker.template.Configuration freemarkerConfig() {
-        freemarker.template.Configuration config = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_21);
-        config.setClassForTemplateLoading(MailConfig.class, "/mails/");
-        config.setDefaultEncoding("UTF-8");
-        config.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
-
-        return config;
-    }
+//    @Bean(name = "mailTemplate")
+//    public freemarker.template.Configuration freemarkerConfig() {
+//        freemarker.template.Configuration config = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_21);
+//        config.setClassForTemplateLoading(MailConfig.class, "/mails/");
+//        config.setDefaultEncoding("UTF-8");
+//        config.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+//
+//        return config;
+//    }
 
 }

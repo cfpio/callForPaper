@@ -66,9 +66,9 @@ public class EmailingService {
     @Autowired
     private EventRepository eventRepo;
 
-    @Autowired
-    @Qualifier("mailTemplate")
-    private Configuration freemarker;
+//    @Autowired
+//    @Qualifier("mailTemplate")
+//    private Configuration freemarker;
 
     @Value("${cfp.email.sendgrid.apikey}")
     private String sendgridApiKey;
@@ -303,19 +303,19 @@ public class EmailingService {
         parameters.put("contactMail", curEvent.getContactMail() != null ? curEvent.getContactMail() : "contact@cfp.io");
 
         StringWriter writer;
-        try {
-            freemarker.template.Template tpl = freemarker.getTemplate(templatePath, "UTF-8");
-            writer = new StringWriter();
-            tpl.process(parameters, writer);
-        } catch (IOException e) {
-            log.error("Unable to find or parse the template [{}]", templatePath, e);
-            return null;
-        } catch (TemplateException e) {
-            log.error("Unable to process the template [{}]", templatePath, e);
-            return null;
-        }
-
-        return writer.toString();
+//        try {
+//            freemarker.template.Template tpl = freemarker.getTemplate(templatePath, "UTF-8");
+//            writer = new StringWriter();
+//            tpl.process(parameters, writer);
+//        } catch (IOException e) {
+//            log.error("Unable to find or parse the template [{}]", templatePath, e);
+//            return null;
+//        } catch (TemplateException e) {
+//            log.error("Unable to process the template [{}]", templatePath, e);
+//            return null;
+//        }
+return null;
+//        return writer.toString();
     }
 
     public void sendEmail(String from, String to, String subject, String content, List<String> cc, List<String> bcc) {

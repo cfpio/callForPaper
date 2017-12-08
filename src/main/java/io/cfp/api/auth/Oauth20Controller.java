@@ -42,49 +42,50 @@ import static io.cfp.log.MDCKey.USER;
 
 
 public abstract class Oauth20Controller extends AuthController {
-	private static final Logger logger = LoggerFactory.getLogger(Oauth20Controller.class);
+    private static final Logger logger = LoggerFactory.getLogger(Oauth20Controller.class);
 
-	private OAuth20Service authService;
+    private OAuth20Service authService;
 
-	@PostConstruct
-	private void init() {
-		authService = new ServiceBuilder()
-				.apiKey(getClientId())
-				.apiSecret(getClientSecret())
-				.scope(getScope())
-				.callback(hostname + getProviderPath() + "/auth")
-				.build(getApi());
-	}
+    @PostConstruct
+    private void init() {
+        authService = new ServiceBuilder()
+            .apiKey(getClientId())
+            .apiSecret(getClientSecret())
+            .scope(getScope())
+            .callback(hostname + getProviderPath() + "/auth")
+            .build(getApi());
+    }
 
-	@RequestMapping(value = "/login")
+    @RequestMapping(value = "/login")
     public String login() {
-			return "redirect:" + authService.getAuthorizationUrl();
+	    logger.info("[OAUTH2_GET_TOKEN] Redirect to login page : {}", authService.getAuthorizationUrl());
+        return "redirect:" + authService.getAuthorizationUrl();
     }
 
     @RequestMapping(value = "/auth", method = RequestMethod.GET)
     @SuppressWarnings("unchecked")
-	@Log(USER)
+    @Log(USER)
     public String auth(HttpServletResponse httpServletResponse, @RequestParam String code,
                        @CookieValue(required = false, value = "returnTo") String returnTo) throws IOException {
 
-		logger.info("[OAUTH2_GET_TOKEN] Retrieving access token from [{}] for code [{}]", getProvider(), code);
-		OAuth2AccessToken accessToken = authService.getAccessToken(code);
-    	Map<String, Object> user = restTemplate.getForObject(getEmailInfoUrl() + accessToken.getAccessToken(), Map.class);
-		String email = (String) user.get(getEmailProperty());
+        logger.info("[OAUTH2_GET_TOKEN] Retrieving access token from [{}] for code [{}]", getProvider(), code);
+        OAuth2AccessToken accessToken = authService.getAccessToken(code);
+        Map<String, Object> user = restTemplate.getForObject(getEmailInfoUrl() + accessToken.getAccessToken(), Map.class);
+        String email = (String) user.get(getEmailProperty());
 
-		MDC.put(USER, email);
-		return processUser(httpServletResponse, email, returnTo);
+        MDC.put(USER, email);
+        return processUser(httpServletResponse, email, returnTo);
     }
 
-	protected abstract String getClientId();
+    protected abstract String getClientId();
 
-	protected abstract String getClientSecret();
+    protected abstract String getClientSecret();
 
-	protected abstract String getScope();
+    protected abstract String getScope();
 
-	protected abstract DefaultApi20 getApi();
+    protected abstract DefaultApi20 getApi();
 
-	protected abstract String getEmailInfoUrl();
+    protected abstract String getEmailInfoUrl();
 
-	protected abstract String getEmailProperty();
+    protected abstract String getEmailProperty();
 }

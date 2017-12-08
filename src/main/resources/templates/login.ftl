@@ -42,34 +42,36 @@
 
 			<form class="form-signin" role="form" action="/local/login" method="POST">
 				<img src="/img/avatar.png" class="hidden-xs">
-				
-				#if ($error == "invalidAuth")			
-				<div class="alert alert-danger">Your e-mail or password is invalid.</div>
-				#end
 
-				#if ( !$email )
-					#set ( $email = "" )
-				#end
+                <#if error?? && error == "invalidAuth">
+				<div class="alert alert-danger">Your e-mail or password is invalid.</div>
+                </#if>
+
+                <#if email??>
+                <#else>
+                    <#assign email = "">
+                </#if>
+
 				<input type="text" name="email" value="${email}" class="form-control" placeholder="E-mail" required autofocus>
 
 				<input type="password" name="password" class="form-control" placeholder="Password" required>
 
 				<button class="btn btn-primary btn-block" type="submit">Connection</button>
-				
+
 				<a href="/local/signup"><small>Create account</small></a>
 
 			</form>
 
 		</div>
-		
+
 		<div class="col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-1 main-text">
-		
-			#if ($error == "noEmail")			
+
+            <#if error?? && error == "noEmail">
 			<div class="alert alert-danger">
 				We can't retrieve your e-mail with the selected provider (check if you don't set it private).
 				You can use another provider if you want.
 			</div>
-			#end
+			</#if>
 
 			<a href="/google/login" class="btn btn-block btn-social btn-google"><span class="fa fa-google"></span> Sign in with Google </a>
 			<a href="/github/login" class="btn btn-block btn-social btn-github"><span class="fa fa-github"></span> Sign in with Github </a>

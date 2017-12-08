@@ -150,3 +150,6 @@
         </div>
     </body>
 </html>
+
+Please log in
+FreeMarker template error (DEBUG mode; use RETHROW in production!): For "#if" condition: Expected a boolean, but this has evaluated to a sequence+extended_hash+string (wrapper: f.c.DefaultToExpression$EmptyStringAndSequence): ==> email! [in template "login.ftl" at line 50, column 22] ---- FTL stack trace ("~" means nesting-related): - Failed at: #if email! [in template "login.ftl" at line 50, column 17] ---- Java stack trace (for programmers): ---- freemarker.core.NonBooleanException: [... Exception message was already printed; see it above ...] at
