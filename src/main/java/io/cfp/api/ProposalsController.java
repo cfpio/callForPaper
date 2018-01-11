@@ -174,8 +174,6 @@ public class ProposalsController {
 
         createCospeakers(proposal);
 
-        emailingService.sendConfirmed(user.getFirstname(), user.getEmail(), proposal.getName(), proposal.getId(), user.getLocale());
-
         return proposal;
     }
 
@@ -242,8 +240,9 @@ public class ProposalsController {
     @PutMapping("/proposals/{id}/confirm")
     @Secured(AUTHENTICATED)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void confirm(@TenantId String event,
-                       @PathVariable int id) {
+    public void confirm(@AuthenticationPrincipal User user,
+                        @TenantId String event,
+                        @PathVariable int id) {
 
         LOGGER.info("Proposal {} change state to CONFIRMED", id);
         Proposal proposal = new Proposal();
@@ -253,6 +252,8 @@ public class ProposalsController {
 
         //FIXME check proposal is in DRAFT state
         proposals.updateState(proposal);
+
+        emailingService.sendConfirmed(user.getFirstname(), user.getEmail(), proposal.getName(), proposal.getId(), user.getLocale());
     }
 
 

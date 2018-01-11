@@ -23,8 +23,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -258,6 +260,33 @@ public class ProposalsControllerTest {
             .andDo(print())
             .andExpect(status().isForbidden())
         ;
+    }
+
+    @Test
+    public void should_email_confirmation_when_proposal_is_confirmed() throws Exception {
+
+        User user = new User();
+        user.setId(21);
+        user.setEmail("EMAIL");
+        user.setFirstname("FIRSTNAME");
+        user.addRole(Role.AUTHENTICATED);
+        String token = Utils.createTokenForUser(user);
+
+        when(userMapper.findByEmail("EMAIL")).thenReturn(user);
+
+        String updatedProposal = Utils.getContent("/json/proposals/other_proposal.json");
+
+        mockMvc.perform(put("/api/proposals/25/confirm")
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .header("Authorization", "Bearer "+token)
+            .content(updatedProposal)
+        )
+            .andDo(print())
+            .andExpect(status().isNoContent())
+        ;
+
+        verify(emailingService).sendConfirmed(eq(user.getFirstname()), eq(user.getEmail()), anyString(), eq(25), any(Locale.class));
     }
 
     /* FIXME will need to make it clearer what we consider an "invalid proposal"
