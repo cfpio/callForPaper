@@ -63,7 +63,7 @@ public class TalkUser {
     public TalkUser(Talk t) {
         this.id = t.getId();
         this.state = t.getState();
-        this.name = t.getName();
+        this.name = t.getName() != null ? t.getName() : "undefined";
         this.language = t.getLanguage();
         this.format = t.getFormat().getId();
         this.trackId = t.getTrack().getId();
