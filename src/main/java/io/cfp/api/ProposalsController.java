@@ -245,7 +245,8 @@ public class ProposalsController {
                         @PathVariable int id) {
 
         LOGGER.info("Proposal {} change state to CONFIRMED", id);
-        Proposal proposal = new Proposal();
+
+        Proposal proposal = proposals.findById(id, event);
         proposal.setId(id);
         proposal.setEventId(event);
         proposal.setState(Proposal.State.CONFIRMED);
@@ -264,7 +265,7 @@ public class ProposalsController {
                        @PathVariable int id) {
 
         LOGGER.info("Proposal {} change state to ACCEPTED", id);
-        Proposal proposal = new Proposal();
+        Proposal proposal = proposals.findById(id, event);
         proposal.setId(id);
         proposal.setEventId(event);
         proposal.setState(Proposal.State.ACCEPTED);
@@ -278,7 +279,7 @@ public class ProposalsController {
     public void backup(@TenantId String event,
                        @PathVariable int id) {
         LOGGER.info("Proposal {} change state to BACKUP", id);
-        Proposal proposal = new Proposal();
+        Proposal proposal = proposals.findById(id, event);
         proposal.setId(id);
         proposal.setEventId(event);
         proposal.setState(Proposal.State.BACKUP);
@@ -292,7 +293,7 @@ public class ProposalsController {
     public void reject(@TenantId String event,
                        @PathVariable int id) {
         LOGGER.info("Proposal {} change state to REJECT", id);
-        Proposal proposal = new Proposal();
+        Proposal proposal = proposals.findById(id, event);
         proposal.setId(id);
         proposal.setEventId(event);
         proposal.setState(Proposal.State.REFUSED);
@@ -306,7 +307,7 @@ public class ProposalsController {
     public void retract(@TenantId String event,
                         @PathVariable int id) {
         LOGGER.info("Proposal {} change state to CONFIRMED", id);
-        Proposal proposal = new Proposal();
+        Proposal proposal = proposals.findById(id, event);
         proposal.setId(id);
         proposal.setEventId(event);
         proposal.setState(Proposal.State.CONFIRMED);
