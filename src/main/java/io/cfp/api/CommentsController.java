@@ -9,6 +9,7 @@ import io.cfp.model.Proposal;
 import io.cfp.model.User;
 import io.cfp.model.queries.CommentQuery;
 import io.cfp.multitenant.TenantId;
+import io.cfp.service.email.EmailingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +22,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 import java.util.Date;
 
-import static io.cfp.model.Role.ADMIN;
 import static io.cfp.model.Role.REVIEWER;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
-import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
 @RequestMapping(value = { "/v1/proposals/{proposalId}/comments", "/api/proposals/{proposalId}/comments" }, produces = APPLICATION_JSON_UTF8_VALUE)
@@ -38,7 +37,10 @@ public class CommentsController {
     @Autowired
     private ProposalMapper proposals;
 
-    @RequestMapping(method = GET)
+    @Autowired
+    private EmailingService emailingService;
+
+    @GetMapping
     @Secured(Role.AUTHENTICATED)
     public Collection<Comment> all(@AuthenticationPrincipal User user,
                                    @PathVariable int proposalId,
@@ -57,7 +59,7 @@ public class CommentsController {
         return comments.findAll(query);
     }
 
-    @RequestMapping(method = POST)
+    @PostMapping
     @Transactional
     @Secured(Role.AUTHENTICATED)
     @ResponseStatus(HttpStatus.CREATED)
@@ -81,10 +83,16 @@ public class CommentsController {
         comment.setAdded(new Date());
 
         comments.insert(comment);
+
+        if (comment.isInternal()) {
+            emailingService.sendNewCommentToAdmins(user, proposal.getName(), proposal.getId(), user.getLocale());
+        } else {
+            emailingService.sendNewCommentToSpeaker(user, proposal.getName(), proposal.getId(), user.getLocale());
+        }
         return comment;
     }
 
-    @RequestMapping(value = "/{id}", method = PUT)
+    @PutMapping(value = "/{id}")
     @Transactional
     @Secured(Role.AUTHENTICATED)
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -94,19 +102,27 @@ public class CommentsController {
                        @RequestBody Comment comment,
                        @TenantId String eventId) {
         LOGGER.info("User {} update its comment on proposal {}", user.getId(), proposalId);
+        Proposal proposal = proposals.findById(proposalId, eventId);
+
         comment.setId(id);
         comment.setEventId(eventId);
         comment.setUser(user);
         comment.setProposalId(proposalId);
 
-        if (!user.hasRole(ADMIN)) {
+        if (!user.hasRole(REVIEWER)) {
             comment.setInternal(false);
         }
 
         comments.update(comment);
+
+        if (comment.isInternal()) {
+            emailingService.sendNewCommentToAdmins(user, proposal.getName(), proposal.getId(), user.getLocale());
+        } else {
+            emailingService.sendNewCommentToSpeaker(user, proposal.getName(), proposal.getId(), user.getLocale());
+        }
     }
 
-    @RequestMapping(value = "/{id}", method = DELETE)
+    @DeleteMapping(value = "/{id}")
     @Transactional
     @Secured(Role.OWNER)
     @ResponseStatus(HttpStatus.NO_CONTENT)

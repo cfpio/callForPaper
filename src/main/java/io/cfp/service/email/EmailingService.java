@@ -123,6 +123,7 @@ public class EmailingService {
 
     @Async
     @Transactional
+    @Deprecated
     public void sendConfirmed(io.cfp.model.User user, TalkUser talk, Locale locale) {
         log.debug("Sending email confirmation e-mail to '{}'", user.getEmail());
 
@@ -141,12 +142,41 @@ public class EmailingService {
      *
      * @param speaker
      *            the speaker to write to
+     * @param proposalName
+     *            name of talk under review
+     * @param proposalId
+     *            id of talk under review
+     * @param locale
+     */
+    @Async
+    @Transactional
+    public void sendNewCommentToSpeaker(io.cfp.model.User speaker, String proposalName, int proposalId, Locale locale) {
+        log.debug("Sending new comment email to speaker '{}' for talk '{}'", speaker.getEmail(), proposalName);
+
+        List<String> cc = users.findEmailByRole(Role.ADMIN, Event.current());
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", speaker.getFirstname());
+        params.put("talk", proposalName);
+        params.put("id", String.valueOf(proposalId));
+        params.put("subject", getSubject("newMessage", locale, proposalName));
+
+        createAndSendEmail("newMessage.html", speaker.getEmail(), params, cc, null, locale);
+    }
+
+    /**
+     * Send an email to a speaker to notify him that an administrator wrote a
+     * new comment about his talk.
+     *
+     * @param speaker
+     *            the speaker to write to
      * @param talk
      *            talk under review
      * @param locale
      */
     @Async
     @Transactional
+    @Deprecated
     public void sendNewCommentToSpeaker(User speaker, TalkAdmin talk, Locale locale) {
         log.debug("Sending new comment email to speaker '{}' for talk '{}'", speaker.getEmail(), talk.getName());
 
@@ -167,12 +197,43 @@ public class EmailingService {
      *
      * @param speaker
      *            the speaker writing this message
+     * @param proposalName
+     *            name of talk under review
+     * @param proposalId
+     *            id of talk under review
+     * @param locale
+     */
+    @Async
+    @Transactional
+    public void sendNewCommentToAdmins(io.cfp.model.User speaker, String proposalName, int proposalId, Locale locale) {
+        log.debug("Sending new comment email to admins for talk '{}'", proposalName);
+
+        List<String> bcc = users.findEmailByRole(Role.ADMIN, Event.current());
+        String speakerName = speaker.getFirstname() + " " + speaker.getLastname();
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", speakerName);
+        params.put("talk", proposalName);
+        params.put("id", String.valueOf(proposalId));
+        params.put("subject", getSubject("newMessageAdmin", locale, speakerName, proposalName));
+
+        createAndSendEmail("newMessageAdmin.html", emailSender, params, null, bcc, locale);
+    }
+
+
+    /**
+     * Send an email to administrators to notify them that a speaker wrote a
+     * new comment on his talk.
+     *
+     * @param speaker
+     *            the speaker writing this message
      * @param talk
      *            talk under review
      * @param locale
      */
     @Async
     @Transactional
+    @Deprecated
     public void sendNewCommentToAdmins(User speaker, TalkUser talk, Locale locale) {
         log.debug("Sending new comment email to admins for talk '{}'", talk.getName());
 
