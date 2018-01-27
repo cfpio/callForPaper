@@ -273,6 +273,9 @@ public class ProposalsControllerTest {
         String token = Utils.createTokenForUser(user);
 
         when(userMapper.findByEmail("EMAIL")).thenReturn(user);
+        when(proposalMapper.findById(eq(25), anyString())).thenReturn(new Proposal().setId(25)
+            .setName("PROPOSAL_NAME")
+            .setSpeaker(new User().setId(21)));
 
         String updatedProposal = Utils.getContent("/json/proposals/other_proposal.json");
 
