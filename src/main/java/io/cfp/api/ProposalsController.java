@@ -354,6 +354,7 @@ public class ProposalsController {
         rate.setUser(user);
         rate.setEventId(eventId);
         rate.setTalk(new Proposal().setId(proposalId));
+        rate.setAdded(new Date());
         rates.update(rate);
         return rate;
     }
