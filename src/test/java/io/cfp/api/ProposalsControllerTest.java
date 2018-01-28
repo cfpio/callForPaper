@@ -23,7 +23,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
@@ -271,11 +270,12 @@ public class ProposalsControllerTest {
         user.setFirstname("FIRSTNAME");
         user.addRole(Role.AUTHENTICATED);
         String token = Utils.createTokenForUser(user);
+        Proposal proposal = new Proposal().setId(25)
+            .setName("PROPOSAL_NAME")
+            .setSpeaker(new User().setId(21));
 
         when(userMapper.findByEmail("EMAIL")).thenReturn(user);
-        when(proposalMapper.findById(eq(25), anyString())).thenReturn(new Proposal().setId(25)
-            .setName("PROPOSAL_NAME")
-            .setSpeaker(new User().setId(21)));
+        when(proposalMapper.findById(eq(25), anyString())).thenReturn(proposal);
 
         String updatedProposal = Utils.getContent("/json/proposals/other_proposal.json");
 
@@ -289,7 +289,7 @@ public class ProposalsControllerTest {
             .andExpect(status().isNoContent())
         ;
 
-        verify(emailingService).sendConfirmed(eq(user.getFirstname()), eq(user.getEmail()), anyString(), eq(25), any(Locale.class));
+        verify(emailingService).sendConfirmed(eq(user), eq(proposal));
     }
 
     /* FIXME will need to make it clearer what we consider an "invalid proposal"

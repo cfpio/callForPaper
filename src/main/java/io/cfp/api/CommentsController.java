@@ -85,9 +85,9 @@ public class CommentsController {
         comments.insert(comment);
 
         if (comment.isInternal()) {
-            emailingService.sendNewCommentToAdmins(user, proposal.getName(), proposal.getId(), user.getLocale());
+            emailingService.sendNewCommentToAdmins(user, proposal);
         } else {
-            emailingService.sendNewCommentToSpeaker(user, proposal.getName(), proposal.getId(), user.getLocale());
+            emailingService.sendNewCommentToSpeaker(user, proposal);
         }
         return comment;
     }
@@ -116,9 +116,9 @@ public class CommentsController {
         comments.update(comment);
 
         if (comment.isInternal()) {
-            emailingService.sendNewCommentToAdmins(user, proposal.getName(), proposal.getId(), user.getLocale());
+            emailingService.sendNewCommentToAdmins(user, proposal);
         } else {
-            emailingService.sendNewCommentToSpeaker(user, proposal.getName(), proposal.getId(), user.getLocale());
+            emailingService.sendNewCommentToSpeaker(user, proposal);
         }
     }
 

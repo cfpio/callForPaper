@@ -21,7 +21,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
@@ -210,11 +209,12 @@ public class CommentsControllerTest {
         user.setEmail("EMAIL");
         user.addRole(Role.REVIEWER);
         String token = Utils.createTokenForUser(user);
+        Proposal proposal = new Proposal().setId(25)
+            .setName("PROPOSAL_NAME")
+            .setSpeaker(new User().setId(21));
 
         when(userMapper.findByEmail("EMAIL")).thenReturn(user);
-        when(proposalMapper.findById(eq(25), anyString())).thenReturn(new Proposal().setId(25)
-                                                                                         .setName("PROPOSAL_NAME")
-                                                                                         .setSpeaker(new User().setId(21)));
+        when(proposalMapper.findById(eq(25), anyString())).thenReturn(proposal);
 
         String updatedComment = Utils.getContent("/json/comments/update_internal_comment.json");
 
@@ -228,7 +228,7 @@ public class CommentsControllerTest {
             .andExpect(status().isNoContent())
         ;
 
-        verify(emailingService).sendNewCommentToAdmins(eq(user), anyString(), anyInt(), any(Locale.class));
+        verify(emailingService).sendNewCommentToAdmins(eq(user), eq(proposal));
     }
 
     @Test
@@ -239,11 +239,12 @@ public class CommentsControllerTest {
         user.setEmail("EMAIL");
         user.addRole(Role.AUTHENTICATED);
         String token = Utils.createTokenForUser(user);
+        Proposal proposal = new Proposal().setId(25)
+            .setName("PROPOSAL_NAME")
+            .setSpeaker(new User().setId(21));
 
         when(userMapper.findByEmail("EMAIL")).thenReturn(user);
-        when(proposalMapper.findById(eq(25), anyString())).thenReturn(new Proposal().setId(25)
-            .setName("PROPOSAL_NAME")
-            .setSpeaker(new User().setId(21)));
+        when(proposalMapper.findById(eq(25), anyString())).thenReturn(proposal);
 
         String updatedComment = Utils.getContent("/json/comments/update_comment.json");
 
@@ -257,7 +258,7 @@ public class CommentsControllerTest {
             .andExpect(status().isNoContent())
         ;
 
-        verify(emailingService).sendNewCommentToSpeaker(eq(user), anyString(), anyInt(), any(Locale.class));
+        verify(emailingService).sendNewCommentToSpeaker(eq(user), eq(proposal));
     }
 
     @Test
@@ -268,11 +269,12 @@ public class CommentsControllerTest {
         user.setEmail("EMAIL");
         user.addRole(Role.REVIEWER);
         String token = Utils.createTokenForUser(user);
+        Proposal proposal = new Proposal().setId(25)
+            .setName("PROPOSAL_NAME")
+            .setSpeaker(new User().setId(21));
 
         when(userMapper.findByEmail("EMAIL")).thenReturn(user);
-        when(proposalMapper.findById(eq(25), anyString())).thenReturn(new Proposal().setId(25)
-            .setName("PROPOSAL_NAME")
-            .setSpeaker(new User().setId(21)));
+        when(proposalMapper.findById(eq(25), anyString())).thenReturn(proposal);
 
         String updatedComment = Utils.getContent("/json/comments/new_internal_comment.json");
 
@@ -286,7 +288,7 @@ public class CommentsControllerTest {
             .andExpect(status().isCreated())
         ;
 
-        verify(emailingService).sendNewCommentToAdmins(eq(user), anyString(), anyInt(), any(Locale.class));
+        verify(emailingService).sendNewCommentToAdmins(eq(user), eq(proposal));
     }
 
     @Test
@@ -297,11 +299,12 @@ public class CommentsControllerTest {
         user.setEmail("EMAIL");
         user.addRole(Role.AUTHENTICATED);
         String token = Utils.createTokenForUser(user);
+        Proposal proposal = new Proposal().setId(25)
+            .setName("PROPOSAL_NAME")
+            .setSpeaker(new User().setId(21));
 
         when(userMapper.findByEmail("EMAIL")).thenReturn(user);
-        when(proposalMapper.findById(eq(25), anyString())).thenReturn(new Proposal().setId(25)
-            .setName("PROPOSAL_NAME")
-            .setSpeaker(new User().setId(21)));
+        when(proposalMapper.findById(eq(25), anyString())).thenReturn(proposal);
 
         String updatedComment = Utils.getContent("/json/comments/new_comment.json");
 
@@ -315,7 +318,7 @@ public class CommentsControllerTest {
             .andExpect(status().isCreated())
         ;
 
-        verify(emailingService).sendNewCommentToSpeaker(eq(user), anyString(), anyInt(), any(Locale.class));
+        verify(emailingService).sendNewCommentToSpeaker(eq(user), eq(proposal));
     }
 
 }

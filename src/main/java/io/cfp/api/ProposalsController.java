@@ -254,7 +254,7 @@ public class ProposalsController {
         //FIXME check proposal is in DRAFT state
         proposals.updateState(proposal);
 
-        emailingService.sendConfirmed(user.getFirstname(), user.getEmail(), proposal.getName(), proposal.getId(), user.getLocale());
+        emailingService.sendConfirmed(user, proposal);
     }
 
 
