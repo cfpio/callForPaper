@@ -31,6 +31,7 @@ import io.cfp.dto.user.UserProfil;
 import io.cfp.entity.Event;
 import io.cfp.entity.Talk;
 import io.cfp.entity.User;
+import io.cfp.mapper.EventMapper;
 import io.cfp.repository.CfpConfigRepo;
 import io.cfp.repository.EventRepository;
 import io.cfp.repository.UserRepo;
@@ -84,6 +85,9 @@ public class EmailingServiceTest {
     private EventRepository eventRepo;
 
     @Autowired
+    private EventMapper eventMapper;
+
+    @Autowired
     private freemarker.template.Configuration freemarkerCfg;
 
     private String emailSender;
@@ -99,6 +103,7 @@ public class EmailingServiceTest {
     private TalkUser talkUser;
 
     private Event event;
+    private io.cfp.model.Event newEvent;
 
     @Before
     public void setup() throws IOException {
@@ -116,8 +121,6 @@ public class EmailingServiceTest {
         newUser.setEmail(JOHN_DOE_EMAIL);
         newUser.setFirstname("john");
 
-        talk = new Talk();
-        talk.user(user).name("Awesome talk");
 
         talkUser = new TalkUser();
         talkUser.setId(1);
@@ -140,13 +143,28 @@ public class EmailingServiceTest {
             .contactMail(CONTACT_MAIL)
             .build();
 
+        newEvent = new io.cfp.model.Event()
+            .setId("test")
+            .setName("test")
+            .setDate(new Date())
+            .setReleaseDate(new Date())
+            .setLogoUrl("http://localhost/logo.png")
+            .setContactMail(CONTACT_MAIL);
+
+        talk = new Talk();
+        talk.user(user).name("Awesome talk").event(event);
+
+
         Event.setCurrent("test");
         when(eventRepo.findOne("test")).thenReturn(event);
+
+        when(eventMapper.findOne("test")).thenReturn(newEvent);
 
         MockitoAnnotations.initMocks(this);
 
         ReflectionTestUtils.setField(emailingService, "users", users);
         ReflectionTestUtils.setField(emailingService, "eventRepo", eventRepo);
+        ReflectionTestUtils.setField(emailingService, "eventMapper", eventMapper);
         ReflectionTestUtils.setField(emailingService, "freemarker", freemarkerCfg);
         ReflectionTestUtils.setField(emailingService, "emailSender", emailSender);
         ReflectionTestUtils.setField(emailingService, "hostname", "demo.cfp.io");
@@ -246,7 +264,7 @@ public class EmailingServiceTest {
         map.put("var1", "test1");
         map.put("var2", "test2");
 
-        String eventId = "EVENT";
+        String eventId = "test";
 
         // When
         String content = emailingService.processTemplate(templatePath, map, eventId);
@@ -265,7 +283,7 @@ public class EmailingServiceTest {
         map.put("talk", "Google App Engine pour les nuls");
         map.put("id", "123");
 
-        String eventId = "EVENT";
+        String eventId = "test";
 
         // When
         String content = emailingService.processTemplate(templatePath, map, eventId);
@@ -284,7 +302,7 @@ public class EmailingServiceTest {
         map.put("talk", "Google App Engine pour les nuls");
         map.put("id", "123");
 
-        String eventId = "EVENT";
+        String eventId = "test";
 
         // When
         String content = emailingService.processTemplate(templatePath, map, eventId);
@@ -302,7 +320,7 @@ public class EmailingServiceTest {
         map.put("name", "Thomas");
         map.put("talk", "Google App Engine pour les nuls");
 
-        String eventId = "EVENT";
+        String eventId = "test";
 
         // When
         String content = emailingService.processTemplate(templatePath, map, eventId);
@@ -320,7 +338,7 @@ public class EmailingServiceTest {
         map.put("name", "Thomas");
         map.put("talk", "Google App Engine pour les nuls");
 
-        String eventId = "EVENT";
+        String eventId = "test";
 
         // When
         String content = emailingService.processTemplate(templatePath, map, eventId);
@@ -339,7 +357,7 @@ public class EmailingServiceTest {
         map.put("talk", "Google App Engine pour les nuls");
         map.put("id", "123");
 
-        String eventId = "EVENT";
+        String eventId = "test";
 
         // When
         String content = emailingService.processTemplate(templatePath, map, eventId);
@@ -358,7 +376,7 @@ public class EmailingServiceTest {
         map.put("talk", "Google App Engine pour les nuls");
         map.put("id", "123");
 
-        String eventId = "EVENT";
+        String eventId = "test";
 
         // When
         String content = emailingService.processTemplate(templatePath, map, eventId);
@@ -378,7 +396,7 @@ public class EmailingServiceTest {
         map.put("id", "123");
 
 
-        String eventId = "EVENT";
+        String eventId = "test";
 
         // When
         String content = emailingService.processTemplate(templatePath, map, eventId);
@@ -432,6 +450,11 @@ public class EmailingServiceTest {
         @Bean // field injection of ApplicationConfigService
         public EventRepository eventRepo() {
             return mock(EventRepository.class);
+        }
+
+        @Bean
+        public EventMapper eventMapper() {
+            return mock(EventMapper.class);
         }
 
         @Bean
