@@ -109,7 +109,7 @@ public class User {
     }
 
     public Locale getLocale() {
-        if (language != null && language.equalsIgnoreCase("français")) {
+        if (language != null && (language.equalsIgnoreCase("français") || language.equalsIgnoreCase("fr"))) {
             return Locale.FRENCH;
         }
         return Locale.ENGLISH;
