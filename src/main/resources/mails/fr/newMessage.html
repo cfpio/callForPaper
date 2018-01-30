@@ -228,7 +228,11 @@
                                               <tbody><tr style="padding: 0;vertical-align: top">
                                                 <td style="word-break: break-word;-webkit-hyphens: auto;-moz-hyphens: auto;hyphens: auto;border-collapse: collapse !important;padding: 0;vertical-align: top;margin: 0;padding-top: 10px;padding-right: 10px;padding-bottom: 10px;padding-left: 10px">
                                                   <div style="color:#767676;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;">
-                                                    <div style="font-size: 12px; line-height: 14px; text-align: left;color: #767676;font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height: 14px" data-mce-style="font-size: 12px; line-height: 14px; text-align: left;"><span style="font-size:18px; line-height:22px;">Un administrateur a envoyé un message à propos de votre talk &laquo;&nbsp;${talk}&nbsp;&raquo;, cliquez <a href="${hostname}/#/sessions/${id}?tab=contact" target"_blank">ici</a> pour le voir.</span></div>
+                                                    <div style="font-size: 12px; line-height: 14px; text-align: left;color: #767676;font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height: 14px" data-mce-style="font-size: 12px; line-height: 14px; text-align: left;"><span style="font-size:18px; line-height:22px;">Un administrateur a envoyé un message à propos de votre talk
+                                                        <a href="${hostname}/#/sessions/${id}?tab=contact">&laquo;&nbsp;${talk}&nbsp;&raquo;</a> : </span>
+                                                        <br/>
+                                                        <pre>${message}</pre>
+                                                    </div>
                                                   </div>
                                                 </td>
                                               </tr>
