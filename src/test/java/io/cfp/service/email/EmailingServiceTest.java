@@ -32,6 +32,7 @@ import io.cfp.entity.Event;
 import io.cfp.entity.Talk;
 import io.cfp.entity.User;
 import io.cfp.mapper.EventMapper;
+import io.cfp.model.Comment;
 import io.cfp.repository.CfpConfigRepo;
 import io.cfp.repository.EventRepository;
 import io.cfp.repository.UserRepo;
@@ -186,7 +187,7 @@ public class EmailingServiceTest {
         emailingService.sendConfirmed(newUser, talkUser, Locale.FRENCH);
 
         // Then
-        verify(emailingService).processTemplate(eq(templatePath), anyMap(), anyString());
+        verify(emailingService).processTemplate(eq(templatePath), anyMap(), anyString(), anyString());
         verify(emailingService).sendEmail(eq(CONTACT_MAIL), eq(JOHN_DOE_EMAIL), anyString(), anyString(), isNull(List.class), isNull(List.class));
     }
 
@@ -196,10 +197,10 @@ public class EmailingServiceTest {
     	String templatePath = emailingService.getTemplatePath("newMessage.html", Locale.FRENCH);
 
         // When
-        emailingService.sendNewCommentToSpeaker(user, talkAdmin, Locale.FRENCH);
+        emailingService.sendNewCommentToSpeaker(user, talkAdmin, Locale.FRENCH, "commentaire");
 
         // Then
-        verify(emailingService).processTemplate(eq(templatePath), anyMap(), anyString());
+        verify(emailingService).processTemplate(eq(templatePath), anyMap(), anyString(), anyString());
         verify(emailingService).sendEmail(eq(CONTACT_MAIL), eq(JOHN_DOE_EMAIL), anyString(), anyString(), notNull(List.class), isNull(List.class));
     }
 
@@ -209,10 +210,10 @@ public class EmailingServiceTest {
     	String templatePath = emailingService.getTemplatePath("newMessageAdmin.html", Locale.FRENCH);
 
         // When
-        emailingService.sendNewCommentToAdmins(user, talkUser, Locale.FRENCH);
+        emailingService.sendNewCommentToAdmins(user, talkUser, Locale.FRENCH, "commentaire");
 
         // Then
-        verify(emailingService).processTemplate(eq(templatePath), anyMap(), anyString());
+        verify(emailingService).processTemplate(eq(templatePath), anyMap(), anyString(), anyString());
         verify(emailingService).sendEmail(eq(CONTACT_MAIL), eq(emailSender), anyString(), anyString(), isNull(List.class), notNull(List.class));
     }
 
@@ -225,7 +226,7 @@ public class EmailingServiceTest {
         emailingService.sendNotSelectionned(talk, Locale.FRENCH);
 
         // Then
-        verify(emailingService).processTemplate(eq(templatePath), anyMap(), anyString());
+        verify(emailingService).processTemplate(eq(templatePath), anyMap(), anyString(), anyString());
         verify(emailingService).sendEmail(eq(CONTACT_MAIL), eq(JOHN_DOE_EMAIL), anyString(), anyString(), notNull(List.class), isNull(List.class));
     }
 
@@ -238,7 +239,7 @@ public class EmailingServiceTest {
         emailingService.sendPending(talkUser, Locale.FRENCH);
 
         // Then
-        verify(emailingService).processTemplate(eq(templatePath), anyMap(), anyString());
+        verify(emailingService).processTemplate(eq(templatePath), anyMap(), anyString(), anyString());
         verify(emailingService).sendEmail(eq(CONTACT_MAIL), eq(JOHN_DOE_EMAIL), anyString(), anyString(), notNull(List.class), isNull(List.class));
     }
 
@@ -251,7 +252,7 @@ public class EmailingServiceTest {
         emailingService.sendSelectionned(talk, Locale.FRENCH);
 
         // Then
-        verify(emailingService).processTemplate(eq(templatePath), anyMap(), anyString());
+        verify(emailingService).processTemplate(eq(templatePath), anyMap(), anyString(), anyString());
         verify(emailingService).sendEmail(eq(CONTACT_MAIL), eq(JOHN_DOE_EMAIL), anyString(), anyString(), notNull(List.class), isNull(List.class));
     }
 
@@ -267,7 +268,7 @@ public class EmailingServiceTest {
         String eventId = "test";
 
         // When
-        String content = emailingService.processTemplate(templatePath, map, eventId);
+        String content = emailingService.processTemplate(templatePath, map, eventId, "");
 
         // Then
         assertEquals(false, content.contains("$"));
@@ -286,7 +287,7 @@ public class EmailingServiceTest {
         String eventId = "test";
 
         // When
-        String content = emailingService.processTemplate(templatePath, map, eventId);
+        String content = emailingService.processTemplate(templatePath, map, eventId, "");
 
         // Then
         assertEquals(false, content.contains("$"));
@@ -305,7 +306,7 @@ public class EmailingServiceTest {
         String eventId = "test";
 
         // When
-        String content = emailingService.processTemplate(templatePath, map, eventId);
+        String content = emailingService.processTemplate(templatePath, map, eventId, "");
 
         // Then
         assertEquals(false, content.contains("$"));
@@ -323,7 +324,7 @@ public class EmailingServiceTest {
         String eventId = "test";
 
         // When
-        String content = emailingService.processTemplate(templatePath, map, eventId);
+        String content = emailingService.processTemplate(templatePath, map, eventId, "");
 
         // Then
         assertEquals(false, content.contains("$"));
@@ -341,7 +342,7 @@ public class EmailingServiceTest {
         String eventId = "test";
 
         // When
-        String content = emailingService.processTemplate(templatePath, map, eventId);
+        String content = emailingService.processTemplate(templatePath, map, eventId, "");
 
         // Then
         assertEquals(false, content.contains("$"));
@@ -360,7 +361,7 @@ public class EmailingServiceTest {
         String eventId = "test";
 
         // When
-        String content = emailingService.processTemplate(templatePath, map, eventId);
+        String content = emailingService.processTemplate(templatePath, map, eventId, "");
 
         // Then
         assertEquals(false, content.contains("$"));
@@ -379,7 +380,7 @@ public class EmailingServiceTest {
         String eventId = "test";
 
         // When
-        String content = emailingService.processTemplate(templatePath, map, eventId);
+        String content = emailingService.processTemplate(templatePath, map, eventId, "");
 
         // Then
         assertEquals(false, content.contains("$"));
@@ -399,7 +400,7 @@ public class EmailingServiceTest {
         String eventId = "test";
 
         // When
-        String content = emailingService.processTemplate(templatePath, map, eventId);
+        String content = emailingService.processTemplate(templatePath, map, eventId, "");
 
         // Then
         assertEquals(false, content.contains("$"));

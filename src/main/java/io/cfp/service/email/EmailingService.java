@@ -33,6 +33,7 @@ import io.cfp.entity.Role;
 import io.cfp.entity.Talk;
 import io.cfp.entity.User;
 import io.cfp.mapper.EventMapper;
+import io.cfp.model.Comment;
 import io.cfp.model.Proposal;
 import io.cfp.repository.EventRepository;
 import io.cfp.repository.UserRepo;
@@ -124,7 +125,7 @@ public class EmailingService {
         params.put("id", String.valueOf(proposal.getId()));
         params.put("subject", getSubject("confirmed", user.getLocale()));
 
-        createAndSendEmail(proposal.getEventId(), "confirmed.html", user.getEmail(), params, null, null, user.getLocale());
+        createAndSendEmail(proposal.getEventId(), "confirmed.html", user.getEmail(), params, null, null, user.getLocale(), "");
     }
 
     @Async
@@ -139,7 +140,7 @@ public class EmailingService {
         params.put("id", String.valueOf(talk.getId()));
         params.put("subject", getSubject("confirmed", locale));
 
-        createAndSendEmail(Event.current(), "confirmed.html", user.getEmail(), params, null, null, locale);
+        createAndSendEmail(Event.current(), "confirmed.html", user.getEmail(), params, null, null, locale, "");
     }
 
     /**
@@ -151,7 +152,7 @@ public class EmailingService {
      */
     @Async
     @Transactional
-    public void sendNewCommentToSpeaker(io.cfp.model.User speaker, Proposal proposal) {
+    public void sendNewCommentToSpeaker(io.cfp.model.User speaker, Proposal proposal, String comment) {
         LOGGER.debug("Sending new comment email to speaker '{}' for talk '{}'", speaker.getEmail(), proposal.getName());
 
         List<String> cc = users.findEmailByRole(Role.ADMIN, proposal.getEventId());
@@ -162,7 +163,7 @@ public class EmailingService {
         params.put("id", String.valueOf(proposal.getId()));
         params.put("subject", getSubject("newMessage", speaker.getLocale(), proposal.getName()));
 
-        createAndSendEmail(Event.current(), "newMessage.html", speaker.getEmail(), params, cc, null, speaker.getLocale());
+        createAndSendEmail(Event.current(), "newMessage.html", speaker.getEmail(), params, cc, null, speaker.getLocale(), comment);
     }
 
     /**
@@ -178,7 +179,7 @@ public class EmailingService {
     @Async
     @Transactional
     @Deprecated
-    public void sendNewCommentToSpeaker(User speaker, TalkAdmin talk, Locale locale) {
+    public void sendNewCommentToSpeaker(User speaker, TalkAdmin talk, Locale locale, String comment) {
         LOGGER.debug("Sending new comment email to speaker '{}' for talk '{}'", speaker.getEmail(), talk.getName());
 
         List<String> cc = users.findEmailByRole(Role.ADMIN, Event.current());
@@ -189,7 +190,7 @@ public class EmailingService {
         params.put("id", String.valueOf(talk.getId()));
         params.put("subject", getSubject("newMessage", locale, talk.getName()));
 
-        createAndSendEmail(Event.current(), "newMessage.html", speaker.getEmail(), params, cc, null, locale);
+        createAndSendEmail(Event.current(), "newMessage.html", speaker.getEmail(), params, cc, null, locale, comment);
     }
 
     /**
@@ -201,7 +202,7 @@ public class EmailingService {
      */
     @Async
     @Transactional
-    public void sendNewCommentToAdmins(io.cfp.model.User speaker, Proposal proposal) {
+    public void sendNewCommentToAdmins(io.cfp.model.User speaker, Proposal proposal, String comment) {
         LOGGER.debug("Sending new comment email to admins for talk '{}'", proposal.getName());
 
         List<String> bcc = users.findEmailByRole(Role.ADMIN, proposal.getEventId());
@@ -213,7 +214,7 @@ public class EmailingService {
         params.put("id", String.valueOf(proposal.getId()));
         params.put("subject", getSubject("newMessageAdmin", speaker.getLocale(), speakerName, proposal.getName()));
 
-        createAndSendEmail(proposal.getEventId(), "newMessageAdmin.html", emailSender, params, null, bcc, speaker.getLocale());
+        createAndSendEmail(proposal.getEventId(), "newMessageAdmin.html", emailSender, params, null, bcc, speaker.getLocale(), comment);
     }
 
 
@@ -230,7 +231,7 @@ public class EmailingService {
     @Async
     @Transactional
     @Deprecated
-    public void sendNewCommentToAdmins(User speaker, TalkUser talk, Locale locale) {
+    public void sendNewCommentToAdmins(User speaker, TalkUser talk, Locale locale, String comment) {
         LOGGER.debug("Sending new comment email to admins for talk '{}'", talk.getName());
 
         List<String> bcc = users.findEmailByRole(Role.ADMIN, Event.current());
@@ -242,7 +243,7 @@ public class EmailingService {
         params.put("id", String.valueOf(talk.getId()));
         params.put("subject", getSubject("newMessageAdmin", locale, speakerName, talk.getName()));
 
-        createAndSendEmail(Event.current(),"newMessageAdmin.html", emailSender, params, null, bcc, locale);
+        createAndSendEmail(Event.current(),"newMessageAdmin.html", emailSender, params, null, bcc, locale, comment);
     }
 
     /**
@@ -269,7 +270,7 @@ public class EmailingService {
         params.put("talk", talk.getName());
         params.put("subject", getSubject("notSelectionned", locale));
 
-        createAndSendEmail(talk.getEvent().getName(), "notSelectionned.html", user.getEmail(), params, cc, null, locale);
+        createAndSendEmail(talk.getEvent().getName(), "notSelectionned.html", user.getEmail(), params, cc, null, locale, "");
     }
 
     @Async
@@ -291,7 +292,7 @@ public class EmailingService {
         params.put("talk", talk.getName());
         params.put("subject", getSubject("pending", locale));
 
-        createAndSendEmail(Event.current(), "pending.html", user.getEmail(), params, cc, null, locale);
+        createAndSendEmail(Event.current(), "pending.html", user.getEmail(), params, cc, null, locale, "");
     }
 
     @Async
@@ -312,14 +313,14 @@ public class EmailingService {
         params.put("talk", talk.getName());
         params.put("subject", getSubject("selectionned", locale));
 
-        createAndSendEmail(talk.getEvent().getName(), "selectionned.html", user.getEmail(), params, cc, null, locale);
+        createAndSendEmail(talk.getEvent().getName(), "selectionned.html", user.getEmail(), params, cc, null, locale, "");
     }
 
-    protected void createAndSendEmail(String event, String template, String email, Map<String,Object> parameters, List<String> cc, List<String> bcc, Locale locale) {
+    protected void createAndSendEmail(String event, String template, String email, Map<String,Object> parameters, List<String> cc, List<String> bcc, Locale locale, String message) {
 
         String templatePath = getTemplatePath(template, locale);
 
-        String content = processTemplate(templatePath, parameters, event);
+        String content = processTemplate(templatePath, parameters, event, message);
         String subject = (String) parameters.get("subject");
 
         sendEmail(parameters.get("contactMail").toString(), email, subject, content, cc, bcc);
@@ -333,13 +334,14 @@ public class EmailingService {
         return language + "/" + emailTemplate;
     }
 
-    protected String processTemplate(String templatePath, Map<String, Object> parameters, String event) {
+    protected String processTemplate(String templatePath, Map<String, Object> parameters, String event, String message) {
 
         // adds global params
         parameters.put("hostname", StringUtils.replace(hostname, "{{event}}", event));
         io.cfp.model.Event curEvent = eventMapper.findOne(event);
         parameters.put("event", curEvent);
         parameters.put("contactMail", curEvent.getContactMail() != null ? curEvent.getContactMail() : "contact@cfp.io");
+        parameters.put("message", message);
 
         StringWriter writer;
         try {

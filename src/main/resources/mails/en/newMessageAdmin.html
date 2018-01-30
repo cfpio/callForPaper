@@ -228,7 +228,10 @@
                                               <tbody><tr style="padding: 0;vertical-align: top">
                                                 <td style="word-break: break-word;-webkit-hyphens: auto;-moz-hyphens: auto;hyphens: auto;border-collapse: collapse !important;padding: 0;vertical-align: top;margin: 0;padding-top: 10px;padding-right: 10px;padding-bottom: 10px;padding-left: 10px">
                                                   <div style="color:#767676;line-height:120%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;">
-                                                    <div style="font-size: 12px; line-height: 14px; text-align: left;color: #767676;font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height: 14px" data-mce-style="font-size: 12px; line-height: 14px; text-align: left;"><span style="font-size:18px; line-height:22px;">The speaker ${name} sent a message about the talk "${talk}", click <a href="${hostname}/#/admin/sessions/${id}?tab=contact" target"_blank">here</a> to see it.</span></div>
+                                                    <div style="font-size: 12px; line-height: 14px; text-align: left;color: #767676;font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height: 14px" data-mce-style="font-size: 12px; line-height: 14px; text-align: left;"><span style="font-size:18px; line-height:22px;">The speaker ${name} sent a message about the talk
+                                                        <a href="${hostname}/#/admin/sessions/${id}?tab=contact">"${talk}"</a> : </span>
+                                                        <br/>
+                                                        <pre>${message}</pre>
                                                   </div>
                                                 </td>
                                               </tr>

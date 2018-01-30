@@ -228,7 +228,7 @@ public class CommentsControllerTest {
             .andExpect(status().isNoContent())
         ;
 
-        verify(emailingService).sendNewCommentToAdmins(eq(user), eq(proposal));
+        verify(emailingService).sendNewCommentToAdmins(eq(user), eq(proposal), anyString());
     }
 
     @Test
@@ -258,7 +258,7 @@ public class CommentsControllerTest {
             .andExpect(status().isNoContent())
         ;
 
-        verify(emailingService).sendNewCommentToSpeaker(eq(user), eq(proposal));
+        verify(emailingService).sendNewCommentToSpeaker(eq(user), eq(proposal), anyString());
     }
 
     @Test
@@ -288,7 +288,7 @@ public class CommentsControllerTest {
             .andExpect(status().isCreated())
         ;
 
-        verify(emailingService).sendNewCommentToAdmins(eq(user), eq(proposal));
+        verify(emailingService).sendNewCommentToAdmins(eq(user), eq(proposal), anyString());
     }
 
     @Test
@@ -318,7 +318,7 @@ public class CommentsControllerTest {
             .andExpect(status().isCreated())
         ;
 
-        verify(emailingService).sendNewCommentToSpeaker(eq(user), eq(proposal));
+        verify(emailingService).sendNewCommentToSpeaker(eq(user), eq(proposal), anyString());
     }
 
 }

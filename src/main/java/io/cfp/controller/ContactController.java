@@ -74,7 +74,7 @@ public class ContactController  {
             saved = commentService.addComment(user.getId(), talkId, commentUser);
 
             io.cfp.entity.User entityUser = new io.cfp.entity.User(user);
-            emailingService.sendNewCommentToAdmins(entityUser, talk, user.getLocale());
+            emailingService.sendNewCommentToAdmins(entityUser, talk, user.getLocale(), commentUser.getComment());
         }
 
         return saved;

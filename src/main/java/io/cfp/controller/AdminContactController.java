@@ -88,7 +88,7 @@ public class AdminContactController {
         User speaker = users.findOne(talk.getUserId());
         if (speaker != null) {
             Locale userPreferredLocale = httpServletRequest.getLocale();
-            emailingService.sendNewCommentToSpeaker(speaker, talk, userPreferredLocale);
+            emailingService.sendNewCommentToSpeaker(speaker, talk, userPreferredLocale, comment.getComment());
         }
 
         return saved;
