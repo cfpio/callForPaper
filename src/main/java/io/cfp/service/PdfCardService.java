@@ -9,6 +9,8 @@ import io.cfp.model.Format;
 import io.cfp.model.Proposal;
 import io.cfp.model.queries.ProposalQuery;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +33,8 @@ import static org.apache.commons.lang3.StringUtils.substring;
  */
 @Service
 public class PdfCardService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PdfCardService.class);
 
     @Autowired
     private FormatMapper formatMapper;
@@ -63,6 +67,8 @@ public class PdfCardService {
                                                 .sorted(comparing(Proposal::getMean, nullsLast(reverseOrder())))
                                                 .sorted(comparing(Proposal::getFormat))
                                                 .collect(toList());
+
+        LOGGER.info("Export PDF de {} Proposals", proposals.size());
 
         Map<Integer, BaseColor> bgTracksColor = new HashMap<>();
 
