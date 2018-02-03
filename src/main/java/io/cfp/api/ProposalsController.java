@@ -319,8 +319,9 @@ public class ProposalsController {
     @Secured(ADMIN)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void rejectOthers(@TenantId String event) {
-        LOGGER.info("All CONFIRMED Proposal {} change state to REJECT");
-        proposals.updateAllStateWhere(event, Proposal.State.REFUSED, Proposal.State.CONFIRMED);
+        LOGGER.info("All CONFIRMED Proposals change state to REJECT");
+        int updatedProposals = proposals.updateAllStateWhere(event, Proposal.State.REFUSED, Proposal.State.CONFIRMED);
+        LOGGER.info("{} Proposals have changed to REJECT", updatedProposals);
     }
 
     /**
