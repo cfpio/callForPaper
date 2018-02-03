@@ -25,7 +25,6 @@ import io.cfp.domain.exception.CospeakerNotFoundException;
 import io.cfp.dto.EventSched;
 import io.cfp.dto.TalkAdmin;
 import io.cfp.dto.user.CospeakerProfil;
-import io.cfp.dto.user.UserProfil;
 import io.cfp.entity.Event;
 import io.cfp.entity.Rate;
 import io.cfp.entity.Talk;
@@ -109,22 +108,6 @@ public class TalkAdminService {
             talk.setVoteUsersEmail(voters.get(talkId));
         }
         return talks;
-    }
-
-    /**
-     * Retrieve a talk
-     *
-     * @param talkId Id of the talk to retrieve
-     * @return Talk or null if not found
-     */
-    public TalkAdmin getOne(int talkId) {
-        Talk talk = talkRepo.findByIdAndEventId(talkId, Event.current());
-        TalkAdmin talkAdmin = mapper.map(talk, TalkAdmin.class);
-        UserProfil user = mapper.map(talk.getUser(), UserProfil.class);
-        user.setImageProfilURL(talk.getUser().getImageProfilURL());
-        talkAdmin.setSpeaker(user);
-        talkAdmin.setUserId(user.getId());
-        return talkAdmin;
     }
 
     /**
