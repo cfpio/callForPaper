@@ -31,7 +31,6 @@ import io.cfp.dto.TalkAdminCsv;
 import io.cfp.entity.Role;
 import io.cfp.entity.Talk;
 import io.cfp.model.User;
-import io.cfp.repository.TalkRepo;
 import io.cfp.service.PdfCardService;
 import io.cfp.service.TalkAdminService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,9 +54,6 @@ public class AdminSessionController {
 
     @Autowired
     private TalkAdminService talkService;
-
-    @Autowired
-    private TalkRepo talks;
 
     @Autowired
     private PdfCardService pdfCardService;
