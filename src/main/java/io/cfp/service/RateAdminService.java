@@ -23,7 +23,6 @@ package io.cfp.service;
 import io.cfp.dto.RateAdmin;
 import io.cfp.entity.Event;
 import io.cfp.entity.Rate;
-import io.cfp.entity.Role;
 import io.cfp.entity.User;
 import io.cfp.repository.EventRepository;
 import io.cfp.repository.RateRepo;
@@ -35,9 +34,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -75,39 +72,6 @@ public class RateAdminService {
         return rates.stream()
             .map(Rate::toRateAdmin)
             .collect(Collectors.toList());
-    }
-
-    /**
-     * Retrieve all rate for all talks for a user
-     * @param userId Id of the user
-     * @return Rates
-     */
-    public List<RateAdmin> findForUser(int userId) {
-        List<Rate> rates = rateRepo.findByEventIdAndTalkUserId(Event.current(), userId);
-        return mapper.mapAsList(rates, RateAdmin.class);
-    }
-
-    /**
-     * Retrieve all rate for a talk
-     * @param talkId Id of the talk
-     * @return Rates
-     */
-    public List<RateAdmin> findForTalk(int talkId) {
-        return
-            rateRepo.findByEventIdAndTalkIdFetchAdmin(Event.current(), talkId).stream()
-            .map(RateAdmin::new)
-            .collect(Collectors.toList());
-    }
-
-    /**
-     * Retrieve rate for a talk and an admin
-     * @param talkId Id of the talk
-     * @param adminId Id of the admin to get
-     * @return Rate or null if not talk rated by this admin
-     */
-    public RateAdmin findForTalkAndAdmin(int talkId, int adminId) {
-        Rate rates = rateRepo.findByEventIdAndTalkIdAndAdminUserId(Event.current(), talkId, adminId);
-        return mapper.map(rates, RateAdmin.class);
     }
 
     /**
@@ -163,32 +127,4 @@ public class RateAdminService {
         return deleted;
     }
 
-    /**
-     * Delete all rates
-     */
-    public void deleteAll() {
-        rateRepo.deleteByEventId(Event.current());
-    }
-
-
-    /**
-     * Get rate stats
-     */
-    public Map<String, Long> getRateByEmailUsers() {
-        Map<String, Long> result = new HashMap<>();
-        // First get users admin emails
-        List<String> adminEmails = users.findEmailByRole(Role.ADMIN, Event.current());
-        // Initialise the result
-        adminEmails.forEach(email -> {
-            result.put(email, 0L);
-        });
-        // Get nbRate for each admin that gives some rates
-        List<Object[]> ratesFromDb = rateRepo.findNbRateByAdminUser(Event.current());
-        // Update First Map that contains all Admin users (and not only the users that give rates)
-        ratesFromDb.forEach(item -> {
-            result.put((String)item[0], (Long)item[1]);
-        });
-
-        return result;
-    }
 }
