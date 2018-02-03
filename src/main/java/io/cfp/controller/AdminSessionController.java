@@ -25,11 +25,9 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.itextpdf.text.DocumentException;
-import io.cfp.domain.exception.CospeakerNotFoundException;
 import io.cfp.dto.EventSched;
 import io.cfp.dto.TalkAdmin;
 import io.cfp.dto.TalkAdminCsv;
-import io.cfp.entity.Event;
 import io.cfp.entity.Role;
 import io.cfp.entity.Talk;
 import io.cfp.model.User;
@@ -42,17 +40,13 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.List;
 
 @Controller
@@ -71,11 +65,11 @@ public class AdminSessionController {
     /**
      * Get all sessions
      */
-    @RequestMapping(value="/sessions", method= RequestMethod.GET)
-    @Secured({Role.REVIEWER, Role.ADMIN})
-    @ResponseBody
-    @Deprecated
-    public List<TalkAdmin> getAllSessions(@AuthenticationPrincipal User user,
+//    @RequestMapping(value="/sessions", method= RequestMethod.GET)
+//    @Secured({Role.REVIEWER, Role.ADMIN})
+//    @ResponseBody
+//    @Deprecated
+    private List<TalkAdmin> getAllSessions(@AuthenticationPrincipal User user,
                                           @RequestParam(name = "status", required = false) String status) {
 
         Talk.State[] accept;
@@ -89,92 +83,82 @@ public class AdminSessionController {
     }
 
     /**
-     * Get all drafts
-     */
-    @RequestMapping(value="/drafts", method= RequestMethod.GET)
-    @Secured(Role.ADMIN)
-    @ResponseBody
-    public List<TalkAdmin> getAllDrafts(@AuthenticationPrincipal User user) {
-        return talkService.findAll(user.getId(), Talk.State.DRAFT);
-    }
-
-    /**
      * Get a specific session
      */
-    @RequestMapping(value= "/sessions/{talkId}", method= RequestMethod.GET)
-    @Secured({Role.REVIEWER, Role.ADMIN})
-    @ResponseBody
-    public TalkAdmin getTalk(@PathVariable int talkId) {
-        return talkService.getOne(talkId);
-    }
+//    @RequestMapping(value= "/sessions/{talkId}", method= RequestMethod.GET)
+//    @Secured({Role.REVIEWER, Role.ADMIN})
+//    @ResponseBody
+//    public TalkAdmin getTalk(@PathVariable int talkId) {
+//        return talkService.getOne(talkId);
+//    }
 
     /**
      * Edit a specific session
      */
-    @RequestMapping(value= "/sessions/{talkId}", method= RequestMethod.PUT)
-    @Secured(Role.ADMIN)
-    @ResponseBody
-    public TalkAdmin editTalk(@PathVariable int talkId, @RequestBody TalkAdmin talkAdmin) throws CospeakerNotFoundException, ParseException {
-        talkAdmin.setId(talkId);
-        return talkService.edit(talkAdmin);
-    }
+//    @RequestMapping(value= "/sessions/{talkId}", method= RequestMethod.PUT)
+//    @Secured(Role.ADMIN)
+//    @ResponseBody
+//    public TalkAdmin editTalk(@PathVariable int talkId, @RequestBody TalkAdmin talkAdmin) throws CospeakerNotFoundException, ParseException {
+//        talkAdmin.setId(talkId);
+//        return talkService.edit(talkAdmin);
+//    }
 
-    @RequestMapping(value= "/sessions/{talkId}/accept", method= RequestMethod.PUT)
-    @Secured(Role.ADMIN)
-    @ResponseBody
-    public void accept(@PathVariable int talkId) throws CospeakerNotFoundException{
-        talks.setState(talkId, Event.current(), Talk.State.ACCEPTED);
-    }
-
-    @RequestMapping(value= "/sessions/{talkId}/backup", method= RequestMethod.PUT)
-    @Secured(Role.ADMIN)
-    @ResponseBody
-    public void backup(@PathVariable int talkId) throws CospeakerNotFoundException{
-        talks.setState(talkId, Event.current(), Talk.State.BACKUP);
-    }
-
-    @RequestMapping(value= "/sessions/{talkId}/reject", method= RequestMethod.PUT)
-    @Secured(Role.ADMIN)
-    @ResponseBody
-    public void reject(@PathVariable int talkId) throws CospeakerNotFoundException{
-        talks.setState(talkId, Event.current(), Talk.State.REFUSED);
-    }
-
-    @RequestMapping(value= "/sessions/rejectOthers", method= RequestMethod.PUT)
-    @Secured(Role.ADMIN)
-    @ResponseBody
-    public void rejectOthers() throws CospeakerNotFoundException{
-        talks.setStateWhere(Event.current(), Talk.State.REFUSED, Talk.State.CONFIRMED);
-    }
-
-    @RequestMapping(value= "/sessions/{talkId}/retract", method= RequestMethod.PUT)
-    @Secured(Role.ADMIN)
-    @ResponseBody
-    public void retract(@PathVariable int talkId) throws CospeakerNotFoundException{
-        talks.setState(talkId, Event.current(), Talk.State.CONFIRMED);
-    }
-
-
+//    @RequestMapping(value= "/sessions/{talkId}/accept", method= RequestMethod.PUT)
+//    @Secured(Role.ADMIN)
+//    @ResponseBody
+//    public void accept(@PathVariable int talkId) throws CospeakerNotFoundException{
+//        talks.setState(talkId, Event.current(), Talk.State.ACCEPTED);
+//    }
+//
+//    @RequestMapping(value= "/sessions/{talkId}/backup", method= RequestMethod.PUT)
+//    @Secured(Role.ADMIN)
+//    @ResponseBody
+//    public void backup(@PathVariable int talkId) throws CospeakerNotFoundException{
+//        talks.setState(talkId, Event.current(), Talk.State.BACKUP);
+//    }
+//
+//    @RequestMapping(value= "/sessions/{talkId}/reject", method= RequestMethod.PUT)
+//    @Secured(Role.ADMIN)
+//    @ResponseBody
+//    public void reject(@PathVariable int talkId) throws CospeakerNotFoundException{
+//        talks.setState(talkId, Event.current(), Talk.State.REFUSED);
+//    }
+//
+//    @RequestMapping(value= "/sessions/rejectOthers", method= RequestMethod.PUT)
+//    @Secured(Role.ADMIN)
+//    @ResponseBody
+//    public void rejectOthers() throws CospeakerNotFoundException{
+//        talks.setStateWhere(Event.current(), Talk.State.REFUSED, Talk.State.CONFIRMED);
+//    }
+//
+//    @RequestMapping(value= "/sessions/{talkId}/retract", method= RequestMethod.PUT)
+//    @Secured(Role.ADMIN)
+//    @ResponseBody
+//    public void retract(@PathVariable int talkId) throws CospeakerNotFoundException{
+//        talks.setState(talkId, Event.current(), Talk.State.CONFIRMED);
+//    }
+//
+//
     /**
      * Delete a session
      */
-    @RequestMapping(value="/sessions/{talkId}", method= RequestMethod.DELETE)
-    @Secured(Role.ADMIN)
-    @ResponseBody
-    public TalkAdmin delete(@PathVariable int talkId) {
-        return talkService.delete(talkId);
-    }
-
+//    @RequestMapping(value="/sessions/{talkId}", method= RequestMethod.DELETE)
+//    @Secured(Role.ADMIN)
+//    @ResponseBody
+//    public TalkAdmin delete(@PathVariable int talkId) {
+//        return talkService.delete(talkId);
+//    }
+//
     /**
      * Delete all sessions (aka reset CFP)
      */
-    @RequestMapping(value="/sessions", method= RequestMethod.DELETE)
-    @Secured(Role.ADMIN)
-    @ResponseBody
-    public void deleteAll() {
-        talks.deleteAllByEventId(Event.current());
-    }
-
+//    @RequestMapping(value="/sessions", method= RequestMethod.DELETE)
+//    @Secured(Role.ADMIN)
+//    @ResponseBody
+//    public void deleteAll() {
+//        talks.deleteAllByEventId(Event.current());
+//    }
+//
 
     @RequestMapping(path = "/sessions/export/cards.pdf", produces = "application/pdf")
     @Secured(Role.ADMIN)
