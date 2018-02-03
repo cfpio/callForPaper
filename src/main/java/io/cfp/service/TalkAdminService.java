@@ -20,26 +20,22 @@
 
 package io.cfp.service;
 
-import io.cfp.controller.AdminSessionController;
-import io.cfp.domain.exception.CospeakerNotFoundException;
 import io.cfp.dto.EventSched;
 import io.cfp.dto.TalkAdmin;
-import io.cfp.dto.user.CospeakerProfil;
 import io.cfp.entity.Event;
 import io.cfp.entity.Rate;
 import io.cfp.entity.Talk;
 import io.cfp.entity.User;
-import io.cfp.repository.*;
+import io.cfp.repository.RateRepo;
+import io.cfp.repository.TalkRepo;
 import ma.glasnost.orika.MapperFacade;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.*;
@@ -52,26 +48,11 @@ import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 @Transactional
 public class TalkAdminService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AdminSessionController.class);
-
-
     @Autowired
     private TalkRepo talkRepo;
 
     @Autowired
     private RateRepo rateRepo;
-
-    @Autowired
-    private UserRepo userRepo;
-
-    @Autowired
-    private FormatRepo formatRepo;
-
-    @Autowired
-    private TrackRepo trackRepo;
-
-    @Autowired
-    private RoomRepo rooms;
 
     @Autowired
     private MapperFacade mapper;
@@ -108,69 +89,6 @@ public class TalkAdminService {
             talk.setVoteUsersEmail(voters.get(talkId));
         }
         return talks;
-    }
-
-    /**
-     * Edit a talk
-     *
-     * @param t Talk to edit
-     * @return Edited talk
-     */
-    public TalkAdmin edit(TalkAdmin t) throws CospeakerNotFoundException, ParseException {
-        Talk talk = talkRepo.findByIdAndEventId(t.getId(), Event.current());
-        if (talk == null) {
-            return null;
-        }
-
-        talk.name(t.getName())
-            .language(t.getLanguage())
-            .track(trackRepo.getOne(t.getTrackId()))
-            .description(t.getDescription())
-            .references(t.getReferences())
-            .difficulty(t.getDifficulty())
-            .format(formatRepo.findByIdAndEventId(t.getFormat(), Event.current()))
-            .track(trackRepo.findByIdAndEventId(t.getTrackId(), Event.current()))
-            .video(t.getVideo())
-            .slides(t.getSlides());
-
-        if (t.getRoom() != null) {
-            talk.room(rooms.findByIdAndEventId(t.getRoom(), Event.current()));
-            LOG.debug("Talk {} set on room {}", t.getId(), t.getRoom());
-        }
-        if (t.getSchedule() != null) {
-            final Date start = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX").parse(t.getSchedule());
-            talk.date(start);
-            LOG.debug("Talk {} set at {}", t.getId(), start);
-        }
-
-        setCoSpeaker(t, talk);
-
-        talkRepo.save(talk);
-        talkRepo.flush();
-
-        return new TalkAdmin(talk);
-    }
-
-    /**
-     * For each cospeaker, check if the user is in the CFP database and set the id on the user object
-     *
-     * @param talk TalkUser
-     * @param talk Talk
-     * @throws CospeakerNotFoundException If a cospeaker is not found
-     */
-    private void setCoSpeaker(TalkAdmin talkAdmin, Talk talk) throws CospeakerNotFoundException {
-
-        if (talkAdmin.getCospeakers() == null) return;
-
-        HashSet<User> users = new HashSet<User>();
-        for (CospeakerProfil cospeaker : talkAdmin.getCospeakers()) {
-            User u = userRepo.findByEmail(cospeaker.getEmail());
-            if (u == null) {
-                throw new CospeakerNotFoundException("error cospeaker not found", new CospeakerProfil(cospeaker.getEmail()));
-            }
-            users.add(u);
-        }
-        talk.setCospeakers(users);
     }
 
     /**
