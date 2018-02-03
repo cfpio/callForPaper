@@ -4,9 +4,9 @@ import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 import io.cfp.dto.TalkAdmin;
 import io.cfp.entity.Event;
-import io.cfp.entity.Format;
 import io.cfp.entity.Talk;
-import io.cfp.repository.FormatRepo;
+import io.cfp.mapper.FormatMapper;
+import io.cfp.model.Format;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,7 +31,7 @@ import static org.apache.commons.lang3.StringUtils.substring;
 public class PdfCardService {
 
     @Autowired
-    private FormatRepo formatRepo;
+    private FormatMapper formatMapper;
 
     @Autowired
     private TalkAdminService talkAdminService;
@@ -54,7 +54,7 @@ public class PdfCardService {
         PdfPTable table = new PdfPTable(3);
         table.setWidthPercentage(100);
 
-        Map<Integer, Format> formats = formatRepo.findByEventId(Event.current()).stream()
+        Map<Integer, Format> formats = formatMapper.findByEvent(Event.current()).stream()
             .collect(toMap(Format::getId, Function.identity()));
 
         List<TalkAdmin> talks = talkAdminService.findAll(userId, Talk.State.CONFIRMED).stream()
