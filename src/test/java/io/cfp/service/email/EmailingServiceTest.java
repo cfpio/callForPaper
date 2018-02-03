@@ -32,7 +32,6 @@ import io.cfp.entity.Event;
 import io.cfp.entity.Talk;
 import io.cfp.entity.User;
 import io.cfp.mapper.EventMapper;
-import io.cfp.model.Comment;
 import io.cfp.repository.CfpConfigRepo;
 import io.cfp.repository.EventRepository;
 import io.cfp.repository.UserRepo;
@@ -81,9 +80,6 @@ public class EmailingServiceTest {
 
     @Mock
     private UserRepo users;
-
-    @Autowired
-    private EventRepository eventRepo;
 
     @Autowired
     private EventMapper eventMapper;
@@ -157,14 +153,12 @@ public class EmailingServiceTest {
 
 
         Event.setCurrent("test");
-        when(eventRepo.findOne("test")).thenReturn(event);
 
         when(eventMapper.findOne("test")).thenReturn(newEvent);
 
         MockitoAnnotations.initMocks(this);
 
         ReflectionTestUtils.setField(emailingService, "users", users);
-        ReflectionTestUtils.setField(emailingService, "eventRepo", eventRepo);
         ReflectionTestUtils.setField(emailingService, "eventMapper", eventMapper);
         ReflectionTestUtils.setField(emailingService, "freemarker", freemarkerCfg);
         ReflectionTestUtils.setField(emailingService, "emailSender", emailSender);
