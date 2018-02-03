@@ -20,19 +20,11 @@
 
 package io.cfp.service;
 
-import io.cfp.domain.exception.CospeakerNotFoundException;
 import io.cfp.dto.TalkUser;
-import io.cfp.dto.user.CospeakerProfil;
 import io.cfp.entity.Event;
-import io.cfp.entity.Format;
 import io.cfp.entity.Talk;
-import io.cfp.entity.User;
-import io.cfp.repository.EventRepository;
-import io.cfp.repository.FormatRepo;
 import io.cfp.repository.RoomRepo;
 import io.cfp.repository.TalkRepo;
-import io.cfp.repository.TrackRepo;
-import io.cfp.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,7 +34,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,19 +48,7 @@ public class TalkUserService {
     private TalkRepo talkRepo;
 
     @Autowired
-    private UserRepo userRepo;
-
-    @Autowired
-    private FormatRepo formatRepo;
-
-    @Autowired
-    private TrackRepo trackRepo;
-
-    @Autowired
     private RoomRepo rooms;
-
-    @Autowired
-    private EventRepository events;
 
     /**
      * Retrieve all talks for a User
@@ -125,38 +104,10 @@ public class TalkUserService {
         return talkRepo.countByEventIdAndUserId(Event.current(), userId);
     }
 
-    /**
-     * Retrieve a talk which belong to the user
-     *
-     * @param userId
-     *            Id of the user to retrieve
-     * @param talkId
-     *            Id of the talk to retrieve
-     * @return Talk or null if not found
-     */
-    public TalkUser getOne(int userId, int talkId) {
-        return new TalkUser(
-            talkRepo.findByIdAndEventIdAndUserId(talkId, Event.current(), userId)
-        );
-    }
-
     public TalkUser getOneCospeakerTalk(int userId, int talkId) {
         return new TalkUser(
             talkRepo.findByIdAndEventIdAndCospeakers(talkId, Event.current(), userId)
         );
-    }
-
-    /**
-     * Add a submitted talk
-     *
-     * @param userId
-     *            user who submitted the talk
-     * @param talkUser
-     *            Talk to add
-     * @return Talk added
-     */
-    public TalkUser submitTalk(int userId, TalkUser talkUser) throws CospeakerNotFoundException {
-        return newTalk(userId, talkUser, Talk.State.CONFIRMED);
     }
 
     /**
@@ -180,155 +131,5 @@ public class TalkUserService {
 
         return new TalkUser(talk);
     }
-
-    /**
-     * Convert a draft into a submitted talk
-     *
-     * @param userId
-     *            Id of user who submitted the talk
-     * @param talkUser
-     *            Talk to submit
-     * @return Talk submitted or null if not exists
-     */
-    public TalkUser submitDraftToTalk(int userId, TalkUser talkUser) throws CospeakerNotFoundException {
-        return editTalk(userId, talkUser, Talk.State.CONFIRMED);
-    }
-
-    /**
-     * Add a new draft talk
-     *
-     * @param userId
-     *            User who submitted the talk
-     * @param talkUser
-     *            Talk to save
-     * @return talk saved
-     */
-    public TalkUser addDraft(int userId, TalkUser talkUser) throws CospeakerNotFoundException {
-        return newTalk(userId, talkUser, Talk.State.DRAFT);
-    }
-
-    /**
-     * Save an update draft
-     *
-     * @param userId
-     *            User who submitted the talk
-     * @param talkUser
-     *            Draft to update
-     * @return Draft updated or null if doesn't exists
-     */
-    public TalkUser editDraft(int userId, TalkUser talkUser) throws CospeakerNotFoundException {
-        return editTalk(userId, talkUser, Talk.State.DRAFT);
-    }
-
-    /**
-     * Delete a draft talk
-     *
-     * @param userId
-     *            Id of the user who submit the talk
-     * @param talkId
-     *            Id of the draft to delete
-     * @return Talk deleted or null if inexistant
-     */
-    public TalkUser deleteDraft(int userId, int talkId) {
-        Talk talk = talkRepo.findByIdAndEventIdAndUserId(talkId, Event.current(), userId);
-
-        if (talk.getState() != Talk.State.DRAFT)
-            return null;
-        TalkUser deleted = new TalkUser(talk);
-        talkRepo.delete(talk);
-        return deleted;
-    }
-
-    /**
-     * Get all talk formats
-     *
-     * @return List of talk formats
-     */
-    public List<Format> getTalkFormat() {
-        return formatRepo.findByEventId(Event.current());
-    }
-
-    /**
-     * Add a new talk into the database
-     *
-     * @param userId
-     *            User who submit the talk
-     * @param talkUser
-     *            Talk to add
-     * @param state
-     *            New state of the talk
-     * @return Talk added
-     */
-    private TalkUser newTalk(int userId, TalkUser talkUser, Talk.State state) throws CospeakerNotFoundException {
-        Talk talk = new Talk()
-            .added(new Date())
-            .state(state)
-            .name(talkUser.getName())
-            .language(talkUser.getLanguage())
-            .track(trackRepo.getOne(talkUser.getTrackId()))
-            .description(talkUser.getDescription())
-            .references(talkUser.getReferences())
-            .difficulty(talkUser.getDifficulty())
-            .format(formatRepo.getOne(talkUser.getFormat()))
-            .user(userRepo.getOne(userId))
-            .event(events.getOne(Event.current()));
-
-        setCoSpeaker(talkUser, talk);
-
-        Talk save = talkRepo.save(talk);
-        talkRepo.flush();
-        talkUser.setId(save.getId());
-        return talkUser;
-    }
-
-    /**
-     * Update an existing draft talk
-     *
-     * @param userId
-     *            Id of the user who submit the talk
-     * @param talkUser
-     *            Talk to update
-     * @param newState
-     *            New state of the talk
-     * @return Talk updated or null if not existing
-     */
-    private TalkUser editTalk(int userId, TalkUser talkUser, Talk.State newState) throws CospeakerNotFoundException {
-        Talk talk = talkRepo.findByIdAndEventIdAndUserId(talkUser.getId(), Event.current(), userId);
-        if (talk == null)
-            return null;
-        if (talk.getState() != Talk.State.DRAFT)
-            return null;
-
-        setCoSpeaker(talkUser, talk);
-
-        talk.state(newState)
-            .name(talkUser.getName())
-            .language(talkUser.getLanguage())
-            .track(trackRepo.getOne(talkUser.getTrackId()))
-            .description(talkUser.getDescription())
-            .references(talkUser.getReferences())
-            .difficulty(talkUser.getDifficulty())
-            .format(formatRepo.getOne(talkUser.getFormat()));
-        talkRepo.save(talk);
-        talkRepo.flush();
-
-        return new TalkUser(talk);
-    }
-
-    private void setCoSpeaker(TalkUser talkUser, Talk talk) throws CospeakerNotFoundException {
-
-        if (talkUser.getCospeakers() == null)
-            return;
-        HashSet<User> users = new HashSet<User>();
-        for (CospeakerProfil cospeaker : talkUser.getCospeakers()) {
-            User existingUser = userRepo.findByEmail(cospeaker.getEmail());
-            if (existingUser == null) {
-                throw new CospeakerNotFoundException("error cospeaker not found", new CospeakerProfil(cospeaker.getEmail()));
-            }
-            users.add(existingUser);
-        }
-        talk.setCospeakers(users);
-    }
-
 
 }
