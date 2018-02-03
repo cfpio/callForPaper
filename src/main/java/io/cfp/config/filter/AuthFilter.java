@@ -23,9 +23,10 @@ package io.cfp.config.filter;
 import com.google.common.annotations.VisibleForTesting;
 import io.cfp.domain.common.UserAuthentication;
 import io.cfp.entity.Event;
-import io.cfp.entity.Role;
+import io.cfp.mapper.RoleMapper;
+import io.cfp.model.Role;
 import io.cfp.model.User;
-import io.cfp.repository.RoleRepository;
+import io.cfp.model.queries.RoleQuery;
 import io.cfp.service.auth.AuthUtils;
 import org.apache.log4j.MDC;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -45,14 +46,14 @@ public class AuthFilter implements Filter {
     private static final String USER = "user";
 
     private AuthUtils authUtils;
-    private RoleRepository roleRepository;
+    private RoleMapper roleMapper;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         ServletContext servletContext = filterConfig.getServletContext();
         WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
         authUtils = webApplicationContext.getBean(AuthUtils.class);
-        roleRepository = webApplicationContext.getBean(RoleRepository.class);
+        roleMapper = webApplicationContext.getBean(RoleMapper.class);
     }
 
     /**
@@ -67,8 +68,8 @@ public class AuthFilter implements Filter {
         User user = authUtils.getAuthUser(httpRequest);
 
         if (user != null) {
-            List<Role> roles = roleRepository.findByUserIdAndEventId(user.getId(), Event.current());
-            for (Role role : roles) {
+            List<io.cfp.model.Role> roles = roleMapper.findAll(new RoleQuery().setEventId(Event.current()).setUserId(user.getId()));
+            for (io.cfp.model.Role role : roles) {
                 if (Role.ADMIN.equals(role.getName())) {
                     // until exact roles are well set on API, Admin implies reviewer role
                     user.addRole(Role.REVIEWER);
@@ -96,7 +97,7 @@ public class AuthFilter implements Filter {
     }
 
     @VisibleForTesting
-    public void setRoleRepository(RoleRepository roleRepository) {
-        this.roleRepository = roleRepository;
+    public void setRoleMapper(RoleMapper roleMapper) {
+        this.roleMapper = roleMapper;
     }
 }

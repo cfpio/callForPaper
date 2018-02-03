@@ -4,6 +4,7 @@ import io.cfp.SecurityConfiguration;
 import io.cfp.WebConfiguration;
 import io.cfp.config.exception.GlobalControllerExceptionHandler;
 import io.cfp.config.filter.AuthFilter;
+import io.cfp.mapper.RoleMapper;
 import io.cfp.repository.RoleRepository;
 import io.cfp.repository.UserRepo;
 import io.cfp.service.auth.AuthUtils;
@@ -36,10 +37,15 @@ class ApiTestApplication {
     }
 
     @Bean
+    public RoleMapper roleMapper() {
+        return mock(RoleMapper.class);
+    }
+
+    @Bean
     public AuthFilter authFilter() {
         AuthFilter authFilter = new AuthFilter();
         authFilter.setAuthUtils(authUtils());
-        authFilter.setRoleRepository(roleRepository());
+        authFilter.setRoleMapper(roleMapper());
         return authFilter;
     }
 

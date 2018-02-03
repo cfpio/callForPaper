@@ -21,9 +21,9 @@
 package io.cfp.service.user;
 
 import io.cfp.entity.Event;
-import io.cfp.entity.Role;
 import io.cfp.entity.User;
-import io.cfp.repository.RoleRepository;
+import io.cfp.mapper.RoleMapper;
+import io.cfp.model.queries.RoleQuery;
 import io.cfp.repository.UserRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,8 +49,8 @@ public class SecurityUserService implements UserDetailsService {
     @Autowired
 	private UserRepo userRepo;
 
-	@Autowired
-	private RoleRepository roleRepository;
+    @Autowired
+	private RoleMapper roleMapper;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -58,7 +58,7 @@ public class SecurityUserService implements UserDetailsService {
         String lowercaseLogin = username.toLowerCase();
         Optional<User> userFromDatabase = Optional.ofNullable(userRepo.findByEmail(lowercaseLogin));
         return userFromDatabase.map(user -> {
-            List<Role> roles = roleRepository.findByUserIdAndEventId(user.getId(), Event.current());
+            List<io.cfp.model.Role> roles = roleMapper.findAll(new RoleQuery().setEventId(Event.current()).setUserId(user.getId()));
             List<GrantedAuthority> grantedAuthorities = roles.stream()
                                                              .map(role -> new SimpleGrantedAuthority(role.getName()))
                                                              .collect(Collectors.toList());
