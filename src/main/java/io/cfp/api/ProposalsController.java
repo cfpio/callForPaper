@@ -395,10 +395,10 @@ public class ProposalsController {
 
     @GetMapping(path = "/proposals/export/cards.pdf", produces = "application/pdf")
     @Secured(ADMIN)
-    public void exportPdf(@AuthenticationPrincipal User user,
+    public void exportPdf(@TenantId String eventId,
                           HttpServletResponse response) throws IOException, DocumentException {
         response.addHeader(HttpHeaders.CONTENT_TYPE, "application/pdf");
-        pdfCardService.export(user.getId(), response.getOutputStream());
+        pdfCardService.export(eventId, response.getOutputStream());
     }
 
 

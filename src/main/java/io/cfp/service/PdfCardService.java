@@ -2,12 +2,14 @@ package io.cfp.service;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
-import io.cfp.entity.Event;
 import io.cfp.mapper.FormatMapper;
 import io.cfp.mapper.ProposalMapper;
+import io.cfp.mapper.RateMapper;
 import io.cfp.model.Format;
 import io.cfp.model.Proposal;
+import io.cfp.model.Rate;
 import io.cfp.model.queries.ProposalQuery;
+import io.cfp.model.queries.RateQuery;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,10 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 
 import static java.util.Comparator.*;
@@ -40,12 +40,15 @@ public class PdfCardService {
     private FormatMapper formatMapper;
 
     @Autowired
+    private RateMapper rateMapper;
+
+    @Autowired
     private ProposalMapper proposalMapper;
     /**
      * Export all talks from the current event
      * @param out OutputStream to write PDF into
      */
-    public void export(int userId, OutputStream out) throws DocumentException {
+    public void export(String eventId, OutputStream out) throws DocumentException {
         Document document = new Document(PageSize.A4, 10, 10, 10, 10);
         PdfWriter writer = PdfWriter.getInstance(document, out);
 
@@ -59,14 +62,35 @@ public class PdfCardService {
         PdfPTable table = new PdfPTable(3);
         table.setWidthPercentage(100);
 
-        Map<Integer, Format> formats = formatMapper.findByEvent(Event.current()).stream()
+        Map<Integer, Format> formats = formatMapper.findByEvent(eventId).stream()
             .collect(toMap(Format::getId, Function.identity()));
 
-        List<Proposal> proposals = proposalMapper.findAll(new ProposalQuery().setUserId(userId).setStates(Arrays.asList(Proposal.State.CONFIRMED)))
-                                                .stream()
-                                                .sorted(comparing(Proposal::getMean, nullsLast(reverseOrder())))
-                                                .sorted(comparing(Proposal::getFormat))
-                                                .collect(toList());
+        LOGGER.debug("Nombre de formats", formats.size());
+
+        List<Proposal> proposals = proposalMapper.findAll(new ProposalQuery().setStates(Arrays.asList(Proposal.State.CONFIRMED)));
+
+        for (Proposal proposal : proposals) {
+            List<String> emails = new ArrayList<>();
+            float total = 0;
+            int votes = 0;
+            for (Rate rate : rateMapper.findAll(new RateQuery().setProposalId(proposal.getId()))) {
+                emails.add(rate.getUser().getEmail());
+                if (rate.getRate() > 0) {
+                    total += rate.getRate();
+                    votes++;
+                }
+            }
+            proposal.setVoteUsersEmail(emails);
+            if (votes > 0) {
+                proposal.setMean(String.valueOf(total/votes));
+            }
+        }
+
+
+        proposals.stream()
+                 .sorted(comparing(Proposal::getMean, nullsLast(reverseOrder())))
+                 .sorted(comparing(Proposal::getFormat))
+                 .collect(toList());
 
         LOGGER.info("Export PDF de {} Proposals", proposals.size());
 
