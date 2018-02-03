@@ -2,16 +2,18 @@ package io.cfp.service;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
-import io.cfp.dto.TalkAdmin;
 import io.cfp.entity.Event;
-import io.cfp.entity.Talk;
 import io.cfp.mapper.FormatMapper;
+import io.cfp.mapper.ProposalMapper;
 import io.cfp.model.Format;
+import io.cfp.model.Proposal;
+import io.cfp.model.queries.ProposalQuery;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +36,7 @@ public class PdfCardService {
     private FormatMapper formatMapper;
 
     @Autowired
-    private TalkAdminService talkAdminService;
-
+    private ProposalMapper proposalMapper;
     /**
      * Export all talks from the current event
      * @param out OutputStream to write PDF into
@@ -57,14 +58,15 @@ public class PdfCardService {
         Map<Integer, Format> formats = formatMapper.findByEvent(Event.current()).stream()
             .collect(toMap(Format::getId, Function.identity()));
 
-        List<TalkAdmin> talks = talkAdminService.findAll(userId, Talk.State.CONFIRMED).stream()
-            .sorted(comparing(TalkAdmin::getMean, nullsLast(reverseOrder())))
-            .sorted(comparing(TalkAdmin::getFormat))
-            .collect(toList());
+        List<Proposal> proposals = proposalMapper.findAll(new ProposalQuery().setUserId(userId).setStates(Arrays.asList(Proposal.State.CONFIRMED)))
+                                                .stream()
+                                                .sorted(comparing(Proposal::getMean, nullsLast(reverseOrder())))
+                                                .sorted(comparing(Proposal::getFormat))
+                                                .collect(toList());
 
         Map<Integer, BaseColor> bgTracksColor = new HashMap<>();
 
-        for (TalkAdmin talk : talks) {
+        for (Proposal proposal : proposals) {
 
             // Tableau pour chaque talk
             PdfPTable innerTable = new PdfPTable(2);
@@ -72,14 +74,14 @@ public class PdfCardService {
             //innerTable.widths = [1f, 1f]
 
             // En-tête (format + track)
-            Phrase formatPh = new Phrase(new Chunk(formats.get(talk.getFormat()).getName(), font));
+            Phrase formatPh = new Phrase(new Chunk(formats.get(proposal.getFormat()).getName(), font));
             PdfPCell format = new PdfPCell(formatPh);
 
             innerTable.addCell(format);
-            PdfPCell track = new PdfPCell(new Phrase(substring(talk.getTrackLabel(), 0, 20), font));
+            PdfPCell track = new PdfPCell(new Phrase(substring(proposal.getTrackLabel(), 0, 20), font));
 
             track.setHorizontalAlignment(Element.ALIGN_RIGHT);
-            track.setBackgroundColor(bgTracksColor.computeIfAbsent(talk.getTrackId(), id -> getColor(bgTracksColor.size()+1)));
+            track.setBackgroundColor(bgTracksColor.computeIfAbsent(proposal.getTrackId(), id -> getColor(bgTracksColor.size()+1)));
             innerTable.addCell(track);
 
             // Contenu central
@@ -88,15 +90,15 @@ public class PdfCardService {
             cellCentrale.setHorizontalAlignment(Element.ALIGN_JUSTIFIED);
             cellCentrale.setFixedHeight(100.0f);
 
-            String speaker = talk.getSpeaker().getShortName();
-            if (isNotEmpty(talk.getCospeakers())) {
-                speaker += " (+" + talk.getCospeakers().size() + ")";
+            String speaker = proposal.getSpeaker().getShortName();
+            if (isNotEmpty(proposal.getCospeakers())) {
+                speaker += " (+" + proposal.getCospeakers().size() + ")";
             }
             Paragraph spk = new Paragraph(speaker, font);
             spk.setAlignment(Paragraph.ALIGN_CENTER);
             cellCentrale.addElement(spk);
 
-            Paragraph ttl = new Paragraph(10, talk.getName(), font10);
+            Paragraph ttl = new Paragraph(10, proposal.getName(), font10);
             ttl.setAlignment(Paragraph.ALIGN_CENTER);
             ttl.setSpacingBefore(3);
             ttl.setKeepTogether(true);
@@ -104,7 +106,7 @@ public class PdfCardService {
 
             Paragraph description;
             int sizeMaxDesc = 400;
-            String desc = talk.getDescription();
+            String desc = proposal.getDescription();
             if (desc.length() > sizeMaxDesc) {
                 description = new Paragraph(new Paragraph(desc.substring(0, sizeMaxDesc).replaceAll("\n\n", "\n"), font6));
             } else {
@@ -120,7 +122,7 @@ public class PdfCardService {
             // Note sur ligne du bas
             BarcodeEAN barcode = new BarcodeEAN();
             barcode.setCodeType(Barcode.EAN8);
-            String code = "9" + StringUtils.leftPad(Integer.toString(talk.getId()), 6, "0");
+            String code = "9" + StringUtils.leftPad(Integer.toString(proposal.getId()), 6, "0");
             barcode.setCode(code + BarcodeEAN.calculateEANParity(code));
             barcode.setBarHeight(15);
             barcode.setFont(null);
@@ -128,7 +130,7 @@ public class PdfCardService {
             Phrase barcodePh = new Phrase();
             PdfPCell barCell = new PdfPCell(barcodePh);
             barcodePh.add(new Chunk(barcode.createImageWithBarcode(writer.getDirectContent(), null, null), 0, 0));
-            barcodePh.add(new Chunk("     " + talk.getId(), fontLight));
+            barcodePh.add(new Chunk("     " + proposal.getId(), fontLight));
 
             barCell.setHorizontalAlignment(Element.ALIGN_LEFT);
             barCell.setVerticalAlignment(Element.ALIGN_BOTTOM);
@@ -138,7 +140,7 @@ public class PdfCardService {
             innerTable.addCell(barCell);
 
 
-            PdfPCell note = new PdfPCell(new Phrase("note : " + defaultIfNull(talk.getMean(), "N/A"), font));
+            PdfPCell note = new PdfPCell(new Phrase("note : " + defaultIfNull(proposal.getMean(), "N/A"), font));
             note.setHorizontalAlignment(Element.ALIGN_RIGHT);
             note.setVerticalAlignment(Element.ALIGN_BOTTOM);
             innerTable.addCell(note);
@@ -147,7 +149,7 @@ public class PdfCardService {
 
         }
 
-        for (int i = 0; i < talks.size() % 3; i++) {
+        for (int i = 0; i < proposals.size() % 3; i++) {
             table.addCell("");
         }
 
