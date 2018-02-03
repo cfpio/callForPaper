@@ -30,13 +30,7 @@ import io.cfp.entity.Event;
 import io.cfp.entity.Rate;
 import io.cfp.entity.Talk;
 import io.cfp.entity.User;
-import io.cfp.repository.CommentRepo;
-import io.cfp.repository.FormatRepo;
-import io.cfp.repository.RateRepo;
-import io.cfp.repository.RoomRepo;
-import io.cfp.repository.TalkRepo;
-import io.cfp.repository.TrackRepo;
-import io.cfp.repository.UserRepo;
+import io.cfp.repository.*;
 import ma.glasnost.orika.MapperFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,11 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.*;
@@ -80,9 +70,6 @@ public class TalkAdminService {
 
     @Autowired
     private TrackRepo trackRepo;
-
-    @Autowired
-    private CommentRepo commentRepo;
 
     @Autowired
     private RoomRepo rooms;
