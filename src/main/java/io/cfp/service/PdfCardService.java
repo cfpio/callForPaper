@@ -67,7 +67,7 @@ public class PdfCardService {
 
         LOGGER.debug("Nombre de formats", formats.size());
 
-        List<Proposal> proposals = proposalMapper.findAll(new ProposalQuery().setStates(Arrays.asList(Proposal.State.CONFIRMED)));
+        List<Proposal> proposals = proposalMapper.findAll(new ProposalQuery().setEventId(eventId).setStates(Arrays.asList(Proposal.State.CONFIRMED)));
 
         for (Proposal proposal : proposals) {
             List<String> emails = new ArrayList<>();
