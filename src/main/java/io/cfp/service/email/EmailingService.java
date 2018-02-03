@@ -33,9 +33,7 @@ import io.cfp.entity.Role;
 import io.cfp.entity.Talk;
 import io.cfp.entity.User;
 import io.cfp.mapper.EventMapper;
-import io.cfp.model.Comment;
 import io.cfp.model.Proposal;
-import io.cfp.repository.EventRepository;
 import io.cfp.repository.UserRepo;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -68,10 +66,6 @@ public class EmailingService {
 
     @Autowired
     private UserRepo users;
-
-    @Autowired
-    @Deprecated
-    private EventRepository eventRepo;
 
     @Autowired
     private EventMapper eventMapper;
