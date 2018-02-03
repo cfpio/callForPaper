@@ -5,7 +5,6 @@ import io.cfp.WebConfiguration;
 import io.cfp.config.exception.GlobalControllerExceptionHandler;
 import io.cfp.config.filter.AuthFilter;
 import io.cfp.mapper.RoleMapper;
-import io.cfp.repository.RoleRepository;
 import io.cfp.repository.UserRepo;
 import io.cfp.service.auth.AuthUtils;
 import io.cfp.service.user.SecurityUserService;
@@ -29,11 +28,6 @@ class ApiTestApplication {
     @Bean
     public UserRepo userRepo() {
         return mock(UserRepo.class);
-    }
-
-    @Bean
-    public RoleRepository roleRepository() {
-        return mock(RoleRepository.class);
     }
 
     @Bean
