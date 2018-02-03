@@ -20,6 +20,7 @@
 
 package io.cfp.api;
 
+import com.itextpdf.text.DocumentException;
 import io.cfp.domain.exception.BadRequestException;
 import io.cfp.domain.exception.CospeakerNotFoundException;
 import io.cfp.domain.exception.ForbiddenException;
@@ -36,17 +37,21 @@ import io.cfp.model.User;
 import io.cfp.model.queries.ProposalQuery;
 import io.cfp.model.queries.RateQuery;
 import io.cfp.multitenant.TenantId;
+import io.cfp.service.PdfCardService;
 import io.cfp.service.email.EmailingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -76,6 +81,9 @@ public class ProposalsController {
 
     @Autowired
     private EmailingService emailingService;
+
+    @Autowired
+    private PdfCardService pdfCardService;
 
     @GetMapping("/proposals")
     @Secured({REVIEWER, ADMIN})
@@ -383,6 +391,14 @@ public class ProposalsController {
                         @AuthenticationPrincipal User user,
                         @TenantId String eventId) {
         return rates.findMyRate(proposalId, user.getId(), eventId);
+    }
+
+    @GetMapping(path = "/proposals/export/cards.pdf", produces = "application/pdf")
+    @Secured(ADMIN)
+    public void exportPdf(@AuthenticationPrincipal User user,
+                          HttpServletResponse response) throws IOException, DocumentException {
+        response.addHeader(HttpHeaders.CONTENT_TYPE, "application/pdf");
+        pdfCardService.export(user.getId(), response.getOutputStream());
     }
 
 

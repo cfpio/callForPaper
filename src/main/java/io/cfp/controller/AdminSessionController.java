@@ -24,7 +24,6 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
-import com.itextpdf.text.DocumentException;
 import io.cfp.dto.EventSched;
 import io.cfp.dto.TalkAdmin;
 import io.cfp.dto.TalkAdminCsv;
@@ -156,13 +155,13 @@ public class AdminSessionController {
 //    }
 //
 
-    @RequestMapping(path = "/sessions/export/cards.pdf", produces = "application/pdf")
-    @Secured(Role.ADMIN)
-    public void exportPdf(@AuthenticationPrincipal User user,
-                          HttpServletResponse response) throws IOException, DocumentException {
-        response.addHeader(HttpHeaders.CONTENT_TYPE, "application/pdf");
-        pdfCardService.export(user.getId(), response.getOutputStream());
-    }
+//    @RequestMapping(path = "/sessions/export/cards.pdf", produces = "application/pdf")
+//    @Secured(Role.ADMIN)
+//    public void exportPdf(@AuthenticationPrincipal User user,
+//                          HttpServletResponse response) throws IOException, DocumentException {
+//        response.addHeader(HttpHeaders.CONTENT_TYPE, "application/pdf");
+//        pdfCardService.export(user.getId(), response.getOutputStream());
+//    }
 
     @RequestMapping(path = "/sessions/export/sched.json", produces = "application/json")
     @Secured(Role.ADMIN)
