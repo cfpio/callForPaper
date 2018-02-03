@@ -20,9 +20,7 @@
 
 package io.cfp.repository;
 
-import io.cfp.entity.Format;
 import io.cfp.entity.Room;
-import io.cfp.entity.Track;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -34,5 +32,4 @@ public interface RoomRepo extends JpaRepository<Room, Integer> {
 
     List<Room> findByEventId(String eventId);
 
-    Room findByIdAndEventId(int id, String current);
 }

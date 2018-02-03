@@ -20,10 +20,7 @@
 
 package io.cfp.repository;
 
-import io.cfp.entity.Format;
-import io.cfp.entity.Room;
 import io.cfp.entity.Talk;
-import io.cfp.entity.Track;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -35,24 +32,11 @@ import java.util.List;
 
 public interface TalkRepo extends JpaRepository<Talk, Integer> {
 
-    List<Talk> findByEventId(String id);
-
     Talk findByIdAndEventId(int integer, String eventId);
 
     List<Talk> findByEventIdAndUserIdAndStateIn(String eventId, int userId, Collection<Talk.State> states);
 
-    long countByEventIdAndStateIn(String eventId, Collection<Talk.State> states);
-
     int countByEventIdAndUserId(String eventId, int userId);
-
-    int countByEventIdAndTrack(String eventId, Track track);
-
-    int countByEventIdAndFormat(String eventId, Format format);
-
-    int countByEventIdAndRoom(String eventId, Room room);
-
-
-    Talk findByIdAndEventIdAndUserId(int talkId, String eventId, int userId);
 
     @Query("SELECT t FROM Talk t JOIN FETCH t.cospeakers c WHERE t.event.id = :eventId AND c.id = :userId AND t.id = :talkId")
     Talk findByIdAndEventIdAndCospeakers(@Param("talkId") int talkId, @Param("eventId") String eventId, @Param("userId") int userId);
@@ -80,9 +64,6 @@ public interface TalkRepo extends JpaRepository<Talk, Integer> {
     @Modifying
     @Query("UPDATE Talk t SET t.state = :targetState WHERE t.event.id = :eventId AND t.state = :initialState ")
     void setStateWhere(@Param("eventId") String current, @Param("targetState") Talk.State targetState, @Param("initialState") Talk.State initialState);
-
-    @Query("SELECT t.track.libelle, COUNT(t) FROM Talk t WHERE t.event.id = :eventId GROUP BY t.track")
-    List<Object[]> countByTrack(@Param("eventId") String eventId);
 
     @Transactional
     @Modifying

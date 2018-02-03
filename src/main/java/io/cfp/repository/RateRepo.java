@@ -26,30 +26,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Map;
 
 
 public interface RateRepo extends JpaRepository<Rate, Integer> {
 
-    List<Rate> findByEventIdAndTalkUserId(String eventId, int userId);
-
-    @Query("SELECT r FROM Rate r JOIN FETCH r.adminUser WHERE r.event.id = :eventId AND r.talk.id = :talkId")
-    List<Rate> findByEventIdAndTalkIdFetchAdmin(@Param("eventId") String eventId, @Param("talkId") int talkId);
-
-    List<Rate> findByEventIdAndTalkId(String eventId, int talkId);
-
-    Rate findByEventIdAndTalkIdAndAdminUserId(String eventId, int talkId, int adminId);
-
     @Query("SELECT r FROM Rate r JOIN FETCH r.adminUser WHERE r.event.id = :eventId")
     List<Rate> findAllFetchAdmin(@Param("eventId") String eventId);
-
-    Rate findByIdAndEventId(int integer, String eventId);
-
-    List<Rate> findByEventId(String eventId);
-
-    void deleteByEventId(String eventId);
-
-    @Query("SELECT r.adminUser.email, COUNT(r) FROM Rate r WHERE r.event.id = :eventId GROUP BY r.adminUser")
-    List<Object[]> findNbRateByAdminUser(@Param("eventId") String eventId);
 
 }
