@@ -19,6 +19,7 @@ public class ThemeMapperTest {
     private static final int THEME_ID = 40;
     private static final int THEME_ID_TO_DELETE = 41;
     private static final String EVENT_ID = "EVENT_ID";
+    private static final String ALL_STATE = "*";
 
     @Autowired
     private ThemeMapper themeMapper;
@@ -43,8 +44,15 @@ public class ThemeMapperTest {
     }
 
     @Test
-    public void should_count_the_tracks_of_an_event() {
-        List<Stat> stats = themeMapper.countProposalsByTheme(EVENT_ID);
+    public void should_count_the_proposals_by_theme_of_an_event() {
+        List<Stat> stats = themeMapper.countProposalsByThemeAndState(EVENT_ID, null);
+
+        assertThat(stats).hasSize(1);
+    }
+
+    @Test
+    public void should_count_the_ACCEPTED_proposals_by_theme_of_an_event_() {
+        List<Stat> stats = themeMapper.countProposalsByThemeAndState(EVENT_ID, "ACCEPTED");
 
         assertThat(stats).hasSize(1);
     }

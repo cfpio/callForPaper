@@ -25,5 +25,5 @@ public interface ThemeMapper {
 
     int deleteForEvent(@Param("id") int id, @Param("eventId") String eventId);
 
-    List<Stat> countProposalsByTheme(String eventId);
+    List<Stat> countProposalsByThemeAndState(@Param("eventId") String eventId, @Param("state") String state);
 }

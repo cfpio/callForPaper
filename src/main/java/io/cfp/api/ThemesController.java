@@ -57,8 +57,9 @@ public class ThemesController {
 
     @GetMapping(value = "/stats")
     @Secured(Role.ADMIN)
-    public Map<String, Long> getStats(@TenantId String eventId) {
-        return themes.countProposalsByTheme(eventId)
+    public Map<String, Long> getStats(@TenantId String eventId,
+                                      @RequestParam(required = false) String state) {
+        return themes.countProposalsByThemeAndState(eventId, state)
             .stream()
             .collect(Collectors.toMap(Stat::getName, Stat::getCount));
     }
