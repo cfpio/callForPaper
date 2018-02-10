@@ -247,6 +247,7 @@ public class EmailingService {
      */
     @Async
     @Transactional
+    @Deprecated
     public void sendNotSelectionned(Talk talk, Locale locale) {
         User user = talk.getUser();
 
@@ -265,6 +266,33 @@ public class EmailingService {
         params.put("subject", getSubject("notSelectionned", locale));
 
         createAndSendEmail(talk.getEvent().getName(), "notSelectionned.html", user.getEmail(), params, cc, null, locale, "");
+    }
+
+    /**
+     * Send Confirmation of selection.
+     *  @param proposal
+     * @param locale
+     */
+    @Async
+    @Transactional
+    public void sendNotSelectionned(Proposal proposal, Locale locale) {
+        io.cfp.model.User user = proposal.getSpeaker();
+
+        LOGGER.debug("Sending not selectionned e-mail to '{}'", user.getEmail());
+
+        List<String> cc = new ArrayList<>();
+        if (proposal.getCospeakers() != null) {
+            for (io.cfp.model.User cospeaker : proposal.getCospeakers()) {
+                cc.add(cospeaker.getEmail());
+            }
+        }
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", user.getFirstname());
+        params.put("talk", proposal.getName());
+        params.put("subject", getSubject("notSelectionned", locale));
+
+        createAndSendEmail(proposal.getEventId(), "notSelectionned.html", user.getEmail(), params, cc, null, locale, "");
     }
 
     @Async
@@ -291,6 +319,7 @@ public class EmailingService {
 
     @Async
     @Transactional
+    @Deprecated
     public void sendSelectionned(Talk talk, Locale locale) {
         final User user = talk.getUser();
         LOGGER.debug("Sending selectionned e-mail to '{}'", user.getEmail());
@@ -308,6 +337,27 @@ public class EmailingService {
         params.put("subject", getSubject("selectionned", locale));
 
         createAndSendEmail(talk.getEvent().getName(), "selectionned.html", user.getEmail(), params, cc, null, locale, "");
+    }
+
+    @Async
+    @Transactional
+    public void sendSelectionned(Proposal proposal, Locale locale) {
+        final io.cfp.model.User user = proposal.getSpeaker();
+        LOGGER.debug("Sending selectionned e-mail to '{}'", user.getEmail());
+
+        List<String> cc = new ArrayList<>();
+        if (proposal.getCospeakers() != null) {
+            for (io.cfp.model.User cospeakerProfil : proposal.getCospeakers()) {
+                cc.add(cospeakerProfil.getEmail());
+            }
+        }
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", user.getFirstname());
+        params.put("talk", proposal.getName());
+        params.put("subject", getSubject("selectionned", locale));
+
+        createAndSendEmail(proposal.getEventId(), "selectionned.html", user.getEmail(), params, cc, null, locale, "");
     }
 
     protected void createAndSendEmail(String event, String template, String email, Map<String,Object> parameters, List<String> cc, List<String> bcc, Locale locale, String message) {
