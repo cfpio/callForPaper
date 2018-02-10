@@ -12,6 +12,10 @@
         SELECT * FROM rooms WHERE event_id = #{eventId}
     </select>
 
+    <select id="findById" resultType="io.cfp.model.Room">
+        SELECT * FROM rooms WHERE id = #{id}
+    </select>
+
     <update id="updateForEvent">
         UPDATE rooms SET
         name = #{it.name}
