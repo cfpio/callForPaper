@@ -45,4 +45,5 @@ public interface ProposalMapper {
 
     void updateEventId(@Param("id") int id, @Param("eventId") String eventId);
 
+    int updateSchedule(Proposal proposal);
 }

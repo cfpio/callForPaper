@@ -4,7 +4,7 @@ import io.cfp.model.Format;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.Collection;
+import java.util.List;
 
 
 /**
@@ -13,7 +13,9 @@ import java.util.Collection;
 @Mapper
 public interface FormatMapper {
 
-    Collection<Format> findByEvent(String eventId);
+    List<Format> findByEvent(String eventId);
+
+    Format findById(int id);
 
     void insert(Format format);
 

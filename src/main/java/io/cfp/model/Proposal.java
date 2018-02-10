@@ -54,6 +54,7 @@ public class Proposal {
     private User speaker;
 
     private Date schedule;
+    private String scheduleHour;
     private Integer roomId;
 
     private Set<User> cospeakers;
