@@ -26,11 +26,7 @@ import io.cfp.dto.FullCalendar;
 import io.cfp.dto.TalkUser;
 import io.cfp.dto.user.Schedule;
 import io.cfp.dto.user.UserProfil;
-import io.cfp.entity.Event;
-import io.cfp.entity.Role;
-import io.cfp.entity.Room;
-import io.cfp.entity.Talk;
-import io.cfp.entity.User;
+import io.cfp.entity.*;
 import io.cfp.repository.RoomRepo;
 import io.cfp.repository.TalkRepo;
 import io.cfp.repository.UserRepo;
@@ -43,13 +39,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -68,8 +58,8 @@ import static java.util.stream.Collectors.toList;
  * Created by Nicolas on 30/01/2016.
  */
 
-@RestController
-@RequestMapping(value = { "/v0/schedule", "/api/schedule" }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RestController("ScheduleController_v0")
+@RequestMapping(value = { "/v0/schedule" }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ScheduleController {
 
     private static final Logger LOG = LoggerFactory.getLogger(ScheduleController.class);
