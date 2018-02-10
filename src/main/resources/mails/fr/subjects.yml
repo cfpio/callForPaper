@@ -1,4 +1,5 @@
 confirmed: "Confirmation de votre session"
+confirmedPresence: "Vous avez confirmé votre présence"
 newMessage: "Nouveau commentaire sur le talk {0}"
 newMessageAdmin: "Speaker {0} a posté un commentaire pour le talk {1}"
 notSelectionned: "Votre proposition a été refusée"

@@ -36,7 +36,7 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Proposal {
 
-    public enum State { DRAFT, CONFIRMED, ACCEPTED, REFUSED, BACKUP }
+    public enum State { DRAFT, CONFIRMED, CONFIRMED_PRESENCE, ACCEPTED, REFUSED, BACKUP }
 
     private int id;
     private State state;

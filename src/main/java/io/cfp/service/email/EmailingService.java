@@ -122,6 +122,23 @@ public class EmailingService {
         createAndSendEmail(proposal.getEventId(), "confirmed.html", user.getEmail(), params, null, null, user.getLocale(), "");
     }
 
+    /**
+     * Send Confirmation of your session.
+     */
+    @Async
+    @Transactional
+    public void sendConfirmedPresence(io.cfp.model.User user, Proposal proposal) {
+        LOGGER.debug("Sending email confirmation of presence to '{}'", user.getEmail());
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", user.getFirstname());
+        params.put("talk", proposal);
+        params.put("id", String.valueOf(proposal.getId()));
+        params.put("subject", getSubject("confirmedPresence", user.getLocale()));
+
+        createAndSendEmail(proposal.getEventId(), "confirmedPresence.html", user.getEmail(), params, null, null, user.getLocale(), "");
+    }
+
     @Async
     @Transactional
     @Deprecated
