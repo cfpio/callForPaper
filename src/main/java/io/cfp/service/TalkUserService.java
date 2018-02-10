@@ -115,6 +115,7 @@ public class TalkUserService {
      * @param eventStart
      * @return updated talk
      */
+    @Deprecated
     public TalkUser updateConfirmedTalk(int talkId, LocalDateTime eventStart, String room) {
 
         Date eventDate = Date.from(eventStart.atZone(ZoneId.systemDefault()).toInstant());
