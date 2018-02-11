@@ -174,6 +174,7 @@ public class ScheduleControllerTest {
         when(userMapper.findByEmail("EMAIL")).thenReturn(user);
 
         mockMvc.perform(post("/api/schedule/notification?filter=accepted")
+            .content("[]")
             .accept(MediaType.APPLICATION_JSON_UTF8)
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .header("Authorization", "Bearer "+token)
@@ -217,6 +218,7 @@ public class ScheduleControllerTest {
         when(userMapper.findByEmail("EMAIL")).thenReturn(user);
 
         mockMvc.perform(post("/api/schedule/notification?filter=refused")
+            .content("[]")
             .accept(MediaType.APPLICATION_JSON_UTF8)
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .header("Authorization", "Bearer "+token)
@@ -260,6 +262,7 @@ public class ScheduleControllerTest {
         when(userMapper.findByEmail("EMAIL")).thenReturn(user);
 
         mockMvc.perform(post("/api/schedule/notification")
+            .content("[]")
             .accept(MediaType.APPLICATION_JSON_UTF8)
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .header("Authorization", "Bearer "+token)
@@ -308,7 +311,8 @@ public class ScheduleControllerTest {
 
         when(userMapper.findByEmail("EMAIL")).thenReturn(user);
 
-        mockMvc.perform(post("/api/schedule/notification?filter=accepted&ids=1,2")
+        mockMvc.perform(post("/api/schedule/notification?filter=accepted")
+            .content("[1,2]")
             .accept(MediaType.APPLICATION_JSON_UTF8)
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .header("Authorization", "Bearer "+token)

@@ -293,29 +293,32 @@ public class ScheduleController {
     @PostMapping(value = "/notification")
     @Secured(Role.ADMIN)
     public void notifyScheduling(@RequestParam(defaultValue = "all", name = "filter") String filter,
-                                 @RequestParam(required = false, name = "ids") String ids,
+                                 @RequestBody List<Integer> ids,
                                  @TenantId String eventId) {
         switch (filter) {
             case  "refused" :
                 List<Proposal> refused = proposals.findAll(new ProposalQuery().setEventId(eventId).setStates(Arrays.asList(Proposal.State.REFUSED)));
+                LOGGER.debug("Found {} refused talks", refused.size());
+                if (ids != null && !ids.isEmpty()) {
+                    LOGGER.info("Filter notification for talks {}", ids);
 
-                if (ids != null) {
                     refused = refused.stream()
-                        .filter(p -> !Arrays.asList(ids.split(",")).contains(p.getId()))
+                        .filter(p -> ids.contains(p.getId()))
                         .collect(toList());
                 }
-
+                LOGGER.info("Send notifications for {} refused talks", refused.size());
                 sendRefusedMailsWithTempo(refused);
                 break;
             case "accepted"  :
                 List<Proposal> accepted = proposals.findAll(new ProposalQuery().setEventId(eventId).setStates(Arrays.asList(Proposal.State.ACCEPTED)));
-
-                if (ids != null) {
+                LOGGER.debug("Found {} accepted talks", accepted.size());
+                if (ids != null && !ids.isEmpty()) {
+                    LOGGER.info("Filter notification for talks {}", ids);
                     accepted = accepted.stream()
-                        .filter(p -> !Arrays.asList(ids.split(",")).contains(p.getId()))
+                        .filter(p -> ids.contains(p.getId()))
                         .collect(toList());
                 }
-
+                LOGGER.info("Send notifications for {} accepted talks", accepted.size());
                 sendAcceptedMailsWithTempo(accepted);
                 break;
             case "all"  :
