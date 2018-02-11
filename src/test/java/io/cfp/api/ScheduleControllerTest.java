@@ -39,8 +39,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.*;
 
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -70,7 +72,7 @@ public class ScheduleControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    public void testGetScheduleList() throws Exception {
+    public void should_return_schedule() throws Exception {
 
         // Given
         User userProfil = new User().setId(0).setFirstname("John").setLastname("Doe").setEmail("john@doe.net");
@@ -138,6 +140,184 @@ public class ScheduleControllerTest {
             .andExpect(jsonPath("$[1].speakers", containsString("Johnny Deep")))
         ;
 
+    }
+
+    @Test
+    public void should_send_notifications_to_all_accepted_talks() throws Exception {
+        // Given
+        User speaker = new User().setId(0).setFirstname("John").setLastname("Doe").setEmail("john@doe.net");
+        // TalkUser 1
+        Proposal talkUser1 = new Proposal();
+        talkUser1.setId(1);
+        talkUser1.setName("A talk 1");
+        talkUser1.setDescription("A description");
+        talkUser1.setSpeaker(speaker);
+
+        Proposal talkUser2 = new Proposal();
+        talkUser2.setId(1);
+        talkUser2.setName("A talk 2");
+        talkUser2.setDescription("A description");
+        talkUser2.setSpeaker(speaker);
+
+        List<Proposal> proposals = new ArrayList<>();
+        proposals.add(talkUser1);
+        proposals.add(talkUser2);
+
+        when(proposalMapper.findAll(any(ProposalQuery.class))).thenReturn(proposals);
+
+
+        User user = new User();
+        user.setEmail("EMAIL");
+        user.addRole(Role.ADMIN);
+        String token = Utils.createTokenForUser(user);
+
+        when(userMapper.findByEmail("EMAIL")).thenReturn(user);
+
+        mockMvc.perform(post("/api/schedule/notification?filter=accepted")
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .header("Authorization", "Bearer "+token)
+        )
+            .andDo(print())
+            .andExpect(status().isOk())
+        ;
+
+        verify(emailingService, times(2)).sendSelectionned(any(Proposal.class), any(Locale.class));
+    }
+
+    @Test
+    public void should_send_notifications_to_all_refused_talks() throws Exception {
+        // Given
+        User speaker = new User().setId(0).setFirstname("John").setLastname("Doe").setEmail("john@doe.net");
+        // TalkUser 1
+        Proposal talkUser1 = new Proposal();
+        talkUser1.setId(1);
+        talkUser1.setName("A talk 1");
+        talkUser1.setDescription("A description");
+        talkUser1.setSpeaker(speaker);
+
+        Proposal talkUser2 = new Proposal();
+        talkUser2.setId(2);
+        talkUser2.setName("A talk 2");
+        talkUser2.setDescription("A description");
+        talkUser2.setSpeaker(speaker);
+
+        List<Proposal> proposals = new ArrayList<>();
+        proposals.add(talkUser1);
+        proposals.add(talkUser2);
+
+        when(proposalMapper.findAll(any(ProposalQuery.class))).thenReturn(proposals);
+
+
+        User user = new User();
+        user.setEmail("EMAIL");
+        user.addRole(Role.ADMIN);
+        String token = Utils.createTokenForUser(user);
+
+        when(userMapper.findByEmail("EMAIL")).thenReturn(user);
+
+        mockMvc.perform(post("/api/schedule/notification?filter=refused")
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .header("Authorization", "Bearer "+token)
+        )
+            .andDo(print())
+            .andExpect(status().isOk())
+        ;
+
+        verify(emailingService, times(2)).sendNotSelectionned(any(Proposal.class), any(Locale.class));
+    }
+
+    @Test
+    public void should_send_notifications_to_all_talks() throws Exception {
+        // Given
+        User speaker = new User().setId(0).setFirstname("John").setLastname("Doe").setEmail("john@doe.net");
+        // TalkUser 1
+        Proposal talkUser1 = new Proposal();
+        talkUser1.setId(1);
+        talkUser1.setName("A talk 1");
+        talkUser1.setDescription("A description");
+        talkUser1.setSpeaker(speaker);
+
+        Proposal talkUser2 = new Proposal();
+        talkUser2.setId(2);
+        talkUser2.setName("A talk 2");
+        talkUser2.setDescription("A description");
+        talkUser2.setSpeaker(speaker);
+
+        List<Proposal> proposals = new ArrayList<>();
+        proposals.add(talkUser1);
+        proposals.add(talkUser2);
+
+        when(proposalMapper.findAll(any(ProposalQuery.class))).thenReturn(proposals);
+
+
+        User user = new User();
+        user.setEmail("EMAIL");
+        user.addRole(Role.ADMIN);
+        String token = Utils.createTokenForUser(user);
+
+        when(userMapper.findByEmail("EMAIL")).thenReturn(user);
+
+        mockMvc.perform(post("/api/schedule/notification")
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .header("Authorization", "Bearer "+token)
+        )
+            .andDo(print())
+            .andExpect(status().isOk())
+        ;
+
+        verify(emailingService, times(2)).sendNotSelectionned(any(Proposal.class), any(Locale.class));
+    }
+
+    @Test
+    public void should_send_notifications_to_some_talks() throws Exception {
+        // Given
+        User speaker = new User().setId(0).setFirstname("John").setLastname("Doe").setEmail("john@doe.net");
+        // TalkUser 1
+        Proposal talkUser1 = new Proposal();
+        talkUser1.setId(1);
+        talkUser1.setName("A talk 1");
+        talkUser1.setDescription("A description");
+        talkUser1.setSpeaker(speaker);
+
+        Proposal talkUser2 = new Proposal();
+        talkUser2.setId(2);
+        talkUser2.setName("A talk 2");
+        talkUser2.setDescription("A description");
+        talkUser2.setSpeaker(speaker);
+
+        Proposal talkUser3 = new Proposal();
+        talkUser3.setId(3);
+        talkUser3.setName("A talk 3");
+        talkUser3.setDescription("A description");
+        talkUser3.setSpeaker(speaker);
+
+        List<Proposal> proposals = new ArrayList<>();
+        proposals.add(talkUser1);
+        proposals.add(talkUser2);
+
+        when(proposalMapper.findAll(any(ProposalQuery.class))).thenReturn(proposals);
+
+
+        User user = new User();
+        user.setEmail("EMAIL");
+        user.addRole(Role.ADMIN);
+        String token = Utils.createTokenForUser(user);
+
+        when(userMapper.findByEmail("EMAIL")).thenReturn(user);
+
+        mockMvc.perform(post("/api/schedule/notification?filter=accepted&ids=1,2")
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .header("Authorization", "Bearer "+token)
+        )
+            .andDo(print())
+            .andExpect(status().isOk())
+        ;
+
+        verify(emailingService, times(2)).sendSelectionned(any(Proposal.class), any(Locale.class));
     }
 
 }

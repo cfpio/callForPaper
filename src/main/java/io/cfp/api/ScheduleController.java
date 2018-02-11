@@ -77,7 +77,7 @@ public class ScheduleController {
 
     @GetMapping
     public List<Schedule> getSchedule(@TenantId String eventId) {
-        final List<Proposal> all = proposals.findAll(new ProposalQuery().setEventId(eventId).setStates(Arrays.asList(Proposal.State.ACCEPTED)));
+        final List<Proposal> all = proposals.findAll(new ProposalQuery().setEventId(eventId).setStates(Arrays.asList(Proposal.State.ACCEPTED, Proposal.State.PRESENT)));
 
         return all.stream().
             filter(t -> t.getSchedule() != null)
@@ -120,7 +120,7 @@ public class ScheduleController {
     @GetMapping(value = "fullcalendar/unscheduled")
     public List<FullCalendar.Event> getUnscheduledEvents(@TenantId String eventId) {
         LOGGER.info("Get unscheduled Proposals");
-        final List<Proposal> all = proposals.findAll(new ProposalQuery().setEventId(eventId).setStates(Arrays.asList(Proposal.State.ACCEPTED)));
+        final List<Proposal> all = proposals.findAll(new ProposalQuery().setEventId(eventId).setStates(Arrays.asList(Proposal.State.ACCEPTED, Proposal.State.PRESENT)));
         LOGGER.info("Found {} accepted Proposals", all.size());
 
         final List<Theme> allThemes = themes.findByEvent(eventId);
@@ -150,7 +150,7 @@ public class ScheduleController {
     public FullCalendar getFullCalendar(@TenantId String eventId) {
         LOGGER.info("Get schedule Calendar");
         final List<Room> roomList = rooms.findByEvent(eventId);
-        final List<Proposal> all = proposals.findAll(new ProposalQuery().setEventId(eventId).setStates(Arrays.asList(Proposal.State.ACCEPTED)));
+        final List<Proposal> all = proposals.findAll(new ProposalQuery().setEventId(eventId).setStates(Arrays.asList(Proposal.State.ACCEPTED, Proposal.State.PRESENT)));
         final List<Theme> allThemes = themes.findByEvent(eventId);
         final List<Format> allFormats = formats.findByEvent(eventId);
         return new FullCalendar(all, roomList, allFormats, allThemes);
@@ -232,7 +232,7 @@ public class ScheduleController {
     @Secured(Role.ADMIN)
     public List<Schedule> getScheduleList() {
         LOGGER.info("Get accepted scheduled Proposals");
-        List<Proposal> talkUserList = proposals.findAll(new ProposalQuery().setStates(Arrays.asList(Proposal.State.ACCEPTED)));
+        List<Proposal> talkUserList = proposals.findAll(new ProposalQuery().setStates(Arrays.asList(Proposal.State.ACCEPTED, Proposal.State.PRESENT)));
         LOGGER.info("Found {} accepted scheduled Proposals", talkUserList.size());
         return getSchedules(talkUserList);
     }
@@ -293,14 +293,29 @@ public class ScheduleController {
     @PostMapping(value = "/notification")
     @Secured(Role.ADMIN)
     public void notifyScheduling(@RequestParam(defaultValue = "all", name = "filter") String filter,
+                                 @RequestParam(required = false, name = "ids") String ids,
                                  @TenantId String eventId) {
         switch (filter) {
             case  "refused" :
                 List<Proposal> refused = proposals.findAll(new ProposalQuery().setEventId(eventId).setStates(Arrays.asList(Proposal.State.REFUSED)));
+
+                if (ids != null) {
+                    refused = refused.stream()
+                        .filter(p -> !Arrays.asList(ids.split(",")).contains(p.getId()))
+                        .collect(toList());
+                }
+
                 sendRefusedMailsWithTempo(refused);
                 break;
             case "accepted"  :
                 List<Proposal> accepted = proposals.findAll(new ProposalQuery().setEventId(eventId).setStates(Arrays.asList(Proposal.State.ACCEPTED)));
+
+                if (ids != null) {
+                    accepted = accepted.stream()
+                        .filter(p -> !Arrays.asList(ids.split(",")).contains(p.getId()))
+                        .collect(toList());
+                }
+
                 sendAcceptedMailsWithTempo(accepted);
                 break;
             case "all"  :
