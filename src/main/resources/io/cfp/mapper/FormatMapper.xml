@@ -12,6 +12,10 @@
         SELECT * FROM formats WHERE event_id = #{eventId}
     </select>
 
+    <select id="findById" resultType="io.cfp.model.Format">
+        SELECT * FROM formats WHERE id = #{id}
+    </select>
+
     <update id="updateForEvent">
         UPDATE formats SET
         name = #{it.name},

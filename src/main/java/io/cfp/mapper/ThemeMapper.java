@@ -5,7 +5,6 @@ import io.cfp.model.Theme;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.Collection;
 import java.util.List;
 
 
@@ -15,7 +14,7 @@ import java.util.List;
 @Mapper
 public interface ThemeMapper {
 
-    Collection<Theme> findByEvent(String eventId);
+    List<Theme> findByEvent(String eventId);
 
     void insert(Theme theme);
 

@@ -4,7 +4,7 @@ import io.cfp.model.Room;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * @author <a href="mailto:nicolas.deloof@gmail.com">Nicolas De Loof</a>
@@ -12,7 +12,9 @@ import java.util.Collection;
 @Mapper
 public interface RoomMapper {
 
-    Collection<Room> findByEvent(String eventId);
+    List<Room> findByEvent(String eventId);
+
+    Room findById(int id);
 
     void insert(Room room);
 

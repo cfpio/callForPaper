@@ -16,6 +16,7 @@
         SELECT
             *,
             p.schedule_date as "schedule",
+            p.schedule_heure as "scheduleHour",
             p.refs as "references",
             p.format as "format",
             p.track as "trackId",
@@ -147,6 +148,17 @@
         <if test="userId">
             AND `user` = #{userId}
         </if>
+    </update>
+
+    <update id="updateSchedule">
+        UPDATE proposals
+        SET
+        state=#{state},
+        schedule_date=#{schedule},
+        schedule_heure=#{scheduleHour},
+        room_id=#{roomId}
+        WHERE id = #{id}
+        AND event_id = #{eventId}
     </update>
 
     <update id="updateState" parameterType="io.cfp.model.Proposal">
