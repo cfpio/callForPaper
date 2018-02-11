@@ -32,6 +32,7 @@ import io.cfp.entity.Event;
 import io.cfp.entity.Talk;
 import io.cfp.entity.User;
 import io.cfp.mapper.EventMapper;
+import io.cfp.model.Proposal;
 import io.cfp.repository.CfpConfigRepo;
 import io.cfp.repository.EventRepository;
 import io.cfp.repository.UserRepo;
@@ -275,7 +276,7 @@ public class EmailingServiceTest {
 
         Map<String, Object> map = new HashMap<>();
         map.put("name", "Thomas");
-        map.put("talk", "Google App Engine pour les nuls");
+        map.put("talk", new Proposal().setName("Google App Engine pour les nuls"));
         map.put("id", "123");
 
         String eventId = "test";
@@ -294,7 +295,7 @@ public class EmailingServiceTest {
 
         Map<String, Object> map = new HashMap<>();
         map.put("name", "Thomas");
-        map.put("talk", "Google App Engine pour les nuls");
+        map.put("talk", new Proposal().setName("Google App Engine pour les nuls"));
         map.put("id", "123");
 
         String eventId = "test";
@@ -388,7 +389,7 @@ public class EmailingServiceTest {
 
         Map<String, Object> map = new HashMap<>();
         map.put("name", "Thomas");
-        map.put("talk", "Google App Engine pour les nuls");
+        map.put("talk", new Proposal().setName("Google App Engine pour les nuls"));
         map.put("id", "123");
 
 
