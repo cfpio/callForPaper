@@ -126,7 +126,7 @@ public class ScheduleControllerTest {
 
         when(talkUserService.findAll(Talk.State.CONFIRMED)).thenReturn(talkList);
 
-        MockMvcResponse mockMvcResponse = given().contentType("application/json").when().get("/api/schedule/confirmed");
+        MockMvcResponse mockMvcResponse = given().contentType("application/json").when().get("/v0/schedule/confirmed");
 
         System.out.println(mockMvcResponse.asString());
 

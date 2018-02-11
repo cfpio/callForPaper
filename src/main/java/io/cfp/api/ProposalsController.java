@@ -265,7 +265,7 @@ public class ProposalsController {
         emailingService.sendConfirmed(user, proposal);
     }
 
-    @PutMapping("/proposals/{id}/confirm_presence")
+    @PutMapping("/proposals/{id}/confirmPresence")
     @Secured(AUTHENTICATED)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void confirmPresence(@AuthenticationPrincipal User user,
@@ -277,7 +277,7 @@ public class ProposalsController {
         Proposal proposal = proposals.findById(id, event);
         proposal.setId(id);
         proposal.setEventId(event);
-        proposal.setState(Proposal.State.CONFIRMED_PRESENCE);
+        proposal.setState(Proposal.State.PRESENT);
 
         proposals.updateState(proposal);
 

@@ -332,6 +332,7 @@ public class EmailingServiceTest {
         Map<String, Object> map = new HashMap<>();
         map.put("name", "Thomas");
         map.put("talk", "Google App Engine pour les nuls");
+        map.put("id", "1");
 
         String eventId = "test";
 

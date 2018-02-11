@@ -352,6 +352,7 @@ public class EmailingService {
         params.put("name", user.getFirstname());
         params.put("talk", talk.getName());
         params.put("subject", getSubject("selectionned", locale));
+        params.put("id", String.valueOf(talk.getId()));
 
         createAndSendEmail(talk.getEvent().getName(), "selectionned.html", user.getEmail(), params, cc, null, locale, "");
     }
@@ -373,6 +374,7 @@ public class EmailingService {
         params.put("name", user.getFirstname());
         params.put("talk", proposal.getName());
         params.put("subject", getSubject("selectionned", locale));
+        params.put("id", String.valueOf(proposal.getId()));
 
         createAndSendEmail(proposal.getEventId(), "selectionned.html", user.getEmail(), params, cc, null, locale, "");
     }
