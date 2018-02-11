@@ -12,11 +12,11 @@ RUN mvn -q -Prelease package
 ### ---
 
 FROM openjdk:8-jdk-alpine
+COPY --from=build /work/target/call-for-paper.jar /app.jar
 LABEL maintainer "team@breizhcamp.org"
 EXPOSE 8080
-ENTRYPOINT [ "java", "-jar", "app.jar" ]
+CMD [ "java", "-jar", "app.jar" ]
 
-COPY --from=build /work/target/call-for-paper.jar /app.jar
 
 
 
