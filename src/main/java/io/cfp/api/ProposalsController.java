@@ -148,7 +148,7 @@ public class ProposalsController {
         if (!user.hasRole(REVIEWER)
             && !user.hasRole(ADMIN)
             && user.getId() != proposal.getSpeaker().getId()) {
-            throw new ForbiddenException();
+            throw new ForbiddenException("Vous n'êtes pas autorisé à accéder au Proposal "+id);
         }
 
         LOGGER.debug("Found Proposal {}", proposal);
@@ -212,7 +212,7 @@ public class ProposalsController {
         // A user can't change proposal's speaker
         if (!user.hasRole(ADMIN)
             && user.getId() != proposal.getSpeaker().getId()) {
-            throw new ForbiddenException();
+            throw new ForbiddenException("Vous n'êtes pas autorisé à modifier le Proposal "+id);
         }
         proposal.setId(id);
         LOGGER.info("User {} update the proposal {}", user.getId(), proposal.getName());

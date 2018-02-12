@@ -72,7 +72,7 @@ public class CommentsController {
         // si on est pas reviewer, on ne peut poster de commentaires que sur son propre proposal
         if (!user.hasRole(Role.REVIEWER)) {
             if (proposal.getSpeaker().getId() != user.getId()) {
-                throw new ForbiddenException();
+                throw new ForbiddenException("Vous n'êtes pas autorisé à commenter le Proposal "+proposalId);
             }
         }
 

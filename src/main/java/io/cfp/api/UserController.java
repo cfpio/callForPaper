@@ -100,12 +100,12 @@ public class UserController {
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable int id,
-                               @RequestBody User userUpdate,
-                               @AuthenticationPrincipal User user) {
+                       @RequestBody User userUpdate,
+                       @AuthenticationPrincipal User user) {
         LOGGER.info("update: {}", userUpdate);
 
         if (id != user.getId() && !user.hasRole(Role.MAINTAINER)) {
-            throw new ForbiddenException();
+            throw new ForbiddenException("Vous n'êtes pas autorisés à modifier le profil utilisateur "+id);
         }
 
         userUpdate.setId(user.getId()).setEmail(user.getEmail());
