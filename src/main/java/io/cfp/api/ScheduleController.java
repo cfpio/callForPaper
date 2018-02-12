@@ -335,7 +335,7 @@ public class ScheduleController {
      */
     private void sendAcceptedMailsWithTempo(List<Proposal> accepted) {
         accepted.forEach(t -> {
-                LOGGER.info("Envoi du mail accepté pour {}", t);
+                LOGGER.info("Envoi du mail accepté pour {}:{}", t.getId(), t.getName());
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
@@ -348,7 +348,7 @@ public class ScheduleController {
 
     private void sendRefusedMailsWithTempo(List<Proposal> refused) {
         refused.forEach(t -> {
-            LOGGER.info("Envoi de mail refusé pour {}", t);
+            LOGGER.info("Envoi de mail refusé pour {}:{}", t.getId(), t.getName());
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
