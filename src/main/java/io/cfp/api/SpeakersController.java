@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static io.cfp.entity.Role.ADMIN;
@@ -59,6 +60,10 @@ public class SpeakersController {
         LOGGER.info("Search Speakers : {}", query);
         List<Proposal> p = proposals.findAll(query);
         LOGGER.debug("Found {} Proposals", p.size());
-        return null;
+
+        Set<User> speakers = p.stream().map(Proposal::getSpeaker).collect(Collectors.toSet());
+        p.stream().map(Proposal::getCospeakers).forEach(speakers::addAll);
+        LOGGER.debug("Found {} Speakers", speakers.size());
+        return new ArrayList<>(speakers);
     }
 }
