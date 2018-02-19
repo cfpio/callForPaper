@@ -278,6 +278,16 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludeDevtools>true</excludeDevtools>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <configuration>
+                    <verbose>true</verbose>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.gmavenplus</groupId>
@@ -302,98 +312,10 @@
                 </configuration>
             </plugin>
         </plugins>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>com.github.eirslett</groupId>
-                    <artifactId>frontend-maven-plugin</artifactId>
-                    <version>0.0.26</version>
-                    <configuration>
-                        <installDirectory>${front-tools.install-directory}</installDirectory>
-                        <nodeVersion>v4.2.2</nodeVersion>
-                        <npmVersion>3.3.12</npmVersion>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <id>install node and npm</id>
-                            <goals>
-                                <goal>install-node-and-npm</goal>
-                            </goals>
-                            <phase>initialize</phase>
-                        </execution>
-                        <execution>
-                            <id>npm install global</id>
-                            <goals>
-                                <goal>npm</goal>
-                            </goals>
-                            <phase>initialize</phase>
-                            <configuration>
-                                <arguments>install -g gulp bower</arguments>
-                            </configuration>
-                        </execution>
-                        <execution>
-                            <id>npm install</id>
-                            <goals>
-                                <goal>npm</goal>
-                            </goals>
-                            <phase>initialize</phase>
-                            <configuration>
-                                <arguments>install</arguments>
-                            </configuration>
-                        </execution>
-                        <execution>
-                            <id>bower install</id>
-                            <goals>
-                                <goal>bower</goal>
-                            </goals>
-                            <phase>generate-resources</phase>
-                            <configuration>
-                                <arguments>install</arguments>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-assembly-plugin</artifactId>
-                    <version>2.6</version>
-                    <configuration>
-                        <finalName>docker</finalName>
-                        <appendAssemblyId>false</appendAssemblyId>
-                        <descriptors>
-                            <descriptor>src/assembly/docker.xml</descriptor>
-                        </descriptors>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
     </build>
 
 
     <profiles>
-        <profile>
-            <id>front</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>com.github.eirslett</groupId>
-                        <artifactId>frontend-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>serve</id>
-                                <goals>
-                                    <goal>gulp</goal>
-                                </goals>
-                                <phase>generate-resources</phase>
-                                <configuration>
-                                    <arguments>serve</arguments>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
         <profile>
             <id>release</id>
             <build>
@@ -408,19 +330,6 @@
                     <plugin>
                         <groupId>pl.project13.maven</groupId>
                         <artifactId>git-commit-id-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-assembly-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>docker</id>
-                                <goals>
-                                    <goal>single</goal>
-                                </goals>
-                                <phase>package</phase>
-                            </execution>
-                        </executions>
                     </plugin>
                 </plugins>
             </build>

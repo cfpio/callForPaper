@@ -20,12 +20,9 @@
 
 package io.cfp.config.filter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -51,7 +48,5 @@ public class CorsFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(request, response);
     }
-
-    private static final Logger logger = LoggerFactory.getLogger(CorsFilter.class);
 
 }
