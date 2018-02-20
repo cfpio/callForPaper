@@ -2,12 +2,12 @@
 
 This is a work-in-progress user-guide, if something looks weird, feel free to contribute :P
 
-## get an account
+## Get an account
 
 Send us an email at [info@cfp.io](mailto:info@cfp.io) to request an instance. We just need your event name, typically give us event URL 
 or twitter account so we can use this commonly used name as ID for your instance. Your URL will be `https://**YourEvent**.cfp.io`.
 
-## configure your call for papers
+## Configure your call for papers
 
 Login as owner (the one who requested the CFP instance) and select "Configuration" in menu. This page let you
 
@@ -18,7 +18,7 @@ Login as owner (the one who requested the CFP instance) and select "Configuratio
 
 When everything looks good, you can enable submission
 
-## collect proposals
+## Collect proposals
 
 Up to you to share CFP link on social medias so speakers are aware your CFP is open. During last days before the closing date, 
 it might be usefull to reming people your CFP is open for x days.
@@ -32,7 +32,7 @@ for internal review. As a result you rate each proposal between 1 (dislike) and 
 Don't wait the last minute to start reviewing proposals. The earlier you ask a speaker for more details, more chance you have to get a good 
 evaluation of his content. 
 
-## select proposals
+## Select proposals
 
 When the CFP is closed and memebers of the team have reviewed all proposals, it's time to select your event content. 
 
