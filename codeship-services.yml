@@ -1,2 +1,6 @@
 cfp:
-  build: .
+  build:
+    image: cfpio/callforpapers
+    dockerfile: Dockerfile
+clever:
+  image: cfpio/clever

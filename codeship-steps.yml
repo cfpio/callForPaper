@@ -1,3 +1,11 @@
-- name: build
+- name: dockerhub_push
   service: cfp
-  command: echo "hello"
+  type: push
+  image_name: cfpio/callforpapers
+  registry: https://index.docker.io/v1/
+  encrypted_dockercfg_path: dockercfg.encrypted
+
+- name: deploy
+  service: clever
+  encrypted_env_file: env.encrypted
+  command: /root/restart.sh $CC_TOKEN $CC_SECRET $CC_APPLICATION
