@@ -62,7 +62,7 @@ import static io.cfp.entity.Role.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
 @RestController
-@RequestMapping(value = { "/v1", "/api" }, produces = APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = { "/v1/proposals", "/api/proposals" }, produces = APPLICATION_JSON_UTF8_VALUE)
 public class ProposalsController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProposalsController.class);
@@ -85,7 +85,7 @@ public class ProposalsController {
     @Autowired
     private PdfCardService pdfCardService;
 
-    @GetMapping("/proposals")
+    @GetMapping
     @Secured({REVIEWER, ADMIN})
     public List<Proposal> search(@AuthenticationPrincipal User user,
                                  @TenantId String event,
@@ -133,7 +133,7 @@ public class ProposalsController {
         return p;
     }
 
-    @GetMapping("/proposals/{id}")
+    @GetMapping("{id}")
     @Secured({AUTHENTICATED})
     public Proposal get(@AuthenticationPrincipal User user,
                         @TenantId String event,
@@ -155,7 +155,7 @@ public class ProposalsController {
         return proposal;
     }
 
-    @PostMapping("/proposals")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Secured(AUTHENTICATED)
     @Transactional
@@ -196,7 +196,7 @@ public class ProposalsController {
         }
     }
 
-    @PutMapping("/proposals/{id}")
+    @PutMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Secured(AUTHENTICATED)
     @Transactional
@@ -224,7 +224,7 @@ public class ProposalsController {
         createCospeakers(proposal);
     }
 
-    @DeleteMapping("/proposals/{id}")
+    @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Secured(ADMIN)
     public void delete(@AuthenticationPrincipal User user,
@@ -237,7 +237,7 @@ public class ProposalsController {
     /**
      * Delete all sessions (aka reset CFP)
      */
-    @DeleteMapping(value="/proposals")
+    @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Secured(Role.ADMIN)
     public void deleteAll(@TenantId String event) {
@@ -245,7 +245,7 @@ public class ProposalsController {
     }
 
 
-    @PutMapping("/proposals/{id}/confirm")
+    @PutMapping("{id}/confirm")
     @Secured(AUTHENTICATED)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void confirm(@AuthenticationPrincipal User user,
@@ -265,7 +265,7 @@ public class ProposalsController {
         emailingService.sendConfirmed(user, proposal);
     }
 
-    @PutMapping("/proposals/{id}/confirmPresence")
+    @PutMapping("{id}/confirmPresence")
     @Secured(AUTHENTICATED)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void confirmPresence(@AuthenticationPrincipal User user,
@@ -285,7 +285,7 @@ public class ProposalsController {
     }
 
 
-    @PutMapping("/proposals/{id}/accept")
+    @PutMapping("{id}/accept")
     @Secured(ADMIN)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void accept(@TenantId String event,
@@ -300,7 +300,7 @@ public class ProposalsController {
         proposals.updateState(proposal);
     }
 
-    @PutMapping("/proposals/{id}/backup")
+    @PutMapping("{id}/backup")
     @Secured(ADMIN)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void backup(@TenantId String event,
@@ -314,7 +314,7 @@ public class ProposalsController {
         proposals.updateState(proposal);
     }
 
-    @PutMapping("/proposals/{id}/reject")
+    @PutMapping("{id}/reject")
     @Secured(ADMIN)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void reject(@TenantId String event,
@@ -328,7 +328,7 @@ public class ProposalsController {
         proposals.updateState(proposal);
     }
 
-    @PutMapping("/proposals/{id}/retract")
+    @PutMapping("{id}/retract")
     @Secured(ADMIN)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void retract(@TenantId String event,
@@ -342,7 +342,7 @@ public class ProposalsController {
         proposals.updateState(proposal);
     }
 
-    @PutMapping("/proposals/rejectOthers")
+    @PutMapping("rejectOthers")
     @Secured(ADMIN)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void rejectOthers(@TenantId String event) {
@@ -354,7 +354,7 @@ public class ProposalsController {
     /**
      * Add a new rating
      */
-    @PostMapping("/proposals/{proposalId}/rates")
+    @PostMapping("{proposalId}/rates")
     @Secured({REVIEWER, ADMIN})
     public Rate addRate(@PathVariable int proposalId,
                         @AuthenticationPrincipal User user,
@@ -371,7 +371,7 @@ public class ProposalsController {
     /**
      * Edit a rating
      */
-    @PutMapping("/proposals/{proposalId}/rates/{rateId}")
+    @PutMapping("{proposalId}/rates/{rateId}")
     @Secured({REVIEWER, ADMIN})
     public Rate update(@PathVariable int proposalId,
                        @PathVariable int rateId,
@@ -391,7 +391,7 @@ public class ProposalsController {
     /**
      * Get a specific rating
      */
-    @GetMapping("/proposals/{proposalId}/rates")
+    @GetMapping("{proposalId}/rates")
     @Secured(Role.ADMIN)
     public List<Rate> getRate(@PathVariable int proposalId,
                               @TenantId String eventId) {
@@ -404,7 +404,7 @@ public class ProposalsController {
     /**
      * Get a specific rating
      */
-    @GetMapping("/proposals/{proposalId}/rates/me")
+    @GetMapping("{proposalId}/rates/me")
     @Secured({REVIEWER, ADMIN})
     public Rate getMyRate(@PathVariable int proposalId,
                         @AuthenticationPrincipal User user,
@@ -412,7 +412,7 @@ public class ProposalsController {
         return rates.findMyRate(proposalId, user.getId(), eventId);
     }
 
-    @GetMapping(path = "/proposals/export/cards.pdf", produces = "application/pdf")
+    @GetMapping(path = "export/cards.pdf", produces = "application/pdf")
     @Secured(ADMIN)
     public void exportPdf(@TenantId String eventId,
                           HttpServletResponse response) throws IOException, DocumentException {
