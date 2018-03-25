@@ -25,3 +25,9 @@ No. A simple way would be to have a configurable plain text attribute for custom
 ## Is it possible to create custom fields for speaker profile and submission?
 
 No. Let us know which information you'd like to request, maybe those would make sense for general usage.
+
+## What are the "roles" on cfp.io and what can they do?
+
+1. The owner: can configure the cfp (There can be only one https://www.youtube.com/watch?v=c5Frf3FFPZc)
+2. The admins: can review the talks, vote, ask questions to submitters
+3. The authenticated: can submit talks
