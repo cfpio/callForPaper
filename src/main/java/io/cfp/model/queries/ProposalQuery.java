@@ -18,11 +18,18 @@ public class ProposalQuery {
     private String track;
     private String room;
     private String format;
+    private Integer page;
+    private Integer size;
     private String sort;
     private String order;
 
     public ProposalQuery addStates(Proposal.State... states) {
         this.states.addAll(Arrays.asList(states));
+        return this;
+    }
+
+    public ProposalQuery setOrder(String order) {
+        this.order = order.equalsIgnoreCase("desc")?"desc":"asc";
         return this;
     }
 
