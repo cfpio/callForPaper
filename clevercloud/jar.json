@@ -1,9 +1,0 @@
-{
-    "build": {
-        "type": "maven",
-        "goal": "package"
-    },
-    "deploy": {
-        "jarName": "target/call-for-paper.jar"
-    }
-}
