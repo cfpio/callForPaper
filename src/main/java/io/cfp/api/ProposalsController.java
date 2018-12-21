@@ -62,7 +62,7 @@ import static io.cfp.entity.Role.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
 @RestController
-@RequestMapping(value = { "/v1", "/api" }, produces = APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = {"/v1", "/api"}, produces = APPLICATION_JSON_UTF8_VALUE)
 public class ProposalsController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProposalsController.class);
@@ -93,7 +93,7 @@ public class ProposalsController {
                                  @RequestParam(name = "userId", required = false) Integer userId,
                                  @RequestParam(name = "sort", required = false, defaultValue = "added") String sort,
                                  @RequestParam(name = "order", required = false, defaultValue = "asc") String order
-                                 ) {
+    ) {
 
         List<Proposal.State> stateList = new ArrayList<>();
         if (states != null) {
@@ -107,7 +107,7 @@ public class ProposalsController {
             .setStates(stateList)
             .setUserId(userId)
             .setSort(sort)
-            .setOrder(order.equalsIgnoreCase("desc")?"desc":"asc");
+            .setOrder(order.equalsIgnoreCase("desc") ? "desc" : "asc");
 
         LOGGER.info("Search Proposals : {}", query);
         List<Proposal> p = proposals.findAll(query);
@@ -126,7 +126,7 @@ public class ProposalsController {
             }
             proposal.setVoteUsersEmail(emails);
             if (votes > 0) {
-                proposal.setMean(String.valueOf(total/votes));
+                proposal.setMean(String.valueOf(total / votes));
             }
         }
 
@@ -148,7 +148,7 @@ public class ProposalsController {
         if (!user.hasRole(REVIEWER)
             && !user.hasRole(ADMIN)
             && user.getId() != proposal.getSpeaker().getId()) {
-            throw new ForbiddenException("Vous n'êtes pas autorisé à accéder au Proposal "+id);
+            throw new ForbiddenException("Vous n'êtes pas autorisé à accéder au Proposal " + id);
         }
 
         LOGGER.debug("Found Proposal {}", proposal);
@@ -177,7 +177,7 @@ public class ProposalsController {
         }
 
         proposal.setState(Proposal.State.DRAFT) // when created, a talk is a Draft. Need to be confirmed
-                .setAdded(new Date());
+            .setAdded(new Date());
         proposals.insert(proposal);
 
         createCospeakers(proposal);
@@ -212,7 +212,7 @@ public class ProposalsController {
         // A user can't change proposal's speaker
         if (!user.hasRole(ADMIN)
             && user.getId() != proposal.getSpeaker().getId()) {
-            throw new ForbiddenException("Vous n'êtes pas autorisé à modifier le Proposal "+id);
+            throw new ForbiddenException("Vous n'êtes pas autorisé à modifier le Proposal " + id);
         }
         proposal.setId(id);
         LOGGER.info("User {} update the proposal {}", user.getId(), proposal.getName());
@@ -237,7 +237,7 @@ public class ProposalsController {
     /**
      * Delete all sessions (aka reset CFP)
      */
-    @DeleteMapping(value="/proposals")
+    @DeleteMapping(value = "/proposals")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Secured(Role.ADMIN)
     public void deleteAll(@TenantId String event) {
@@ -265,12 +265,32 @@ public class ProposalsController {
         emailingService.sendConfirmed(user, proposal);
     }
 
+    @PutMapping("/proposals/{id}/back-to-edit")
+    @Secured(ADMIN)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void backToEdit(@AuthenticationPrincipal User user,
+                        @TenantId String event,
+                        @PathVariable int id) {
+
+        LOGGER.info("Proposal {} change state to DRAFT", id);
+
+        Proposal proposal = proposals.findById(id, event);
+        proposal.setId(id);
+        proposal.setEventId(event);
+        proposal.setState(Proposal.State.DRAFT);
+
+        //FIXME check proposal is in CONFIRMED state
+        proposals.updateState(proposal);
+
+        emailingService.sendBackToEdit(user, proposal);
+    }
+
     @PutMapping("/proposals/{id}/confirmPresence")
     @Secured(AUTHENTICATED)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void confirmPresence(@AuthenticationPrincipal User user,
-                        @TenantId String event,
-                        @PathVariable int id) {
+                                @TenantId String event,
+                                @PathVariable int id) {
 
         LOGGER.info("Proposal {} change state to CONFIRMED_PRESENCE", id);
 
@@ -396,8 +416,8 @@ public class ProposalsController {
     public List<Rate> getRate(@PathVariable int proposalId,
                               @TenantId String eventId) {
         RateQuery rateQuery = new RateQuery()
-                                    .setEventId(eventId)
-                                    .setProposalId(proposalId);
+            .setEventId(eventId)
+            .setProposalId(proposalId);
         return rates.findAll(rateQuery);
     }
 
@@ -407,8 +427,8 @@ public class ProposalsController {
     @GetMapping("/proposals/{proposalId}/rates/me")
     @Secured({REVIEWER, ADMIN})
     public Rate getMyRate(@PathVariable int proposalId,
-                        @AuthenticationPrincipal User user,
-                        @TenantId String eventId) {
+                          @AuthenticationPrincipal User user,
+                          @TenantId String eventId) {
         return rates.findMyRate(proposalId, user.getId(), eventId);
     }
 

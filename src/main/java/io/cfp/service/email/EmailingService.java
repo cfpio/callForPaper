@@ -123,6 +123,23 @@ public class EmailingService {
     }
 
     /**
+     * Send a mail to inform speaker his proposal is available back to editing.
+     */
+    @Async
+    @Transactional
+    public void sendBackToEdit(io.cfp.model.User user, Proposal proposal) {
+        LOGGER.debug("Sending \"back to edit\" e-mail to '{}'", user.getEmail());
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", user.getFirstname());
+        params.put("talk", proposal);
+        params.put("id", String.valueOf(proposal.getId()));
+        params.put("subject", getSubject("backToEdit", user.getLocale()));
+
+        createAndSendEmail(proposal.getEventId(), "backToEdit.html", user.getEmail(), params, null, null, user.getLocale(), "");
+    }
+
+    /**
      * Send Confirmation of your session.
      */
     @Async
