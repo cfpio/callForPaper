@@ -268,9 +268,8 @@ public class ProposalsController {
     @PutMapping("/proposals/{id}/back-to-edit")
     @Secured(ADMIN)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void backToEdit(@AuthenticationPrincipal User user,
-                        @TenantId String event,
-                        @PathVariable int id) {
+    public void backToEdit(@TenantId String event,
+                           @PathVariable int id) {
 
         LOGGER.info("Proposal {} change state to DRAFT", id);
 
@@ -282,7 +281,7 @@ public class ProposalsController {
         //FIXME check proposal is in CONFIRMED state
         proposals.updateState(proposal);
 
-        emailingService.sendBackToEdit(user, proposal);
+        emailingService.sendBackToEdit(proposal);
     }
 
     @PutMapping("/proposals/{id}/confirmPresence")

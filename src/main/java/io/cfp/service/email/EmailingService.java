@@ -127,16 +127,18 @@ public class EmailingService {
      */
     @Async
     @Transactional
-    public void sendBackToEdit(io.cfp.model.User user, Proposal proposal) {
-        LOGGER.debug("Sending \"back to edit\" e-mail to '{}'", user.getEmail());
+    public void sendBackToEdit(Proposal proposal) {
+        io.cfp.model.User speaker = proposal.getSpeaker();
+
+        LOGGER.debug("Sending \"back to edit\" e-mail to '{}'", speaker.getEmail());
 
         Map<String, Object> params = new HashMap<>();
-        params.put("name", user.getFirstname());
+        params.put("name", speaker.getFirstname());
         params.put("talk", proposal);
         params.put("id", String.valueOf(proposal.getId()));
-        params.put("subject", getSubject("backToEdit", user.getLocale()));
+        params.put("subject", getSubject("backToEdit", speaker.getLocale()));
 
-        createAndSendEmail(proposal.getEventId(), "backToEdit.html", user.getEmail(), params, null, null, user.getLocale(), "");
+        createAndSendEmail(proposal.getEventId(), "backToEdit.html", speaker.getEmail(), params, null, null, speaker.getLocale(), "");
     }
 
     /**
@@ -175,8 +177,7 @@ public class EmailingService {
      * Send an email to a speaker to notify him that an administrator wrote a
      * new comment about his talk.
      *
-     * @param speaker
-     *            the speaker to write to
+     * @param speaker the speaker to write to
      */
     @Async
     @Transactional
@@ -198,10 +199,8 @@ public class EmailingService {
      * Send an email to a speaker to notify him that an administrator wrote a
      * new comment about his talk.
      *
-     * @param speaker
-     *            the speaker to write to
-     * @param talk
-     *            talk under review
+     * @param speaker the speaker to write to
+     * @param talk    talk under review
      * @param locale
      */
     @Async
@@ -225,8 +224,7 @@ public class EmailingService {
      * Send an email to administrators to notify them that a speaker wrote a
      * new comment on his talk.
      *
-     * @param speaker
-     *            the speaker writing this message
+     * @param speaker the speaker writing this message
      */
     @Async
     @Transactional
@@ -250,10 +248,8 @@ public class EmailingService {
      * Send an email to administrators to notify them that a speaker wrote a
      * new comment on his talk.
      *
-     * @param speaker
-     *            the speaker writing this message
-     * @param talk
-     *            talk under review
+     * @param speaker the speaker writing this message
+     * @param talk    talk under review
      * @param locale
      */
     @Async
@@ -271,12 +267,13 @@ public class EmailingService {
         params.put("id", String.valueOf(talk.getId()));
         params.put("subject", getSubject("newMessageAdmin", locale, speakerName, talk.getName()));
 
-        createAndSendEmail(Event.current(),"newMessageAdmin.html", emailSender, params, null, bcc, locale, comment);
+        createAndSendEmail(Event.current(), "newMessageAdmin.html", emailSender, params, null, bcc, locale, comment);
     }
 
     /**
      * Send Confirmation of selection.
-     *  @param talk
+     *
+     * @param talk
      * @param locale
      */
     @Async
@@ -304,7 +301,8 @@ public class EmailingService {
 
     /**
      * Send Confirmation of selection.
-     *  @param proposal
+     *
+     * @param proposal
      * @param locale
      */
     @Async
@@ -396,7 +394,7 @@ public class EmailingService {
         createAndSendEmail(proposal.getEventId(), "selectionned.html", user.getEmail(), params, cc, null, locale, "");
     }
 
-    protected void createAndSendEmail(String event, String template, String email, Map<String,Object> parameters, List<String> cc, List<String> bcc, Locale locale, String message) {
+    protected void createAndSendEmail(String event, String template, String email, Map<String, Object> parameters, List<String> cc, List<String> bcc, Locale locale, String message) {
 
         String templatePath = getTemplatePath(template, locale);
 
@@ -407,10 +405,10 @@ public class EmailingService {
     }
 
     protected String getTemplatePath(final String emailTemplate, final Locale locale) {
-    	String language = locale.getLanguage();
-    	if (!"fr".equals(language)) {
-    		language = "en";
-    	}
+        String language = locale.getLanguage();
+        if (!"fr".equals(language)) {
+            language = "en";
+        }
         return language + "/" + emailTemplate;
     }
 
@@ -476,7 +474,6 @@ public class EmailingService {
             LOGGER.warn("E-mail could not be sent to user '{}', exception is: {}", to, e.getMessage());
         }
     }
-
 
 
     private String saveLocally(String content) {
