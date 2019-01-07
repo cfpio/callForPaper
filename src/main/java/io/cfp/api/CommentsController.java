@@ -1,7 +1,7 @@
 package io.cfp.api;
 
 import io.cfp.domain.exception.ForbiddenException;
-import io.cfp.entity.Role;
+import io.cfp.model.Role;
 import io.cfp.mapper.CommentMapper;
 import io.cfp.mapper.ProposalMapper;
 import io.cfp.model.Comment;
@@ -87,7 +87,11 @@ public class CommentsController {
         if (comment.isInternal()) {
             emailingService.sendNewCommentToAdmins(user, proposal, comment.getComment());
         } else {
-            emailingService.sendNewCommentToSpeaker(user, proposal, comment.getComment());
+            if (user.getEmail().equals(proposal.getSpeaker().getEmail())) {
+                emailingService.sendNewCommentToAdmins(user, proposal, comment.getComment());
+            } else {
+                emailingService.sendNewCommentToSpeaker(user, proposal, comment.getComment());
+            }
         }
         return comment;
     }
@@ -118,7 +122,11 @@ public class CommentsController {
         if (comment.isInternal()) {
             emailingService.sendNewCommentToAdmins(user, proposal, comment.getComment());
         } else {
-            emailingService.sendNewCommentToSpeaker(user, proposal, comment.getComment());
+            if (user.getEmail().equals(proposal.getSpeaker().getEmail())) {
+                emailingService.sendNewCommentToAdmins(user, proposal, comment.getComment());
+            } else {
+                emailingService.sendNewCommentToSpeaker(user, proposal, comment.getComment());
+            }
         }
     }
 

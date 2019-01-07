@@ -29,7 +29,7 @@ import io.cfp.dto.TalkUser;
 import io.cfp.dto.user.CospeakerProfil;
 import io.cfp.dto.user.UserProfil;
 import io.cfp.entity.Event;
-import io.cfp.entity.Role;
+import io.cfp.model.Role;
 import io.cfp.entity.Talk;
 import io.cfp.entity.User;
 import io.cfp.mapper.EventMapper;
@@ -184,7 +184,7 @@ public class EmailingService {
     public void sendNewCommentToSpeaker(io.cfp.model.User speaker, Proposal proposal, String comment) {
         LOGGER.debug("Sending new comment email to speaker '{}' for talk '{}'", speaker.getEmail(), proposal.getName());
 
-        List<String> cc = users.findEmailByRole(Role.ADMIN, proposal.getEventId());
+        List<String> bcc = users.findEmailByRole(Role.ADMIN, proposal.getEventId());
 
         Map<String, Object> params = new HashMap<>();
         params.put("name", speaker.getFirstname());
@@ -192,7 +192,7 @@ public class EmailingService {
         params.put("id", String.valueOf(proposal.getId()));
         params.put("subject", getSubject("newMessage", speaker.getLocale(), proposal.getName()));
 
-        createAndSendEmail(Event.current(), "newMessage.html", speaker.getEmail(), params, cc, null, speaker.getLocale(), comment);
+        createAndSendEmail(proposal.getEventId(), "newMessage.html", speaker.getEmail(), params, null, bcc, speaker.getLocale(), comment);
     }
 
     /**
@@ -209,7 +209,7 @@ public class EmailingService {
     public void sendNewCommentToSpeaker(User speaker, TalkAdmin talk, Locale locale, String comment) {
         LOGGER.debug("Sending new comment email to speaker '{}' for talk '{}'", speaker.getEmail(), talk.getName());
 
-        List<String> cc = users.findEmailByRole(Role.ADMIN, Event.current());
+        List<String> bcc = users.findEmailByRole(Role.ADMIN, Event.current());
 
         Map<String, Object> params = new HashMap<>();
         params.put("name", speaker.getFirstname());
@@ -217,7 +217,7 @@ public class EmailingService {
         params.put("id", String.valueOf(talk.getId()));
         params.put("subject", getSubject("newMessage", locale, talk.getName()));
 
-        createAndSendEmail(Event.current(), "newMessage.html", speaker.getEmail(), params, cc, null, locale, comment);
+        createAndSendEmail(Event.current(), "newMessage.html", speaker.getEmail(), params, null, bcc, locale, comment);
     }
 
     /**
