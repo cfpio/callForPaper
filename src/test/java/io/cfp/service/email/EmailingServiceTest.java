@@ -196,7 +196,7 @@ public class EmailingServiceTest {
 
         // Then
         verify(emailingService).processTemplate(eq(templatePath), anyMap(), anyString(), anyString());
-        verify(emailingService).sendEmail(eq(CONTACT_MAIL), eq(JOHN_DOE_EMAIL), anyString(), anyString(), notNull(List.class), isNull(List.class));
+        verify(emailingService).sendEmail(eq(CONTACT_MAIL), eq(JOHN_DOE_EMAIL), anyString(), anyString(), isNull(List.class), notNull(List.class));
     }
 
     @Test
