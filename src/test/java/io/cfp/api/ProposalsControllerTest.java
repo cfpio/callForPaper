@@ -5,6 +5,7 @@ import io.cfp.mapper.ProposalMapper;
 import io.cfp.mapper.RateMapper;
 import io.cfp.mapper.UserMapper;
 import io.cfp.model.Proposal;
+import io.cfp.model.Rate;
 import io.cfp.model.Role;
 import io.cfp.model.User;
 import io.cfp.model.queries.ProposalQuery;
@@ -21,13 +22,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -92,7 +90,18 @@ public class ProposalsControllerTest {
         List<Proposal> proposals = new ArrayList<>();
         proposals.add(proposal);
 
+        Rate r = new Rate();
+        r.setId(1);
+        r.setRate(3);
+        r.setAdded(new Date());
+
+        r.setUser(proposal.getSpeaker());
+        r.setTalk(proposal);
+        r.setEventId(proposal.getEventId());
+        List<Rate> rates = Collections.singletonList(r);
+
         when(proposalMapper.findAll(any(ProposalQuery.class))).thenReturn(proposals);
+        when(rateMapper.findAllWithTalk(anyString())).thenReturn(rates);
 
         User user = new User();
         user.setEmail("EMAIL");
