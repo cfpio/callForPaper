@@ -14,6 +14,8 @@ public interface RateMapper {
 
 
     List<Rate> findAll(RateQuery rateQuery);
+    List<Rate> findAllWithTalk(@Param("eventId") String eventId);
+
     Rate findMyRate(@Param("proposalId") int proposalId, @Param("user") int userId, @Param("eventId") String eventId);
     int insert(Rate rate);
     int update(Rate rate);

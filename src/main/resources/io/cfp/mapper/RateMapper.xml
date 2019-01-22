@@ -21,6 +21,21 @@
         </where>
     </select>
 
+    <select id="findAllWithTalk" resultType="io.cfp.model.Rate">
+        SELECT
+            *,
+            u.id as "user.id",
+            u.email as "user.email",
+            u.firstname as "user.firstname",
+            u.lastname as "user.lastname",
+            p.id as "talk.id"
+        FROM rates r
+          LEFT OUTER JOIN users u ON r.admin = u.id
+          LEFT OUTER JOIN proposals p on r.proposal = p.id
+        WHERE
+            r.event_id = #{eventId}
+    </select>
+
     <select id="findMyRate" resultType="io.cfp.model.Rate">
         SELECT
             *,

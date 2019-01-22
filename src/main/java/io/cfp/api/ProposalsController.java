@@ -52,10 +52,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static io.cfp.entity.Role.*;
@@ -113,11 +110,14 @@ public class ProposalsController {
         List<Proposal> p = proposals.findAll(query);
         LOGGER.debug("Found {} Proposals", p.size());
 
+        List<Rate> rates = this.rates.findAllWithTalk(event);
+        Map<Integer, List<Rate>> ratesByTalk = rates.stream().collect(Collectors.groupingBy(rate -> rate.getTalk().getId()));
+
         for (Proposal proposal : p) {
             List<String> emails = new ArrayList<>();
             float total = 0;
             int votes = 0;
-            for (Rate rate : rates.findAll(new RateQuery().setProposalId(proposal.getId()))) {
+            for (Rate rate : ratesByTalk.get(proposal.getId())) {
                 emails.add(rate.getUser().getEmail());
                 if (rate.getRate() > 0) {
                     total += rate.getRate();
