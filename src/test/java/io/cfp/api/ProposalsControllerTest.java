@@ -110,15 +110,6 @@ public class ProposalsControllerTest {
 
         when(userMapper.findByEmail("EMAIL")).thenReturn(user);
 
-        List<Rate> rates = new ArrayList<>();
-        Rate rate = new Rate();
-        rate.setTalk(proposal);
-        rate.setUser(user);
-        rates.add(rate);
-
-        when(rateMapper.findAllWithTalk(anyString())).thenReturn(rates);
-
-
         mockMvc.perform(get("/api/proposals")
             .accept(MediaType.APPLICATION_JSON_UTF8)
             .contentType(MediaType.APPLICATION_JSON_UTF8)
