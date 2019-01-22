@@ -133,6 +133,23 @@ public class ProposalsController {
         return p;
     }
 
+
+    @GetMapping("/proposals/nextToRate")
+    @Secured({REVIEWER, ADMIN})
+    public Proposal getNextToRate(@AuthenticationPrincipal User user,
+                                  @TenantId String event) {
+
+        List<Proposal> p = this.search(user, event, null, null, "added", "asc");
+
+        Proposal nextProposalToVote = p.stream()
+            .filter(prop -> !prop.getVoteUsersEmail().contains(user.getEmail()))
+            .findFirst()
+            .orElseThrow(NotFoundException::new);
+
+        return nextProposalToVote;
+    }
+
+
     @GetMapping("/proposals/{id}")
     @Secured({AUTHENTICATED})
     public Proposal get(@AuthenticationPrincipal User user,
