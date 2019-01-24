@@ -44,8 +44,10 @@ public class PdfCardService {
 
     @Autowired
     private ProposalMapper proposalMapper;
+
     /**
      * Export all talks from the current event
+     *
      * @param out OutputStream to write PDF into
      */
     public void export(String eventId, OutputStream out) throws DocumentException {
@@ -82,15 +84,14 @@ public class PdfCardService {
             }
             proposal.setVoteUsersEmail(emails);
             if (votes > 0) {
-                proposal.setMean(String.valueOf(total/votes));
+                proposal.setMean(String.valueOf(total / votes));
             }
         }
 
 
         proposals.stream()
-                 .sorted(comparing(Proposal::getMean, nullsLast(reverseOrder())))
-                 .sorted(comparing(Proposal::getFormat))
-                 .collect(toList());
+            .sorted(comparing(Proposal::getFormat).thenComparing(Proposal::getMean, nullsLast(reverseOrder())))
+            .collect(toList());
 
         LOGGER.info("Export PDF de {} Proposals", proposals.size());
 
@@ -111,7 +112,7 @@ public class PdfCardService {
             PdfPCell track = new PdfPCell(new Phrase(substring(proposal.getTrackLabel(), 0, 20), font));
 
             track.setHorizontalAlignment(Element.ALIGN_RIGHT);
-            track.setBackgroundColor(bgTracksColor.computeIfAbsent(proposal.getTrackId(), id -> getColor(bgTracksColor.size()+1)));
+            track.setBackgroundColor(bgTracksColor.computeIfAbsent(proposal.getTrackId(), id -> getColor(bgTracksColor.size() + 1)));
             innerTable.addCell(track);
 
             // Contenu central
@@ -192,16 +193,26 @@ public class PdfCardService {
 
     private BaseColor getColor(int idx) {
         switch (idx) {
-            case 1: return BaseColor.MAGENTA;
-            case 2: return BaseColor.PINK;
-            case 3: return BaseColor.YELLOW;
-            case 4: return BaseColor.GREEN;
-            case 5: return BaseColor.ORANGE;
-            case 6: return BaseColor.GRAY;
-            case 7: return BaseColor.RED;
-            case 8: return BaseColor.CYAN;
-            case 9: return BaseColor.LIGHT_GRAY;
-            default: return BaseColor.WHITE;
+            case 1:
+                return BaseColor.MAGENTA;
+            case 2:
+                return BaseColor.PINK;
+            case 3:
+                return BaseColor.YELLOW;
+            case 4:
+                return BaseColor.GREEN;
+            case 5:
+                return BaseColor.ORANGE;
+            case 6:
+                return BaseColor.GRAY;
+            case 7:
+                return BaseColor.RED;
+            case 8:
+                return BaseColor.CYAN;
+            case 9:
+                return BaseColor.LIGHT_GRAY;
+            default:
+                return BaseColor.WHITE;
         }
     }
 }
