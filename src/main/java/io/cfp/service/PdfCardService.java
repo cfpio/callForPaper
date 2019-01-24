@@ -20,6 +20,7 @@ import java.io.OutputStream;
 import java.util.*;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static java.util.Comparator.*;
 import static java.util.stream.Collectors.toList;
@@ -71,11 +72,15 @@ public class PdfCardService {
 
         List<Proposal> proposals = proposalMapper.findAll(new ProposalQuery().setEventId(eventId).setStates(Arrays.asList(Proposal.State.CONFIRMED)));
 
+
+        List<Rate> rates = this.rateMapper.findAllWithTalk(eventId);
+        Map<Integer, List<Rate>> ratesByTalk = rates.stream().collect(Collectors.groupingBy(rate -> rate.getTalk().getId()));
+
         for (Proposal proposal : proposals) {
             List<String> emails = new ArrayList<>();
             float total = 0;
             int votes = 0;
-            for (Rate rate : rateMapper.findAll(new RateQuery().setProposalId(proposal.getId()))) {
+            for (Rate rate : ratesByTalk.get(proposal.getId())) {
                 emails.add(rate.getUser().getEmail());
                 if (rate.getRate() > 0) {
                     total += rate.getRate();
@@ -87,7 +92,6 @@ public class PdfCardService {
                 proposal.setMean(String.valueOf(total / votes));
             }
         }
-
 
         List<Proposal> sortedProposals = proposals.stream()
             .sorted(comparing(Proposal::getFormat).thenComparing(Proposal::getMean, nullsLast(reverseOrder())))
