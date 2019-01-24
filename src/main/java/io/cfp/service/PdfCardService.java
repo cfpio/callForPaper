@@ -89,15 +89,15 @@ public class PdfCardService {
         }
 
 
-        proposals.stream()
+        List<Proposal> sortedProposals = proposals.stream()
             .sorted(comparing(Proposal::getFormat).thenComparing(Proposal::getMean, nullsLast(reverseOrder())))
             .collect(toList());
 
-        LOGGER.info("Export PDF de {} Proposals", proposals.size());
+        LOGGER.info("Export PDF de {} Proposals", sortedProposals.size());
 
         Map<Integer, BaseColor> bgTracksColor = new HashMap<>();
 
-        for (Proposal proposal : proposals) {
+        for (Proposal proposal : sortedProposals) {
 
             // Tableau pour chaque talk
             PdfPTable innerTable = new PdfPTable(2);
@@ -180,7 +180,7 @@ public class PdfCardService {
 
         }
 
-        for (int i = 0; i < proposals.size() % 3; i++) {
+        for (int i = 0; i < sortedProposals.size() % 3; i++) {
             table.addCell("");
         }
 
