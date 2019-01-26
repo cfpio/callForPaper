@@ -90,7 +90,7 @@ public class CommentsController {
             if (user.getEmail().equals(proposal.getSpeaker().getEmail())) {
                 emailingService.sendNewCommentToAdmins(user, proposal, comment.getComment());
             } else {
-                emailingService.sendNewCommentToSpeaker(user, proposal, comment.getComment());
+                emailingService.sendNewCommentToSpeaker(proposal.getSpeaker(), proposal, comment.getComment());
             }
         }
         return comment;
@@ -125,7 +125,7 @@ public class CommentsController {
             if (user.getEmail().equals(proposal.getSpeaker().getEmail())) {
                 emailingService.sendNewCommentToAdmins(user, proposal, comment.getComment());
             } else {
-                emailingService.sendNewCommentToSpeaker(user, proposal, comment.getComment());
+                emailingService.sendNewCommentToSpeaker(proposal.getSpeaker(), proposal, comment.getComment());
             }
         }
     }
