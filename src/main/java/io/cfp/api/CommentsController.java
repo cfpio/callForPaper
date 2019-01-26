@@ -53,7 +53,12 @@ public class CommentsController {
         if (!user.hasRole(REVIEWER)) {
             query.setInternal(false);
 
-            // FIXME speaker should not be able to read comments on other's proposals
+            Proposal proposal = proposals.findById(proposalId, eventId);
+
+            // si on est pas reviewer, on ne peut poster de commentaires que sur son propre proposal
+            if (proposal.getSpeaker().getId() != user.getId()) {
+                 throw new ForbiddenException("Vous n'êtes pas autorisé à voir les commentaires de ce Proposal");
+            }
         }
 
         return comments.findAll(query);
