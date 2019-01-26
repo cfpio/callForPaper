@@ -202,7 +202,7 @@ public class CommentsControllerTest {
     }
 
     @Test
-    public void should_email_admin_if_internal_comment_is_updated_by_admin() throws Exception {
+    public void should_email_admins_if_internal_comment_is_updated_by_admin() throws Exception {
 
         User user = new User();
         user.setId(20);
@@ -232,7 +232,7 @@ public class CommentsControllerTest {
     }
 
     @Test
-    public void should_email_speaker_if_comment_is_updated_by_speaker() throws Exception {
+    public void should_email_admins_if_comment_is_updated_by_speaker() throws Exception {
 
         User user = new User();
         user.setId(20);
@@ -241,7 +241,7 @@ public class CommentsControllerTest {
         String token = Utils.createTokenForUser(user);
         Proposal proposal = new Proposal().setId(25)
             .setName("PROPOSAL_NAME")
-            .setSpeaker(new User().setId(21));
+            .setSpeaker(user);
 
         when(userMapper.findByEmail("EMAIL")).thenReturn(user);
         when(proposalMapper.findById(eq(25), anyString())).thenReturn(proposal);
@@ -258,11 +258,11 @@ public class CommentsControllerTest {
             .andExpect(status().isNoContent())
         ;
 
-        verify(emailingService).sendNewCommentToSpeaker(eq(user), eq(proposal), anyString());
+        verify(emailingService).sendNewCommentToAdmins(eq(user), eq(proposal), anyString());
     }
 
     @Test
-    public void should_email_admin_if_internal_comment_is_created_by_admin() throws Exception {
+    public void should_email_admins_if_internal_comment_is_created_by_admin() throws Exception {
 
         User user = new User();
         user.setId(20);
@@ -292,16 +292,17 @@ public class CommentsControllerTest {
     }
 
     @Test
-    public void should_email_speaker_if_comment_is_created_by_speaker() throws Exception {
+    public void should_email_speaker_if_comment_is_public_and_created_by_admins() throws Exception {
 
         User user = new User();
         user.setId(21);
         user.setEmail("EMAIL");
-        user.addRole(Role.AUTHENTICATED);
+        user.addRole(Role.REVIEWER);
         String token = Utils.createTokenForUser(user);
+        User speaker = new User().setId(22);
         Proposal proposal = new Proposal().setId(25)
             .setName("PROPOSAL_NAME")
-            .setSpeaker(new User().setId(21));
+            .setSpeaker(speaker);
 
         when(userMapper.findByEmail("EMAIL")).thenReturn(user);
         when(proposalMapper.findById(eq(25), anyString())).thenReturn(proposal);
@@ -318,7 +319,37 @@ public class CommentsControllerTest {
             .andExpect(status().isCreated())
         ;
 
-        verify(emailingService).sendNewCommentToSpeaker(eq(user), eq(proposal), anyString());
+        verify(emailingService).sendNewCommentToSpeaker(eq(speaker), eq(proposal), anyString());
+    }
+
+    @Test
+    public void should_email_admins_if_comment_is_created_by_speaker() throws Exception {
+
+        User user = new User();
+        user.setId(21);
+        user.setEmail("EMAIL");
+        user.addRole(Role.AUTHENTICATED);
+        String token = Utils.createTokenForUser(user);
+        Proposal proposal = new Proposal().setId(25)
+            .setName("PROPOSAL_NAME")
+            .setSpeaker(user);
+
+        when(userMapper.findByEmail("EMAIL")).thenReturn(user);
+        when(proposalMapper.findById(eq(25), anyString())).thenReturn(proposal);
+
+        String updatedComment = Utils.getContent("/json/comments/new_comment.json");
+
+        mockMvc.perform(post("/api/proposals/25/comments")
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .header("Authorization", "Bearer "+token)
+            .content(updatedComment)
+        )
+            .andDo(print())
+            .andExpect(status().isCreated())
+        ;
+
+        verify(emailingService).sendNewCommentToAdmins(eq(user), eq(proposal), anyString());
     }
 
 }
