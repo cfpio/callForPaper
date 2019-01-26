@@ -189,8 +189,6 @@ public class AdminSessionController {
         List<TalkAdmin> sessions = getAllSessions(user, status);
 
         final ServletOutputStream out = response.getOutputStream();
-        for (TalkAdmin s : sessions) {
-            writer.writeValue(out, s);
-        }
+        writer.writeValues(out).writeAll(sessions);
     }
 }
