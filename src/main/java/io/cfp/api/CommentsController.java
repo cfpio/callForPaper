@@ -132,7 +132,7 @@ public class CommentsController {
 
     @DeleteMapping(value = "/{id}")
     @Transactional
-    @Secured(Role.OWNER)
+    @Secured(Role.AUTHENTICATED)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int proposalId,
                        @PathVariable int id,
