@@ -9,6 +9,8 @@
             <result property="email" column="cospeaker_email" jdbcType="VARCHAR"/>
             <result property="firstname" column="cospeaker_firstname" jdbcType="VARCHAR"/>
             <result property="lastname" column="cospeaker_lastname" jdbcType="VARCHAR"/>
+            <result property="bio" column="cospeaker_bio" jdbcType="VARCHAR"/>
+            <result property="gender" column="cospeaker_gender" jdbcType="VARCHAR"/>
         </collection>
     </resultMap>
 
@@ -39,7 +41,9 @@
             cu.id as "cospeaker_id",
             cu.email as "cospeaker_email",
             cu.firstname as "cospeaker_firstname",
-            cu.lastname as "cospeaker_lastname"
+            cu.lastname as "cospeaker_lastname",
+            cu.gender as "cospeaker_gender",
+            cu.bio as "cospeaker_bio"
         FROM proposals p
             left outer join tracks t on p.track = t.id
             left outer join users u on p.user = u.id
