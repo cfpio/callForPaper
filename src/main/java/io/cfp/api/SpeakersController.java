@@ -75,7 +75,11 @@ public class SpeakersController {
         ArrayList<User> orderredSpeakerList = new ArrayList<>(speakers);
 
         if ("lastName".equalsIgnoreCase(sort)) {
-            orderredSpeakerList.sort(sortByLastName);
+            if ("desc".equalsIgnoreCase(order)) {
+                orderredSpeakerList.sort(sortByLastName.reversed());
+            } else {
+                orderredSpeakerList.sort(sortByLastName);
+            }
         }
 
         return orderredSpeakerList;
