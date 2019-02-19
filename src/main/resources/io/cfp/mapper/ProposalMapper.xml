@@ -11,6 +11,10 @@
             <result property="lastname" column="cospeaker_lastname" jdbcType="VARCHAR"/>
             <result property="bio" column="cospeaker_bio" jdbcType="VARCHAR"/>
             <result property="gender" column="cospeaker_gender" jdbcType="VARCHAR"/>
+            <result property="imageProfilURL" column="cospeaker_imageProfilURL" jdbcType="VARCHAR"/>
+            <result property="github" column="cospeaker_github" jdbcType="VARCHAR"/>
+            <result property="twitter" column="cospeaker_twitter" jdbcType="VARCHAR"/>
+            <result property="social" column="cospeaker_social" jdbcType="VARCHAR"/>
         </collection>
     </resultMap>
 
@@ -43,7 +47,11 @@
             cu.firstname as "cospeaker_firstname",
             cu.lastname as "cospeaker_lastname",
             cu.gender as "cospeaker_gender",
-            cu.bio as "cospeaker_bio"
+            cu.bio as "cospeaker_bio",
+            cu.image_profil_url as "cospeaker_imageProfilURL",
+            cu.github as "cospeaker_github",
+            cu.twitter as "cospeaker_twitter",
+            cu.social as "cospeaker_social"
         FROM proposals p
             left outer join tracks t on p.track = t.id
             left outer join users u on p.user = u.id
