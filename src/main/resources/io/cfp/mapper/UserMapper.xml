@@ -6,20 +6,34 @@
         SELECT
             DISTINCT u.*
         FROM users u
-        <if test="states.size != 0">
-        LEFT JOIN proposals p ON u.id = p.user
-        LEFT JOIN cospeakers c ON c.proposal_id = p.id AND c.user_id = u.id
-        </if>
         <where>
-            <if test="email">
-                u.email = #{email}
-            </if>
             <if test="states.size != 0">
-                AND p.state IN
-                <foreach item="item" collection="states" open="(" separator="," close=")">
-                    #{item}
-                </foreach>
-                AND p.event_id = #{eventId}
+            u.id IN (
+
+                SELECT p.user
+                    FROM proposals p
+                WHERE
+                    p.state IN
+                    <foreach item="item" collection="states" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+                    AND p.event_id = #{eventId}
+            )
+            OR u.id IN (
+                SELECT cu.id
+                    FROM proposals pu
+                    LEFT JOIN cospeakers c ON c.proposal_id = pu.id
+                    LEFT JOIN users cu ON c.user_id = cu.id
+                WHERE
+                    pu.state IN
+                    <foreach item="item" collection="states" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+                    AND pu.event_id = #{eventId}
+            )
+            </if>
+            <if test="email">
+                AND u.email = #{email}
             </if>
         </where>
         <if test="sort.size != 0">
