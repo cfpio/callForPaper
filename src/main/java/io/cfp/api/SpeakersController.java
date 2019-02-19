@@ -64,7 +64,7 @@ public class SpeakersController {
          .forEach(speakers::addAll);
 
         Comparator<User> sortByLastName = (User u1, User u2) -> {
-            if (u1.getLastname() != null) {
+            if (u1.getLastname() != null && u2.getLastname() != null) {
                 return u1.getLastname().compareToIgnoreCase(u2.getLastname());
             } else {
                 return 0;
