@@ -3,12 +3,28 @@
 <mapper namespace="io.cfp.mapper.UserMapper">
 
     <select id="findAll" parameterType="io.cfp.model.queries.UserQuery" resultType="io.cfp.model.User">
-        SELECT * FROM users u
+        SELECT
+            DISTINCT u.*
+        FROM users u
+        <if test="states.size != 0">
+        LEFT JOIN proposals p ON u.id = p.user
+        LEFT JOIN cospeakers c ON c.proposal_id = p.id AND c.user_id = u.id
+        </if>
         <where>
             <if test="email">
                 u.email = #{email}
             </if>
+            <if test="states.size != 0">
+                AND p.state IN
+                <foreach item="item" index="index" collection="states" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+                AND p.event_id = #{eventId}
+            </if>
         </where>
+        <if test="sort">
+            ORDER BY #{sort} #{order}
+        </if>
     </select>
 
     <select id="findById" resultType="io.cfp.model.User">
@@ -25,17 +41,6 @@
 
     <select id="findEmailByRole" resultType="String">
         SELECT u.email FROM users u, roles r WHERE r.name = #{role} AND r.event_id = #{eventId} AND r.user_id = u.id
-    </select>
-
-    <select id="findUserWithAcceptedProposal" resultType="io.cfp.model.User">
-        SELECT * FROM users u
-        WHERE u.id IN
-            (
-            SELECT DISTINCT p.user
-                FROM proposals p
-                WHERE p.event_id = #{eventId}
-                AND p.state = 'ACCEPTED'
-            )
     </select>
 
     <insert id="insert" parameterType="io.cfp.model.User" useGeneratedKeys="true" keyProperty="id" keyColumn="id">

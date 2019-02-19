@@ -35,12 +35,12 @@ import java.util.*;
 public class User {
 
     public enum Gender {
-		MALE, FEMALE
-	}
+        MALE, FEMALE
+    }
 
-	public enum TshirtSize {
-		XS, S, M, L, XL, XXL
-	}
+    public enum TshirtSize {
+        XS, S, M, L, XL, XXL
+    }
 
     private int id;
     private String email;
@@ -113,6 +113,14 @@ public class User {
             return Locale.FRENCH;
         }
         return Locale.ENGLISH;
+    }
+
+    public User cleanPrivatesInformations() {
+        this.setEmail(null);
+        this.setTshirtSize(null);
+        this.setPhone(null);
+        this.setRoles(null);
+        return this;
     }
 }
 

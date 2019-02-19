@@ -2,9 +2,11 @@ package io.cfp.api;
 
 
 import io.cfp.mapper.ProposalMapper;
+import io.cfp.mapper.UserMapper;
 import io.cfp.model.Proposal;
 import io.cfp.model.User;
 import io.cfp.model.queries.ProposalQuery;
+import io.cfp.model.queries.UserQuery;
 import io.cfp.multitenant.TenantId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,59 +31,40 @@ public class SpeakersController {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpeakersController.class);
 
     @Autowired
-    private ProposalMapper proposals;
+    private UserMapper users;
 
     @GetMapping
-    @Secured(ADMIN)
     public List<User> search(@AuthenticationPrincipal User user,
                              @TenantId String event,
                              @RequestParam(name = "states", required = false) String states,
-                             @RequestParam(name = "userId", required = false) Integer userId,
-                             @RequestParam(name = "sort", required = false, defaultValue = "added") String sort,
+                             @RequestParam(name = "sort", required = false, defaultValue = "lastname,firstname") String sort,
                              @RequestParam(name = "order", required = false, defaultValue = "asc") String order) {
-
         List<Proposal.State> stateList = new ArrayList<>();
-        if (states != null) {
-            stateList = Arrays.stream(states.split(","))
-                .map(Proposal.State::valueOf)
-                .collect(Collectors.toList());
+        if (user != null && user.hasRole(ADMIN)) {
+            if (states != null) {
+                stateList = Arrays.stream(states.split(","))
+                    .map(Proposal.State::valueOf)
+                    .collect(Collectors.toList());
+            }
+        } else {
+            LOGGER.info("User is not admin, can only get public informations of PRESENT speakers");
+            stateList.add(Proposal.State.PRESENT);
         }
 
-        ProposalQuery query = new ProposalQuery()
+        UserQuery query = new UserQuery()
             .setEventId(event)
             .setStates(stateList)
-            .setUserId(userId)
             .setSort(sort)
-            .setOrder(order.equalsIgnoreCase("desc") ? "desc" : "asc");
+            .setOrder(order);
 
-        LOGGER.info("Search Speakers : {}", query);
-        List<Proposal> p = proposals.findAll(query);
-        LOGGER.debug("Found {} Proposals", p.size());
+        LOGGER.info("Search Speakers {}", query);
+        List<User> u = users.findAll(query);
+        LOGGER.debug("Found {} Speakers", u.size());
 
-        Set<User> speakers = p.stream().map(Proposal::getSpeaker).collect(Collectors.toSet());
-        p.stream()
-         .map(Proposal::getCospeakers)
-         .forEach(speakers::addAll);
-
-        Comparator<User> sortByLastName = (User u1, User u2) -> {
-            if (u1.getLastname() != null && u2.getLastname() != null) {
-                return u1.getLastname().compareToIgnoreCase(u2.getLastname());
-            } else {
-                return 0;
-            }
-        };
-
-        LOGGER.debug("Found {} Speakers", speakers.size());
-        ArrayList<User> orderredSpeakerList = new ArrayList<>(speakers);
-
-        if ("lastName".equalsIgnoreCase(sort)) {
-            if ("desc".equalsIgnoreCase(order)) {
-                orderredSpeakerList.sort(sortByLastName.reversed());
-            } else {
-                orderredSpeakerList.sort(sortByLastName);
-            }
+        if (user == null || !user.hasRole(ADMIN)) {
+            u.forEach(User::cleanPrivatesInformations);
         }
 
-        return orderredSpeakerList;
+        return u;
     }
 }

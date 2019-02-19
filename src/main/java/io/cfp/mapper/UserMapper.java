@@ -22,6 +22,4 @@ public interface UserMapper {
     User findByEmail(@Param("email") String email);
     List<String> findEmailByRole(@Param("role") String role, @Param("eventId") String eventId);
 
-    List<User> findUserWithAcceptedProposal(@Param("eventId") String eventId);
-
 }
