@@ -75,7 +75,7 @@
                 </foreach>
             </if>
         </where>
-        <if test="sort">
+        <if test="sort.size != 0">
             ORDER BY
             <foreach item="sortItem" collection="sort" separator=",">
                 ${sortItem} ${order}
