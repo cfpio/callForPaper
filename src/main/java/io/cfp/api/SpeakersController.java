@@ -16,10 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static io.cfp.entity.Role.ADMIN;
@@ -62,8 +59,25 @@ public class SpeakersController {
         LOGGER.debug("Found {} Proposals", p.size());
 
         Set<User> speakers = p.stream().map(Proposal::getSpeaker).collect(Collectors.toSet());
-        p.stream().map(Proposal::getCospeakers).forEach(speakers::addAll);
+        p.stream()
+         .map(Proposal::getCospeakers)
+         .forEach(speakers::addAll);
+
+        Comparator<User> sortByLastName = (User u1, User u2) -> {
+            if (u1.getLastname() != null) {
+                return u1.getLastname().compareToIgnoreCase(u2.getLastname());
+            } else {
+                return 0;
+            }
+        };
+
         LOGGER.debug("Found {} Speakers", speakers.size());
-        return new ArrayList<>(speakers);
+        ArrayList<User> orderredSpeakerList = new ArrayList<>(speakers);
+
+        if ("lastName".equalsIgnoreCase(sort)) {
+            orderredSpeakerList.sort(sortByLastName);
+        }
+
+        return orderredSpeakerList;
     }
 }
