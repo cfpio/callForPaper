@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -51,18 +52,29 @@ public class SpeakersController {
             stateList.add(Proposal.State.PRESENT);
         }
 
+        List<String> sortList = new ArrayList<>();
+        if (sort != null) {
+            sortList = Arrays.stream(sort.split(","))
+                .filter(s -> User.AUTHORIZED_SORTS.contains(s.toLowerCase()))
+                .collect(Collectors.toList());
+        }
+
         UserQuery query = new UserQuery()
             .setEventId(event)
             .setStates(stateList)
-            .setSort(sort)
-            .setOrder(order);
+            .setSort(sortList)
+            .setOrder(order.equalsIgnoreCase("desc") ? "desc" : "asc");
 
         LOGGER.info("Search Speakers {}", query);
         List<User> u = users.findAll(query);
         LOGGER.debug("Found {} Speakers", u.size());
 
         if (user == null || !user.hasRole(ADMIN)) {
-            u.forEach(User::cleanPrivatesInformations);
+            List<User> cleanedUsers = new ArrayList<>();
+            for (User us : u) {
+                cleanedUsers.add(us.cleanPrivatesInformations());
+            }
+            u = cleanedUsers;
         }
 
         return u;

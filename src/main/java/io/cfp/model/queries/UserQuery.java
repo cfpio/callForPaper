@@ -14,11 +14,16 @@ public class UserQuery {
     private String email;
     private List<Proposal.State> states = new ArrayList<>();
     private String eventId;
-    private String sort;
+    private List<String> sort = new ArrayList<>();
     private String order;
 
-    public UserQuery addStates(Proposal.State... states) {
+    public UserQuery addState(Proposal.State... states) {
         this.states.addAll(Arrays.asList(states));
+        return this;
+    }
+
+    public UserQuery addSort(String... sort) {
+        this.sort.addAll(Arrays.asList(sort));
         return this;
     }
 

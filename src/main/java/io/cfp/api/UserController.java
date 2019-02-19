@@ -76,12 +76,19 @@ public class UserController {
                 .collect(Collectors.toList());
         }
 
+        List<String> sortList = new ArrayList<>();
+        if (sort != null) {
+            sortList = Arrays.stream(sort.split(","))
+                .filter(s -> Proposal.AUTHORIZED_SORTS.contains(s.toLowerCase()))
+                .collect(Collectors.toList());
+        }
+
         ProposalQuery query = new ProposalQuery()
             .setEventId(event)
             .setStates(stateList)
             .setUserId(user.getId())
-            .setSort(sort)
-            .setOrder(order.equalsIgnoreCase("desc")?"desc":"asc");
+            .setSort(sortList)
+            .setOrder(order.equalsIgnoreCase("desc") ? "desc" : "asc");
 
         LOGGER.info("Get user {} proposals : {}", user.getId(), query);
         List<Proposal> p = proposals.findAll(query);

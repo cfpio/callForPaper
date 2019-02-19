@@ -34,6 +34,8 @@ import java.util.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class User {
 
+    public static final List<String> AUTHORIZED_SORTS = Arrays.asList("lastname", "firstname", "gender", "language", "company");
+
     public enum Gender {
         MALE, FEMALE
     }

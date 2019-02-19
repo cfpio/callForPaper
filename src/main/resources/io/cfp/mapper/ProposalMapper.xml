@@ -76,7 +76,10 @@
             </if>
         </where>
         <if test="sort">
-            ORDER BY #{sort} #{order}
+            ORDER BY
+            <foreach item="sortItem" collection="sort" separator=",">
+                ${sortItem} ${order}
+            </foreach>
         </if>
     </select>
 

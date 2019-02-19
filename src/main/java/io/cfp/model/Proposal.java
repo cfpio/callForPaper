@@ -26,6 +26,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -35,6 +36,8 @@ import java.util.Set;
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Proposal {
+
+    public static final List<String> AUTHORIZED_SORTS = Arrays.asList("state", "name", "language", "tracklabel", "difficulty", "added");
 
     public enum State { DRAFT, CONFIRMED, PRESENT, ACCEPTED, REFUSED, BACKUP }
 

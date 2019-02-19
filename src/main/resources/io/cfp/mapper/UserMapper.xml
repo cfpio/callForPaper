@@ -16,14 +16,17 @@
             </if>
             <if test="states.size != 0">
                 AND p.state IN
-                <foreach item="item" index="index" collection="states" open="(" separator="," close=")">
+                <foreach item="item" collection="states" open="(" separator="," close=")">
                     #{item}
                 </foreach>
                 AND p.event_id = #{eventId}
             </if>
         </where>
         <if test="sort">
-            ORDER BY #{sort} #{order}
+            ORDER BY
+            <foreach item="sortItem" collection="sort" separator=",">
+                ${sortItem} ${order}
+            </foreach>
         </if>
     </select>
 

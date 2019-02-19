@@ -99,11 +99,18 @@ public class ProposalsController {
                 .collect(Collectors.toList());
         }
 
+        List<String> sortList = new ArrayList<>();
+        if (sort != null) {
+            sortList = Arrays.stream(sort.split(","))
+                .filter(s -> Proposal.AUTHORIZED_SORTS.contains(s.toLowerCase()))
+                .collect(Collectors.toList());
+        }
+
         ProposalQuery query = new ProposalQuery()
             .setEventId(event)
             .setStates(stateList)
             .setUserId(userId)
-            .setSort(sort)
+            .setSort(sortList)
             .setOrder(order.equalsIgnoreCase("desc") ? "desc" : "asc");
 
         LOGGER.info("Search Proposals : {}", query);

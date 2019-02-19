@@ -18,7 +18,7 @@ public class ProposalQuery {
     private String track;
     private String room;
     private String format;
-    private String sort;
+    private List<String> sort = new ArrayList<>();
     private String order;
 
     public ProposalQuery addStates(Proposal.State... states) {
@@ -26,4 +26,8 @@ public class ProposalQuery {
         return this;
     }
 
+    public ProposalQuery addSort(String... sort) {
+        this.sort.addAll(Arrays.asList(sort));
+        return this;
+    }
 }
