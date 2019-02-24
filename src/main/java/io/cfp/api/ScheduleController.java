@@ -53,6 +53,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 @RestController
 @RequestMapping(value = { "/v1/schedule", "/api/schedule" }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -86,7 +87,7 @@ public class ScheduleController {
 
                 // speakers
                 String speakers = t.getSpeaker().getFirstname() + " " + t.getSpeaker().getLastname();
-                if (t.getCospeakers() != null) {
+                if (isNotEmpty(t.getCospeakers())) {
                     speakers += ", " + t.getCospeakers().stream().map(c -> c.getFirstname() + " " + c.getLastname()).collect(Collectors.joining(", "));
                 }
                 schedule.setSpeakers(speakers);
@@ -243,7 +244,7 @@ public class ScheduleController {
 
             // speakers
             String speakers = t.getSpeaker().getFirstname() + " " + t.getSpeaker().getLastname();
-            if (t.getCospeakers() != null) {
+            if (isNotEmpty(t.getCospeakers())) {
                 speakers += ", " + t.getCospeakers().stream().map(c -> c.getFirstname() + " " + c.getLastname()).collect(Collectors.joining(", "));
             }
             schedule.setSpeakers(speakers);

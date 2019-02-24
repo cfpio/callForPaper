@@ -53,6 +53,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 /**
  * Created by Nicolas on 30/01/2016.
@@ -94,11 +95,11 @@ public class ScheduleController {
                 Schedule schedule = new Schedule(t.getId(), t.getName(), t.getDescription());
 
                 // speakers
-                String spreakers = t.getUser().getFirstname() + " " + t.getUser().getLastname();
-                if (t.getCospeakers() != null) {
-                    spreakers += ", " + t.getCospeakers().stream().map(c -> c.getFirstname() + " " + c.getLastname()).collect(Collectors.joining(", "));
+                String speakers = t.getUser().getFirstname() + " " + t.getUser().getLastname();
+                if (isNotEmpty(t.getCospeakers())) {
+                    speakers += ", " + t.getCospeakers().stream().map(c -> c.getFirstname() + " " + c.getLastname()).collect(Collectors.joining(", "));
                 }
-                schedule.setSpeakers(spreakers);
+                schedule.setSpeakers(speakers);
 
                 schedule.setEventType(t.getTrack().getLibelle());
                 schedule.setFormat(t.getFormat().getName());
@@ -205,11 +206,11 @@ public class ScheduleController {
             Schedule schedule = new Schedule(t.getId(), t.getName(), t.getDescription());
 
             // speakers
-            String spreakers = t.getSpeaker().getFirstname() + " " + t.getSpeaker().getLastname();
-            if (t.getCospeakers() != null) {
-                spreakers += ", " + t.getCospeakers().stream().map(c -> c.getFirstname() + " " + c.getLastname()).collect(Collectors.joining(", "));
+            String speakers = t.getSpeaker().getFirstname() + " " + t.getSpeaker().getLastname();
+            if (isNotEmpty(t.getCospeakers())) {
+                speakers += ", " + t.getCospeakers().stream().map(c -> c.getFirstname() + " " + c.getLastname()).collect(Collectors.joining(", "));
             }
-            schedule.setSpeakers(spreakers);
+            schedule.setSpeakers(speakers);
 
             // event_type
             schedule.setEventType(t.getTrackLabel());
