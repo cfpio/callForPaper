@@ -197,7 +197,7 @@ public class ScheduleController {
         String hour = eventStart.format(DateTimeFormatter.ofPattern("HH:mm"));
 
         Proposal talk = proposals.findById(talkId, eventId);
-        talk.setState(Proposal.State.ACCEPTED);
+        talk.setState(Proposal.State.PRESENT);
         talk.setSchedule(eventDate);
         talk.setScheduleHour(hour);
         if (e.getResourceId() != null) {
