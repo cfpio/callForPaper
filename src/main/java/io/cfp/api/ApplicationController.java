@@ -31,11 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -69,14 +65,14 @@ public class ApplicationController {
     }
 
 
-    @PostMapping()
+    @PostMapping
     @Secured(Role.OWNER)
-    public void setApplicationSettings(@RequestBody ApplicationSettings settings) throws NotFoundException, BadRequestException {
+    public void setApplicationSettings(@RequestBody ApplicationSettings settings,
+                                       @TenantId String eventId) throws NotFoundException, BadRequestException {
 
-        final String name = io.cfp.entity.Event.current();
-        Event event = events.findOne(name);
+        Event event = events.findOne(eventId);
         if (event == null) {
-            throw new NotFoundException("No event with ID: " + name);
+            throw new NotFoundException("No event with ID: " + eventId);
         }
 
         DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
