@@ -22,6 +22,7 @@ package io.cfp.controller;
 
 import io.cfp.entity.Role;
 import io.cfp.service.admin.config.ApplicationConfigService;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
@@ -32,17 +33,26 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 
 /**
  * Created by tmaugin on 16/07/2015.
  * SII
  */
 @RestController
-@RequestMapping(value = { "/v0/config", "/api/config" }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = { "/v0/config" }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@Deprecated
 public class ConfigController {
+
+    private static final Logger LOGGER = getLogger(ConfigController.class);
 
     @Autowired
     private ApplicationConfigService applicationConfigService;
+
+    public ConfigController() {
+     LOGGER.info("EHLLLO");
+    }
 
     /**
      * Disable or enable submission of new talks

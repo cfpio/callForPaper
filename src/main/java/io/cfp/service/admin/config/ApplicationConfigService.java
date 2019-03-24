@@ -20,18 +20,18 @@
 
 package io.cfp.service.admin.config;
 
+import io.cfp.dto.ApplicationSettings;
+import io.cfp.entity.CfpConfig;
+import io.cfp.entity.Event;
+import io.cfp.mapper.EventMapper;
+import io.cfp.repository.CfpConfigRepo;
+import io.cfp.repository.EventRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import io.cfp.dto.ApplicationSettings;
-import io.cfp.entity.CfpConfig;
-import io.cfp.entity.Event;
-import io.cfp.repository.CfpConfigRepo;
-import io.cfp.repository.EventRepository;
 
 /**
  * Created by lhuet on 21/11/15.
@@ -50,7 +50,11 @@ public class ApplicationConfigService {
     @Autowired
     private EventRepository events;
 
-    public ApplicationSettings getAppConfig() {
+    @Autowired
+    private EventMapper eventMapper;
+
+    @Deprecated
+    private ApplicationSettings getAppConfig() {
         ApplicationSettings applicationSettings = new ApplicationSettings(events.findOne(Event.current()));
         applicationSettings.setAuthServer(authServer);
         return applicationSettings;
@@ -61,6 +65,7 @@ public class ApplicationConfigService {
     }
 
     @Transactional
+    @Deprecated
     public void openCfp() {
         Event event = events.findOne(Event.current());
         event.setOpen(true);
@@ -68,6 +73,14 @@ public class ApplicationConfigService {
     }
 
     @Transactional
+    public void openCfp(String eventId) {
+        io.cfp.model.Event event = eventMapper.findOne(eventId);
+        event.setOpen(true);
+        eventMapper.update(event);
+    }
+
+    @Transactional
+    @Deprecated
     public void closeCfp() {
         Event event = events.findOne(Event.current());
         event.setOpen(false);
@@ -76,6 +89,14 @@ public class ApplicationConfigService {
     }
 
     @Transactional
+    public void closeCfp(String eventId) {
+        io.cfp.model.Event event = eventMapper.findOne(eventId);
+        event.setOpen(false);
+        eventMapper.update(event);
+    }
+
+    @Transactional
+    @Deprecated
     public void saveConf(String key, String value) {
         CfpConfig conf = cfpConfigRepo.findByKeyAndEventId(key, Event.current());
         conf.setValue(value);
