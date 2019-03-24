@@ -56,6 +56,12 @@ public class ProposalMapperTest {
     }
 
     @Test
+    public void should_count_all_speakers_by_eventId() {
+        Integer numberOfProposals = proposalMapper.countSubmissionsByEventId(EVENT_ID);
+        assertThat(numberOfProposals).isEqualTo(3);
+    }
+
+    @Test
     public void should_count_all_proposals_by_userId() {
         ProposalQuery proposalQuery = new ProposalQuery();
         proposalQuery.setUserId(USER_ID);

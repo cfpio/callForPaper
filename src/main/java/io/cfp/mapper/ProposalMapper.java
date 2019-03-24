@@ -40,6 +40,7 @@ public interface ProposalMapper {
     int updateAllStateWhere(@Param("eventId") String event, @Param("newState") Proposal.State refused, @Param("oldState") Proposal.State confirmed);
 
     int count(ProposalQuery proposalQuery);
+    int countSubmissionsByEventId(@Param("eventId") String eventId);
 
     int deleteAllByEventId(String event);
 

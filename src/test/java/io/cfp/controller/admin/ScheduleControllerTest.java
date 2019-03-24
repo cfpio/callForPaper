@@ -23,12 +23,11 @@ package io.cfp.controller.admin;
 import com.jayway.restassured.module.mockmvc.RestAssuredMockMvc;
 import com.jayway.restassured.module.mockmvc.response.MockMvcResponse;
 import io.cfp.controller.ScheduleController;
-import io.cfp.dto.TalkUser;
-import io.cfp.dto.user.CospeakerProfil;
-import io.cfp.dto.user.UserProfil;
-import io.cfp.entity.Talk;
 import io.cfp.mapper.ProposalMapper;
 import io.cfp.mapper.RoomMapper;
+import io.cfp.model.Proposal;
+import io.cfp.model.User;
+import io.cfp.model.queries.ProposalQuery;
 import io.cfp.repository.TalkRepo;
 import io.cfp.repository.UserRepo;
 import io.cfp.service.TalkUserService;
@@ -47,7 +46,7 @@ import java.util.Set;
 import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 /**
@@ -84,52 +83,56 @@ public class ScheduleControllerTest {
     }
 
     @Test
-    public void testGetScheduleList() throws Exception {
+    public void testGetScheduleList() {
 
         // Given
-        UserProfil userProfil = new UserProfil(0, "John", "Doe", "john@doe.net");
+        User userProfil = new User().setId(0)
+            .setFirstname("John")
+            .setLastname("Doe")
+            .setEmail("john@doe.net");
+
         // TalkUser 1
-        TalkUser talkUser1 = new TalkUser();
+        Proposal talkUser1 = new Proposal();
         talkUser1.setId(1);
         talkUser1.setName("A talk 1");
         talkUser1.setDescription("A description");
         talkUser1.setSpeaker(userProfil);
 
         // TalkUser 2
-        TalkUser talkUser2 = new TalkUser();
+        Proposal talkUser2 = new Proposal();
         talkUser2.setId(2);
         talkUser2.setName("A talk 2");
         talkUser2.setDescription("A description");
         talkUser2.setSpeaker(userProfil);
 
-        CospeakerProfil cospeakerProfil1 = new CospeakerProfil();
-        cospeakerProfil1.setId(1);
-        cospeakerProfil1.setFirstname("Johnny");
-        cospeakerProfil1.setLastname("Deep");
+        User cospeakerProfil1 = new User()
+        .setId(1)
+        .setFirstname("Johnny")
+        .setLastname("Deep");
 
-        CospeakerProfil cospeakerProfil2 = new CospeakerProfil();
-        cospeakerProfil2.setId(2);
-        cospeakerProfil2.setFirstname("Alain");
-        cospeakerProfil2.setLastname("Connu");
+        User cospeakerProfil2 = new User()
+        .setId(2)
+        .setFirstname("Alain")
+        .setLastname("Connu");
 
-        Set<CospeakerProfil> cospeakerProfils = new HashSet<>();
+        Set<User> cospeakerProfils = new HashSet<>();
         cospeakerProfils.add(cospeakerProfil1);
         cospeakerProfils.add(cospeakerProfil2);
         talkUser2.setCospeakers(cospeakerProfils);
 
         // TalkUser 3
-        TalkUser talkUser3 = new TalkUser();
+        Proposal talkUser3 = new Proposal();
         talkUser3.setId(3);
         talkUser3.setName("A talk 3");
         // no description
         talkUser3.setSpeaker(userProfil);
 
-        List<TalkUser> talkList = new ArrayList<>();
+        List<Proposal> talkList = new ArrayList<>();
         talkList.add(talkUser1);
         talkList.add(talkUser2);
         talkList.add(talkUser3);
 
-        when(talkUserService.findAll(anyString(), Talk.State.CONFIRMED)).thenReturn(talkList);
+        when(proposalMapper.findAll(any(ProposalQuery.class))).thenReturn(talkList);
 
         MockMvcResponse mockMvcResponse = given().contentType("application/json").when().get("/v0/schedule/confirmed");
 

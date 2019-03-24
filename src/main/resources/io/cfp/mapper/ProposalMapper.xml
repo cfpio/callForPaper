@@ -109,6 +109,16 @@
         </where>
     </select>
 
+    <select id="countSubmissionsByEventId" resultType="int">
+        SELECT count(*)
+        FROM submissions s
+        <where>
+            <if test="eventId">
+                s.event_id = #{eventId}
+            </if>
+        </where>
+    </select>
+
     <insert id="insert" parameterType="io.cfp.model.Proposal" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO proposals (
             state,
