@@ -23,13 +23,13 @@ package io.cfp.service;
 import io.cfp.dto.EventSched;
 import io.cfp.dto.TalkAdmin;
 import io.cfp.entity.Event;
-import io.cfp.entity.Rate;
 import io.cfp.entity.Talk;
 import io.cfp.entity.User;
 import io.cfp.mapper.ProposalMapper;
+import io.cfp.mapper.RateMapper;
 import io.cfp.model.Proposal;
 import io.cfp.model.queries.ProposalQuery;
-import io.cfp.repository.RateRepo;
+import io.cfp.model.queries.RateQuery;
 import io.cfp.repository.TalkRepo;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +58,7 @@ public class TalkAdminService {
     private ProposalMapper proposalMapper;
 
     @Autowired
-    private RateRepo rateRepo;
+    private RateMapper rateMapper;
 
     @Autowired
     private MapperFacade mapper;
@@ -69,23 +69,24 @@ public class TalkAdminService {
      * @param states List of states the talk must be
      * @return List of talks
      */
-    public List<TalkAdmin> findAll(String eventId, int userId, Talk.State... states) {
-        List<TalkAdmin> talks = talkRepo.findByEventIdAndStatesFetch(eventId, Arrays.asList(states))
+    public List<TalkAdmin> findAll(String eventId, int userId, Proposal.State... states) {
+
+        List<TalkAdmin> talks = proposalMapper.findAll(new ProposalQuery().setEventId(eventId).addStates(states))
             .stream().map(TalkAdmin::new)
             .collect(Collectors.toList());
 
-        List<Rate> rates = rateRepo.findAllFetchAdmin(Event.current());
+        List<io.cfp.model.Rate> rates = rateMapper.findAll(new RateQuery().setEventId(eventId));
 
-        Map<Integer, List<Rate>> reviewed = rates.stream()
-            .filter(r -> userId == r.getAdminUser().getId())
+        Map<Integer, List<io.cfp.model.Rate>> reviewed = rates.stream()
+            .filter(r -> userId == r.getUser().getId())
             .collect(groupingBy(r -> r.getTalk().getId()));
 
         Map<Integer, Double> averages = rates.stream()
             .filter(r -> r.getRate() > 0)
-            .collect(groupingBy(r -> r.getTalk().getId(), averagingInt(Rate::getRate)));
+            .collect(groupingBy(r -> r.getTalk().getId(), averagingInt(io.cfp.model.Rate::getRate)));
 
         Map<Integer, List<String>> voters = rates.stream()
-            .collect(groupingBy(r -> r.getTalk().getId(), mapping(r -> r.getAdminUser().getEmail(), toList())));
+            .collect(groupingBy(r -> r.getTalk().getId(), mapping(r -> r.getUser().getEmail(), toList())));
 
         for (TalkAdmin talk : talks) {
             int talkId = talk.getId();

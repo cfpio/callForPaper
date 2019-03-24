@@ -2,11 +2,11 @@ package io.cfp.service;
 
 import io.cfp.dto.TalkAdmin;
 import io.cfp.entity.Format;
-import io.cfp.entity.Rate;
-import io.cfp.entity.Talk;
 import io.cfp.entity.Track;
-import io.cfp.repository.RateRepo;
-import io.cfp.repository.TalkRepo;
+import io.cfp.mapper.ProposalMapper;
+import io.cfp.mapper.RateMapper;
+import io.cfp.model.Proposal;
+import io.cfp.model.queries.ProposalQuery;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -14,11 +14,11 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -30,41 +30,42 @@ public class TalkAdminServiceTest {
 
 
     @Mock
-    private TalkRepo talkRepo;
+    private ProposalMapper proposalMapper;
 
     @Mock
-    private RateRepo rateRepo;
+    private RateMapper rateMapper;
 
     @Test
     public void should_return_all_talkAdmins() {
 
-        io.cfp.entity.User adminUser = new io.cfp.entity.User();
+        io.cfp.model.User adminUser = new io.cfp.model.User();
         adminUser.setId(USER_ID);
 
-        Talk talk = new Talk();
+        Proposal talk = new Proposal();
         talk.setId(20);
         Format format = new Format();
         format.setId(30);
-        talk.setFormat(format);
+        talk.setFormat(30);
         Track track = new Track();
         track.setId(40);
-        talk.setTrack(track);
-        talk.setUser(adminUser);
+        talk.setTrackId(40);
+        talk.setSpeaker(adminUser);
         talk.setCospeakers(new HashSet<>());
+        talk.setState(Proposal.State.ACCEPTED);
 
-        List<Talk> talksAdminList = new ArrayList<>();
+        List<Proposal> talksAdminList = new ArrayList<>();
         talksAdminList.add(talk);
-        when(talkRepo.findByEventIdAndStatesFetch("EVENT_ID", Collections.emptyList())).thenReturn(talksAdminList);
+        when(proposalMapper.findAll(any(ProposalQuery.class))).thenReturn(talksAdminList);
 
-        List<Rate> rates = new ArrayList<>();
+        List<io.cfp.model.Rate> rates = new ArrayList<>();
 
-        Rate rate = new Rate();
+        io.cfp.model.Rate rate = new io.cfp.model.Rate();
 
-        rate.setAdminUser(adminUser);
+        rate.setUser(adminUser);
         rate.setTalk(talk);
 
         rates.add(rate);
-        when(rateRepo.findAllFetchAdmin("EVENT_ID")).thenReturn(rates);
+        when(rateMapper.findAllFetchAdmin("EVENT_ID")).thenReturn(rates);
 
         List<TalkAdmin> returnedTalkAdminList = talkAdminService.findAll("EVENT_ID", USER_ID);
         assertThat(returnedTalkAdminList).isNotEmpty();

@@ -27,7 +27,6 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import io.cfp.dto.EventSched;
 import io.cfp.dto.TalkAdmin;
 import io.cfp.dto.TalkAdminCsv;
-import io.cfp.entity.Talk;
 import io.cfp.model.Proposal;
 import io.cfp.model.Role;
 import io.cfp.model.User;
@@ -78,11 +77,11 @@ public class ExportController {
         ObjectWriter writer = mapper.writer(schema);
         writer.getFactory().disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
 
-        Talk.State[] accept;
+        Proposal.State[] accept;
         if (status == null) {
-            accept = new Talk.State[] { Talk.State.CONFIRMED, Talk.State.ACCEPTED, Talk.State.REFUSED, Talk.State.BACKUP };
+            accept = new Proposal.State[] { Proposal.State.CONFIRMED, Proposal.State.ACCEPTED, Proposal.State.REFUSED, Proposal.State.BACKUP };
         } else {
-            accept = new Talk.State[] { Talk.State.valueOf(status) };
+            accept = new Proposal.State[] { Proposal.State.valueOf(status) };
         }
 
         List<TalkAdmin> sessions =  talkService.findAll(eventId, user.getId(), accept);
