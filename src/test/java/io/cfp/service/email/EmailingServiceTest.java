@@ -24,7 +24,6 @@ import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import freemarker.template.TemplateExceptionHandler;
 import io.cfp.config.MailConfig;
-import io.cfp.dto.ApplicationSettings;
 import io.cfp.dto.TalkAdmin;
 import io.cfp.dto.TalkUser;
 import io.cfp.dto.user.UserProfil;
@@ -57,11 +56,7 @@ import java.io.IOException;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyMap;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isNull;
-import static org.mockito.Matchers.notNull;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -74,10 +69,6 @@ public class EmailingServiceTest {
     @Spy
     private EmailingService emailingService;
 
-    private GreenMail testSmtp;
-
-    @Autowired
-    private ApplicationConfigService applicationConfigService;
 
     @Mock
     private UserRepo users;
@@ -87,6 +78,8 @@ public class EmailingServiceTest {
 
     @Autowired
     private freemarker.template.Configuration freemarkerCfg;
+
+    private GreenMail testSmtp;
 
     private String emailSender;
 
@@ -167,9 +160,6 @@ public class EmailingServiceTest {
 
         testSmtp = new GreenMail(ServerSetupTest.SMTP);
         testSmtp.start();
-
-        // Don't forget to set the test port!
-        when(applicationConfigService.getAppConfig()).thenReturn(new ApplicationSettings());
 
     }
 
