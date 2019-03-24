@@ -79,6 +79,26 @@ public class UserProfil {
         }
     }
 
+    public UserProfil(io.cfp.model.User user, boolean includePrivateData) {
+        this.id = user.getId();
+        this.firstname = user.getFirstname();
+        this.lastname = user.getLastname();
+        this.company = user.getCompany();
+        this.twitter = user.getTwitter();
+        this.googleplus = user.getGoogleplus();
+        this.github = user.getGithub();
+        this.social = user.getSocial();
+        this.language = user.getLanguage();
+        this.bio = user.getBio();
+        this.imageProfilURL = user.getImageProfilURL();
+        if (includePrivateData) {
+            this.email = user.getEmail();
+            this.phone = user.getPhone();
+            this.gender = User.Gender.valueOf(user.getGender().name());
+            this.tshirtSize = User.TshirtSize.valueOf(user.getTshirtSize().name());
+        }
+    }
+
     public String getShortName() {
         String res = "";
         if (firstname != null && firstname.length() > 0) {

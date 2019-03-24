@@ -24,17 +24,16 @@ import com.sendgrid.SendGrid;
 import com.sendgrid.SendGridException;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
-import io.cfp.dto.TalkAdmin;
 import io.cfp.dto.TalkUser;
 import io.cfp.dto.user.CospeakerProfil;
 import io.cfp.dto.user.UserProfil;
 import io.cfp.entity.Event;
-import io.cfp.model.Role;
 import io.cfp.entity.Talk;
 import io.cfp.entity.User;
 import io.cfp.mapper.EventMapper;
+import io.cfp.mapper.UserMapper;
 import io.cfp.model.Proposal;
-import io.cfp.repository.UserRepo;
+import io.cfp.model.Role;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,7 +64,7 @@ public class EmailingService {
     private static final Logger LOGGER = LoggerFactory.getLogger(EmailingService.class);
 
     @Autowired
-    private UserRepo users;
+    private UserMapper userMapper;
 
     @Autowired
     private EventMapper eventMapper;
@@ -184,7 +183,7 @@ public class EmailingService {
     public void sendNewCommentToSpeaker(io.cfp.model.User speaker, Proposal proposal, String comment) {
         LOGGER.debug("Sending new comment email to speaker '{}' for talk '{}'", speaker.getEmail(), proposal.getName());
 
-        List<String> bcc = users.findEmailByRole(Role.ADMIN, proposal.getEventId());
+        List<String> bcc = userMapper.findEmailByRole(Role.ADMIN, proposal.getEventId());
 
         Map<String, Object> params = new HashMap<>();
         params.put("name", speaker.getFirstname());
@@ -193,31 +192,6 @@ public class EmailingService {
         params.put("subject", getSubject("newMessage", speaker.getLocale(), proposal.getName()));
 
         createAndSendEmail(proposal.getEventId(), "newMessage.html", speaker.getEmail(), params, null, bcc, speaker.getLocale(), comment);
-    }
-
-    /**
-     * Send an email to a speaker to notify him that an administrator wrote a
-     * new comment about his talk.
-     *
-     * @param speaker the speaker to write to
-     * @param talk    talk under review
-     * @param locale
-     */
-    @Async
-    @Transactional
-    @Deprecated
-    public void sendNewCommentToSpeaker(User speaker, TalkAdmin talk, Locale locale, String comment) {
-        LOGGER.debug("Sending new comment email to speaker '{}' for talk '{}'", speaker.getEmail(), talk.getName());
-
-        List<String> bcc = users.findEmailByRole(Role.ADMIN, Event.current());
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", speaker.getFirstname());
-        params.put("talk", talk.getName());
-        params.put("id", String.valueOf(talk.getId()));
-        params.put("subject", getSubject("newMessage", locale, talk.getName()));
-
-        createAndSendEmail(Event.current(), "newMessage.html", speaker.getEmail(), params, null, bcc, locale, comment);
     }
 
     /**
@@ -231,7 +205,7 @@ public class EmailingService {
     public void sendNewCommentToAdmins(io.cfp.model.User speaker, Proposal proposal, String comment) {
         LOGGER.debug("Sending new comment email to admins for talk '{}'", proposal.getName());
 
-        List<String> bcc = users.findEmailByRole(Role.ADMIN, proposal.getEventId());
+        List<String> bcc = userMapper.findEmailByRole(Role.ADMIN, proposal.getEventId());
         String speakerName = speaker.getFirstname() + " " + speaker.getLastname();
 
         Map<String, Object> params = new HashMap<>();
@@ -243,32 +217,6 @@ public class EmailingService {
         createAndSendEmail(proposal.getEventId(), "newMessageAdmin.html", emailSender, params, null, bcc, speaker.getLocale(), comment);
     }
 
-
-    /**
-     * Send an email to administrators to notify them that a speaker wrote a
-     * new comment on his talk.
-     *
-     * @param speaker the speaker writing this message
-     * @param talk    talk under review
-     * @param locale
-     */
-    @Async
-    @Transactional
-    @Deprecated
-    public void sendNewCommentToAdmins(User speaker, TalkUser talk, Locale locale, String comment) {
-        LOGGER.debug("Sending new comment email to admins for talk '{}'", talk.getName());
-
-        List<String> bcc = users.findEmailByRole(Role.ADMIN, Event.current());
-        String speakerName = speaker.getFirstname() + " " + speaker.getLastname();
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", speakerName);
-        params.put("talk", talk.getName());
-        params.put("id", String.valueOf(talk.getId()));
-        params.put("subject", getSubject("newMessageAdmin", locale, speakerName, talk.getName()));
-
-        createAndSendEmail(Event.current(), "newMessageAdmin.html", emailSender, params, null, bcc, locale, comment);
-    }
 
     /**
      * Send Confirmation of selection.

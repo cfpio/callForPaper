@@ -25,11 +25,11 @@ import com.jayway.restassured.module.mockmvc.response.MockMvcResponse;
 import io.cfp.controller.ScheduleController;
 import io.cfp.mapper.ProposalMapper;
 import io.cfp.mapper.RoomMapper;
+import io.cfp.mapper.UserMapper;
 import io.cfp.model.Proposal;
 import io.cfp.model.User;
 import io.cfp.model.queries.ProposalQuery;
 import io.cfp.repository.TalkRepo;
-import io.cfp.repository.UserRepo;
 import io.cfp.service.TalkUserService;
 import io.cfp.service.email.EmailingService;
 import org.junit.Before;
@@ -72,13 +72,13 @@ public class ScheduleControllerTest {
     private ProposalMapper proposalMapper;
 
     @Mock
-    private UserRepo users;
+    private UserMapper userMapper;
 
     private ScheduleController scheduleController;
 
     @Before
     public void setup() {
-        scheduleController = new ScheduleController(talkUserService, proposalMapper, talks, roomMapper, users, emailingService);
+        scheduleController = new ScheduleController(talkUserService, proposalMapper, talks, roomMapper, userMapper, emailingService);
         RestAssuredMockMvc.standaloneSetup(scheduleController);
     }
 

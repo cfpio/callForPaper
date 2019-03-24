@@ -5,7 +5,6 @@ import io.cfp.WebConfiguration;
 import io.cfp.config.exception.GlobalControllerExceptionHandler;
 import io.cfp.config.filter.AuthFilter;
 import io.cfp.mapper.RoleMapper;
-import io.cfp.repository.UserRepo;
 import io.cfp.service.auth.AuthUtils;
 import io.cfp.service.user.SecurityUserService;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -23,11 +22,6 @@ class ApiTestApplication {
     @Bean
     public SecurityUserService securityUserService() {
         return new SecurityUserService();
-    }
-
-    @Bean
-    public UserRepo userRepo() {
-        return mock(UserRepo.class);
     }
 
     @Bean

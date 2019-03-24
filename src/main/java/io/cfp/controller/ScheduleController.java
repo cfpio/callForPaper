@@ -28,14 +28,14 @@ import io.cfp.dto.user.UserProfil;
 import io.cfp.entity.Event;
 import io.cfp.entity.Role;
 import io.cfp.entity.Talk;
-import io.cfp.entity.User;
 import io.cfp.mapper.ProposalMapper;
 import io.cfp.mapper.RoomMapper;
+import io.cfp.mapper.UserMapper;
 import io.cfp.model.Proposal;
 import io.cfp.model.queries.ProposalQuery;
+import io.cfp.model.queries.UserQuery;
 import io.cfp.multitenant.TenantId;
 import io.cfp.repository.TalkRepo;
-import io.cfp.repository.UserRepo;
 import io.cfp.service.TalkUserService;
 import io.cfp.service.email.EmailingService;
 import org.slf4j.Logger;
@@ -45,6 +45,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -78,7 +79,7 @@ public class ScheduleController {
 
     private final RoomMapper roomMapper;
 
-    private final UserRepo users;
+    private final UserMapper userMapper;
 
     private final EmailingService emailingService;
 
@@ -87,13 +88,13 @@ public class ScheduleController {
                               ProposalMapper proposalMapper,
                               TalkRepo talks,
                               RoomMapper roomMapper,
-                              UserRepo users,
+                              UserMapper userMapper,
                               EmailingService emailingService) {
         this.proposalMapper = proposalMapper;
         this.talkUserService = talkUserService;
         this.talks = talks;
         this.roomMapper = roomMapper;
-        this.users = users;
+        this.userMapper = userMapper;
         this.emailingService = emailingService;
     }
 
@@ -199,9 +200,10 @@ public class ScheduleController {
      * @return Speakers Set
      */
     @RequestMapping(value = "/speakers", method = RequestMethod.GET)
-    public List<UserProfil> getSpeakerList() {
-        boolean isAdmin = User.getCurrent().hasRole(Role.ADMIN) ;
-        return users.findUserWithAcceptedProposal(Event.current()).stream()
+    public List<UserProfil> getSpeakerList(@AuthenticationPrincipal io.cfp.model.User user,
+                                           @TenantId String eventId) {
+        boolean isAdmin = user.hasRole(Role.ADMIN) ;
+        return userMapper.findAll(new UserQuery().setEventId(eventId).addState(Proposal.State.ACCEPTED)).stream()
             .map(u -> new UserProfil(u, isAdmin))
             .collect(Collectors.toList());
     }
@@ -252,21 +254,22 @@ public class ScheduleController {
      * @param filter , can be "accepted" or "refused", default is "all"
      *
      */
-    @RequestMapping(value = "/notification", method = RequestMethod.POST)
+    @PostMapping("/notification")
     @Secured(Role.ADMIN)
-    public void notifyScheduling(@RequestParam(defaultValue = "all", name = "filter") String filter) {
+    public void notifyScheduling(@RequestParam(defaultValue = "all", name = "filter") String filter,
+                                 @TenantId String eventId) {
         switch (filter) {
            case  "refused" :
-               List<Talk> refused = talks.findByEventIdAndStatesFetch(Event.current(), Collections.singleton(Talk.State.REFUSED));
+               List<Proposal> refused = proposalMapper.findAll(new ProposalQuery().setEventId(eventId).addStates(Proposal.State.REFUSED));
                sendRefusedMailsWithTempo(refused);
                break;
             case "accepted"  :
-               List<Talk> accepted = talks.findByEventIdAndStatesFetch(Event.current(), Collections.singleton(Talk.State.ACCEPTED));
+               List<Proposal> accepted = proposalMapper.findAll(new ProposalQuery().setEventId(eventId).addStates(Proposal.State.ACCEPTED));
                sendAcceptedMailsWithTempo(accepted);
                break;
             case "all"  :
-               sendAcceptedMailsWithTempo(talks.findByEventIdAndStatesFetch(Event.current(), Collections.singleton(Talk.State.ACCEPTED)));
-               sendRefusedMailsWithTempo(talks.findByEventIdAndStatesFetch(Event.current(), Collections.singleton(Talk.State.REFUSED)));
+               sendAcceptedMailsWithTempo(proposalMapper.findAll(new ProposalQuery().setEventId(eventId).addStates(Proposal.State.ACCEPTED)));
+               sendRefusedMailsWithTempo(proposalMapper.findAll(new ProposalQuery().setEventId(eventId).addStates(Proposal.State.REFUSED)));
                break;
 
         }
@@ -276,26 +279,26 @@ public class ScheduleController {
      * To help Google Compute Engine we wait 2 s between 2 mails.
      * @param accepted
      */
-    private void sendAcceptedMailsWithTempo(List<Talk> accepted) {
-        accepted.forEach(t -> {
+    private void sendAcceptedMailsWithTempo(List<Proposal> accepted) {
+        accepted.forEach(p -> {
                     try {
                         Thread.sleep(2000);
                     } catch (InterruptedException e) {
                         LOG.warn("Thread Interrupted Exception", e);
                     }
-                    emailingService.sendSelectionned(t, t.getUser().getLocale());
+                    emailingService.sendSelectionned(p, p.getSpeaker().getLocale());
                 }
         );
     }
 
-    private void sendRefusedMailsWithTempo(List<Talk> refused) {
-        refused.forEach(t -> {
+    private void sendRefusedMailsWithTempo(List<Proposal> refused) {
+        refused.forEach(p -> {
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
                 LOG.warn("Thread Interrupted Exception", e);
             }
-            emailingService.sendNotSelectionned(t, t.getUser().getLocale());
+            emailingService.sendNotSelectionned(p, p.getSpeaker().getLocale());
         });
     }
 

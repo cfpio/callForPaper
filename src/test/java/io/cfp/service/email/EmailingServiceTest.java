@@ -31,14 +31,13 @@ import io.cfp.entity.Event;
 import io.cfp.entity.Talk;
 import io.cfp.entity.User;
 import io.cfp.mapper.EventMapper;
+import io.cfp.mapper.UserMapper;
 import io.cfp.model.Proposal;
-import io.cfp.repository.UserRepo;
 import io.cfp.service.admin.config.ApplicationConfigService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,12 +66,11 @@ public class EmailingServiceTest {
     @Spy
     private EmailingService emailingService;
 
-
-    @Mock
-    private UserRepo users;
-
     @Autowired
     private EventMapper eventMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Autowired
     private freemarker.template.Configuration freemarkerCfg;
@@ -150,7 +148,7 @@ public class EmailingServiceTest {
 
         MockitoAnnotations.initMocks(this);
 
-        ReflectionTestUtils.setField(emailingService, "users", users);
+        ReflectionTestUtils.setField(emailingService, "userMapper", userMapper);
         ReflectionTestUtils.setField(emailingService, "eventMapper", eventMapper);
         ReflectionTestUtils.setField(emailingService, "freemarker", freemarkerCfg);
         ReflectionTestUtils.setField(emailingService, "emailSender", emailSender);
@@ -172,32 +170,6 @@ public class EmailingServiceTest {
         // Then
         verify(emailingService).processTemplate(eq(templatePath), anyMap(), anyString(), anyString());
         verify(emailingService).sendEmail(eq(CONTACT_MAIL), eq(JOHN_DOE_EMAIL), anyString(), anyString(), isNull(List.class), isNull(List.class));
-    }
-
-    @Test
-    public void sendNewCommentToSpeaker() {
-        // Given
-    	String templatePath = emailingService.getTemplatePath("newMessage.html", Locale.FRENCH);
-
-        // When
-        emailingService.sendNewCommentToSpeaker(user, talkAdmin, Locale.FRENCH, "commentaire");
-
-        // Then
-        verify(emailingService).processTemplate(eq(templatePath), anyMap(), anyString(), anyString());
-        verify(emailingService).sendEmail(eq(CONTACT_MAIL), eq(JOHN_DOE_EMAIL), anyString(), anyString(), isNull(List.class), notNull(List.class));
-    }
-
-    @Test
-    public void sendNewMessageToAdmins() {
-        // Given
-    	String templatePath = emailingService.getTemplatePath("newMessageAdmin.html", Locale.FRENCH);
-
-        // When
-        emailingService.sendNewCommentToAdmins(user, talkUser, Locale.FRENCH, "commentaire");
-
-        // Then
-        verify(emailingService).processTemplate(eq(templatePath), anyMap(), anyString(), anyString());
-        verify(emailingService).sendEmail(eq(CONTACT_MAIL), eq(emailSender), anyString(), anyString(), isNull(List.class), notNull(List.class));
     }
 
     @Test
@@ -423,13 +395,13 @@ public class EmailingServiceTest {
         }
 
         @Bean
-        public UserRepo userRepo() {
-            return mock(UserRepo.class);
+        public EventMapper eventMapper() {
+            return mock(EventMapper.class);
         }
 
         @Bean
-        public EventMapper eventMapper() {
-            return mock(EventMapper.class);
+        public UserMapper userMapper() {
+            return mock(UserMapper.class);
         }
 
         @Bean

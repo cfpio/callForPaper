@@ -21,10 +21,11 @@
 package io.cfp.service.user;
 
 import io.cfp.entity.Event;
-import io.cfp.entity.User;
 import io.cfp.mapper.RoleMapper;
+import io.cfp.mapper.UserMapper;
+import io.cfp.model.Role;
+import io.cfp.model.User;
 import io.cfp.model.queries.RoleQuery;
-import io.cfp.repository.UserRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,7 @@ public class SecurityUserService implements UserDetailsService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SecurityUserService.class);
 
     @Autowired
-	private UserRepo userRepo;
+    private UserMapper userMapper;
 
     @Autowired
 	private RoleMapper roleMapper;
@@ -56,9 +57,9 @@ public class SecurityUserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         LOGGER.debug("Authenticating {}", username);
         String lowercaseLogin = username.toLowerCase();
-        Optional<User> userFromDatabase = Optional.ofNullable(userRepo.findByEmail(lowercaseLogin));
+        Optional<User> userFromDatabase = Optional.ofNullable(userMapper.findByEmail(lowercaseLogin));
         return userFromDatabase.map(user -> {
-            List<io.cfp.model.Role> roles = roleMapper.findAll(new RoleQuery().setEventId(Event.current()).setUserId(user.getId()));
+            List<Role> roles = roleMapper.findAll(new RoleQuery().setEventId(Event.current()).setUserId(user.getId()));
             List<GrantedAuthority> grantedAuthorities = roles.stream()
                                                              .map(role -> new SimpleGrantedAuthority(role.getName()))
                                                              .collect(Collectors.toList());
