@@ -23,7 +23,8 @@ package io.cfp.service;
 import io.cfp.dto.TalkUser;
 import io.cfp.entity.Event;
 import io.cfp.entity.Talk;
-import io.cfp.repository.RoomRepo;
+import io.cfp.mapper.ProposalMapper;
+import io.cfp.model.Proposal;
 import io.cfp.repository.TalkRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,7 +49,7 @@ public class TalkUserService {
     private TalkRepo talkRepo;
 
     @Autowired
-    private RoomRepo rooms;
+    private ProposalMapper proposalMapper;
 
     /**
      * Retrieve all talks for a User
@@ -57,9 +58,9 @@ public class TalkUserService {
      *            List of states the talk must be
      * @return List of talks
      */
-    public List<TalkUser> findAll(Talk.State... states) {
-        return talkRepo.findByEventIdAndStatesFetch(Event.current(), Arrays.asList(states))
-            .stream().map(t -> new TalkUser(t))
+    public List<TalkUser> findAll(String eventId, Talk.State... states) {
+        return talkRepo.findByEventIdAndStatesFetch(eventId, Arrays.asList(states))
+            .stream().map(TalkUser::new)
             .collect(Collectors.toList());
     }
 
@@ -72,9 +73,9 @@ public class TalkUserService {
      *            List of states the talk must be
      * @return List of talks
      */
-    public List<TalkUser> findAll(int userId, Talk.State... states) {
-        return talkRepo.findByEventIdAndUserIdAndStateIn(Event.current(), userId, Arrays.asList(states))
-            .stream().map(t -> new TalkUser(t))
+    public List<TalkUser> findAll(String eventId, int userId, Talk.State... states) {
+        return talkRepo.findByEventIdAndUserIdAndStateIn(eventId, userId, Arrays.asList(states))
+            .stream().map(TalkUser::new)
             .collect(Collectors.toList());
     }
 
@@ -89,7 +90,7 @@ public class TalkUserService {
      */
     public List<TalkUser> findAllCospeakerTalks(int userId, Talk.State... states) {
         return talkRepo.findByEventIdAndCospeakerIdAndStateIn(Event.current(), userId, Arrays.asList(states))
-            .stream().map(t -> new TalkUser(t))
+            .stream().map(TalkUser::new)
             .collect(Collectors.toList());
     }
 
@@ -116,21 +117,21 @@ public class TalkUserService {
      * @return updated talk
      */
     @Deprecated
-    public TalkUser updateConfirmedTalk(int talkId, LocalDateTime eventStart, String room) {
+    public TalkUser updateConfirmedTalk(int talkId, LocalDateTime eventStart, String room, String eventId) {
 
         Date eventDate = Date.from(eventStart.atZone(ZoneId.systemDefault()).toInstant());
         String hour = eventStart.format(DateTimeFormatter.ofPattern("HH:mm"));
 
-        Talk talk = talkRepo.findByIdAndEventId(talkId, Event.current());
-        talk.setState(Talk.State.ACCEPTED);
-        talk.setDate(eventDate);
-        talk.setHeure(hour);
+        Proposal proposal = proposalMapper.findById(talkId, eventId);
+        proposal.setState(Proposal.State.ACCEPTED);
+        proposal.setSchedule(eventDate);
+        proposal.setScheduleHour(hour);
         if (room != null) {
-            talk.setRoom(rooms.getOne(Integer.parseInt(room)));
+            proposal.setRoomId(Integer.parseInt(room));
         }
-        talk = talkRepo.saveAndFlush(talk);
+        proposalMapper.updateSchedule(proposal);
 
-        return new TalkUser(talk);
+        return new TalkUser(proposal);
     }
 
 }

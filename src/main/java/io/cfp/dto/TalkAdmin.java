@@ -20,16 +20,12 @@
 
 package io.cfp.dto;
 
-import io.cfp.dto.user.CospeakerProfil;
-import io.cfp.dto.user.UserProfil;
 import io.cfp.entity.Talk;
 import io.cfp.model.Proposal;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Talk DTO for admin view
@@ -51,26 +47,7 @@ public class TalkAdmin extends TalkUser {
     }
 
     public TalkAdmin(Proposal p) {
-        setId(p.getId());
-        setState(Talk.State.valueOf(p.getState().name()));
-        setName(p.getName() != null ? p.getName() : "undefined");
-        setLanguage(p.getLanguage());
-        setFormat(p.getFormat());
-        setTrackId(p.getTrackId());
-        setTrackLabel(p.getTrackLabel());
-        setDescription(p.getDescription());
-        setReferences(p.getReferences());
-        setDifficulty(p.getDifficulty());
-        setAdded(p.getAdded());
-        setAdded(p.getAdded());
-        setSpeaker(new UserProfil(p.getId(), p.getSpeaker().getFirstname(), p.getSpeaker().getLastname(), p.getSpeaker().getEmail()));
-        setCospeakers(p.getCospeakers().stream().map(u -> new CospeakerProfil(u.getEmail())).collect(Collectors.toSet()));
-        setRoom(p.getRoomId());
-        if (p.getSchedule() != null) {
-            setSchedule(DateTimeFormatter.ISO_INSTANT.format(p.getSchedule().toInstant()));
-        }
-        setVideo(p.getVideo());
-        setSlides(p.getSlides());
+        super(p);
     }
 
     public void setMean(Double mean) {

@@ -27,7 +27,8 @@ import io.cfp.dto.TalkUser;
 import io.cfp.dto.user.CospeakerProfil;
 import io.cfp.dto.user.UserProfil;
 import io.cfp.entity.Talk;
-import io.cfp.repository.RoomRepo;
+import io.cfp.mapper.ProposalMapper;
+import io.cfp.mapper.RoomMapper;
 import io.cfp.repository.TalkRepo;
 import io.cfp.repository.UserRepo;
 import io.cfp.service.TalkUserService;
@@ -46,6 +47,7 @@ import java.util.Set;
 import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 /**
@@ -65,7 +67,10 @@ public class ScheduleControllerTest {
     private TalkRepo talks;
 
     @Mock
-    private RoomRepo rooms;
+    private RoomMapper roomMapper;
+
+    @Mock
+    private ProposalMapper proposalMapper;
 
     @Mock
     private UserRepo users;
@@ -74,7 +79,7 @@ public class ScheduleControllerTest {
 
     @Before
     public void setup() {
-        scheduleController = new ScheduleController(talkUserService, talks, rooms, users, emailingService);
+        scheduleController = new ScheduleController(talkUserService, proposalMapper, talks, roomMapper, users, emailingService);
         RestAssuredMockMvc.standaloneSetup(scheduleController);
     }
 
@@ -124,7 +129,7 @@ public class ScheduleControllerTest {
         talkList.add(talkUser2);
         talkList.add(talkUser3);
 
-        when(talkUserService.findAll(Talk.State.CONFIRMED)).thenReturn(talkList);
+        when(talkUserService.findAll(anyString(), Talk.State.CONFIRMED)).thenReturn(talkList);
 
         MockMvcResponse mockMvcResponse = given().contentType("application/json").when().get("/v0/schedule/confirmed");
 

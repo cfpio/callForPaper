@@ -7,6 +7,7 @@ import io.cfp.mapper.ProposalMapper;
 import io.cfp.mapper.RateMapper;
 import io.cfp.model.Proposal;
 import io.cfp.model.queries.ProposalQuery;
+import io.cfp.model.queries.RateQuery;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -65,7 +66,7 @@ public class TalkAdminServiceTest {
         rate.setTalk(talk);
 
         rates.add(rate);
-        when(rateMapper.findAllFetchAdmin("EVENT_ID")).thenReturn(rates);
+        when(rateMapper.findAll(any(RateQuery.class))).thenReturn(rates);
 
         List<TalkAdmin> returnedTalkAdminList = talkAdminService.findAll("EVENT_ID", USER_ID);
         assertThat(returnedTalkAdminList).isNotEmpty();

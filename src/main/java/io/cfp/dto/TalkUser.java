@@ -24,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import io.cfp.dto.user.CospeakerProfil;
 import io.cfp.dto.user.UserProfil;
 import io.cfp.entity.Talk;
+import io.cfp.model.Proposal;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -80,5 +81,28 @@ public class TalkUser {
         }
         this.video = t.getVideo();
         this.slides = t.getSlides();
+    }
+
+    public TalkUser(Proposal p) {
+        setId(p.getId());
+        setState(Talk.State.valueOf(p.getState().name()));
+        setName(p.getName() != null ? p.getName() : "undefined");
+        setLanguage(p.getLanguage());
+        setFormat(p.getFormat());
+        setTrackId(p.getTrackId());
+        setTrackLabel(p.getTrackLabel());
+        setDescription(p.getDescription());
+        setReferences(p.getReferences());
+        setDifficulty(p.getDifficulty());
+        setAdded(p.getAdded());
+        setAdded(p.getAdded());
+        setSpeaker(new UserProfil(p.getId(), p.getSpeaker().getFirstname(), p.getSpeaker().getLastname(), p.getSpeaker().getEmail()));
+        setCospeakers(p.getCospeakers().stream().map(u -> new CospeakerProfil(u.getEmail())).collect(Collectors.toSet()));
+        setRoom(p.getRoomId());
+        if (p.getSchedule() != null) {
+            setSchedule(DateTimeFormatter.ISO_INSTANT.format(p.getSchedule().toInstant()));
+        }
+        setVideo(p.getVideo());
+        setSlides(p.getSlides());
     }
 }

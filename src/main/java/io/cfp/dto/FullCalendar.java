@@ -1,8 +1,8 @@
 package io.cfp.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import io.cfp.entity.Room;
 import io.cfp.entity.Talk;
+import io.cfp.model.Room;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -20,7 +20,6 @@ public class FullCalendar {
     private List<Resource> resources;
 
     private List<Event> events;
-
 
     public FullCalendar(List<Talk> talks, List<Room> rooms) {
 

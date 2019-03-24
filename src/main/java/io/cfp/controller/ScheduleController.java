@@ -23,11 +23,17 @@ package io.cfp.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cfp.domain.exception.CospeakerNotFoundException;
 import io.cfp.dto.FullCalendar;
-import io.cfp.dto.TalkUser;
 import io.cfp.dto.user.Schedule;
 import io.cfp.dto.user.UserProfil;
-import io.cfp.entity.*;
-import io.cfp.repository.RoomRepo;
+import io.cfp.entity.Event;
+import io.cfp.entity.Role;
+import io.cfp.entity.Talk;
+import io.cfp.entity.User;
+import io.cfp.mapper.ProposalMapper;
+import io.cfp.mapper.RoomMapper;
+import io.cfp.model.Proposal;
+import io.cfp.model.queries.ProposalQuery;
+import io.cfp.multitenant.TenantId;
 import io.cfp.repository.TalkRepo;
 import io.cfp.repository.UserRepo;
 import io.cfp.service.TalkUserService;
@@ -43,7 +49,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -67,20 +72,27 @@ public class ScheduleController {
 
     private final TalkUserService talkUserService;
 
+    private final ProposalMapper proposalMapper;
+
     private final TalkRepo talks;
 
-    private final RoomRepo rooms;
+    private final RoomMapper roomMapper;
 
     private final UserRepo users;
 
     private final EmailingService emailingService;
 
     @Autowired
-    public ScheduleController(TalkUserService talkUserService, TalkRepo talks, RoomRepo rooms, UserRepo users, EmailingService emailingService) {
-        super();
+    public ScheduleController(TalkUserService talkUserService,
+                              ProposalMapper proposalMapper,
+                              TalkRepo talks,
+                              RoomMapper roomMapper,
+                              UserRepo users,
+                              EmailingService emailingService) {
+        this.proposalMapper = proposalMapper;
         this.talkUserService = talkUserService;
         this.talks = talks;
-        this.rooms = rooms;
+        this.roomMapper = roomMapper;
         this.users = users;
         this.emailingService = emailingService;
     }
@@ -131,36 +143,41 @@ public class ScheduleController {
             .collect(Collectors.toList());
     }
 
-    @RequestMapping(value = "fullcalendar", method = RequestMethod.GET)
-    public FullCalendar getFullCalendar() {
-        final List<Room> roomList = rooms.findByEventId(Event.current());
-        final List<Talk> all = talks.findByEventIdAndStatesFetch(Event.current(), Collections.singleton(Talk.State.ACCEPTED));
+    @GetMapping("fullcalendar")
+    public FullCalendar getFullCalendar(@TenantId String eventId) {
+        final List<io.cfp.model.Room> roomList = roomMapper.findByEvent(eventId);
+        final List<Talk> all = talks.findByEventIdAndStatesFetch(eventId, Collections.singleton(Talk.State.ACCEPTED));
         return new FullCalendar(all, roomList);
     }
 
-    @RequestMapping(value = "fullcalendar", method = RequestMethod.PUT)
-    public void getFullCalendar(FullCalendar calendar) {
+    @PutMapping("fullcalendar")
+    @Secured(Role.ADMIN)
+    public void getFullCalendar(@RequestBody FullCalendar calendar,
+                                @TenantId String eventId) {
         calendar.getEvents().forEach(
             e -> {
                 talkUserService.updateConfirmedTalk(
                     Integer.parseInt(e.getId()),
                     LocalDateTime.parse(e.getStart(), DateTimeFormatter.ISO_OFFSET_DATE_TIME),
-                    e.getResourceId());
+                    e.getResourceId(),
+                    eventId);
             });
     }
 
 
-    @RequestMapping(value= "/sessions/{talkId}", method= RequestMethod.PUT)
+    @PutMapping("/sessions/{talkId}")
     @Secured(Role.ADMIN)
-    @ResponseBody
-    public void scheduleTalk(@PathVariable int talkId, @RequestBody FullCalendar.Event e) throws CospeakerNotFoundException, ParseException {
+    public void scheduleTalk(@PathVariable int talkId,
+                             @RequestBody FullCalendar.Event e,
+                             @TenantId String eventId) throws CospeakerNotFoundException {
         // sanity check
         if (!String.valueOf(talkId).equals(e.getId())) throw new IllegalArgumentException("wrong event ID "+e.getId());
 
         talkUserService.updateConfirmedTalk(
             Integer.parseInt(e.getId()),
             LocalDateTime.parse(e.getStart(), DateTimeFormatter.ISO_OFFSET_DATE_TIME),
-            e.getResourceId());
+            e.getResourceId(),
+            eventId);
     }
 
 
@@ -169,11 +186,11 @@ public class ScheduleController {
      *
      * @return Confirmed talks in "LikeBox" format.
      */
-    @RequestMapping(value = "/confirmed", method = RequestMethod.GET)
+    @GetMapping("/confirmed")
     @Secured(Role.ADMIN)
     public List<Schedule> getConfirmedScheduleList() {
-        List<TalkUser> talkUserList = talkUserService.findAll(Talk.State.CONFIRMED);
-        return getSchedules(talkUserList);
+        List<Proposal> proposals = proposalMapper.findAll(new ProposalQuery().addStates(Proposal.State.CONFIRMED));
+        return getSchedules(proposals);
     }
 
     /**
@@ -194,26 +211,22 @@ public class ScheduleController {
      *
      * @return Accepted talks in "LikeBox" format.
      */
-    @RequestMapping(value = "/accepted", method = RequestMethod.GET)
+    @GetMapping("/accepted")
     @Secured(Role.ADMIN)
     public List<Schedule> getScheduleList() {
-        List<TalkUser> talkUserList = talkUserService.findAll(Talk.State.ACCEPTED);
-        return getSchedules(talkUserList);
+        List<Proposal> proposals = proposalMapper.findAll(new ProposalQuery().addStates(Proposal.State.ACCEPTED));
+        return getSchedules(proposals);
     }
 
-    private List<Schedule> getSchedules(List<TalkUser> talkUserList) {
-        return talkUserList.stream().map(t -> {
-            Schedule schedule = new Schedule(t.getId(), t.getName(), t.getDescription());
+    private List<Schedule> getSchedules(List<Proposal> proposals) {
+        return proposals.stream().map(p -> {
+            Schedule schedule = new Schedule(p.getId(), p.getName(), p.getDescription());
 
             // speakers
-            String speakers = t.getSpeaker().getFirstname() + " " + t.getSpeaker().getLastname();
-            if (isNotEmpty(t.getCospeakers())) {
-                speakers += ", " + t.getCospeakers().stream().map(c -> c.getFirstname() + " " + c.getLastname()).collect(Collectors.joining(", "));
-            }
-            schedule.setSpeakers(speakers);
+            schedule.setSpeakers(p.buildSpeakersList());
 
             // event_type
-            schedule.setEventType(t.getTrackLabel());
+            schedule.setEventType(p.getTrackLabel());
 
             return schedule;
         }).collect(toList());
@@ -221,11 +234,12 @@ public class ScheduleController {
 
     @RequestMapping(value = "", method = RequestMethod.POST, consumes = {"multipart/form-data", "multipart/mixed"})
     @Secured(Role.ADMIN)
-    public ResponseEntity uploadSchedule(@RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity uploadSchedule(@RequestParam("file") MultipartFile file,
+                                         @TenantId String eventId) throws IOException {
 
         final Schedule[] schedules = new ObjectMapper().readValue(file.getBytes(), Schedule[].class);
         for (Schedule talk : schedules) {
-            talkUserService.updateConfirmedTalk(talk.getId(), LocalDateTime.parse(talk.getEventStart(), DateTimeFormatter.ISO_OFFSET_DATE_TIME), talk.getVenueId());
+            talkUserService.updateConfirmedTalk(talk.getId(), LocalDateTime.parse(talk.getEventStart(), DateTimeFormatter.ISO_OFFSET_DATE_TIME), talk.getVenueId(), eventId);
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
