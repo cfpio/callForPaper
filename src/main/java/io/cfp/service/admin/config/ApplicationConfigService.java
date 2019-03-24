@@ -54,7 +54,7 @@ public class ApplicationConfigService {
 
     @Deprecated
     public boolean isCfpOpen(String eventId) {
-        return events.findOne(eventId).isOpen();
+        return eventMapper.findOne(eventId).isOpen();
     }
 
     @Transactional

@@ -22,24 +22,8 @@ package io.cfp.api;
 
 import io.cfp.domain.exception.BadRequestException;
 import io.cfp.domain.exception.EntityExistsException;
-import io.cfp.mapper.CommentMapper;
-import io.cfp.mapper.EventMapper;
-import io.cfp.mapper.FormatMapper;
-import io.cfp.mapper.ProposalMapper;
-import io.cfp.mapper.RateMapper;
-import io.cfp.mapper.RoleMapper;
-import io.cfp.mapper.RoomMapper;
-import io.cfp.mapper.ThemeMapper;
-import io.cfp.mapper.UserMapper;
-import io.cfp.model.Comment;
-import io.cfp.model.Event;
-import io.cfp.model.Format;
-import io.cfp.model.Proposal;
-import io.cfp.model.Rate;
-import io.cfp.model.Role;
-import io.cfp.model.Room;
-import io.cfp.model.Theme;
-import io.cfp.model.User;
+import io.cfp.mapper.*;
+import io.cfp.model.*;
 import io.cfp.model.queries.CommentQuery;
 import io.cfp.model.queries.ProposalQuery;
 import io.cfp.model.queries.RateQuery;
@@ -47,16 +31,13 @@ import io.cfp.model.queries.RoleQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
 
+import static io.cfp.model.Role.MAINTAINER;
 import static io.cfp.model.Role.OWNER;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
@@ -107,8 +88,8 @@ public class EventsController {
         }
     }
 
-    @Secured(io.cfp.entity.Role.MAINTAINER)
-    @RequestMapping(value = "/events", method = RequestMethod.POST)
+    @Secured(MAINTAINER)
+    @PostMapping("/events")
     @Transactional
     public Event create(@RequestParam(name = "id") String id,
                         @RequestParam(name = "owner") String owner) throws EntityExistsException {
@@ -150,13 +131,13 @@ public class EventsController {
 
 
 
-    @RequestMapping(value = "/users/me/events", method = RequestMethod.GET)
+    @GetMapping("/users/me/events")
     public List<Event> mines(@AuthenticationPrincipal User user) throws BadRequestException {
         return events.findByUser(user.getId());
     }
 
-    @Secured(io.cfp.entity.Role.OWNER)
-    @RequestMapping(value = "/events/{id}/archive", method = RequestMethod.POST)
+    @Secured(OWNER)
+    @PostMapping("/events/{id}/archive")
     @Transactional
     public void archive(@AuthenticationPrincipal User user,
                         @PathVariable String id,
