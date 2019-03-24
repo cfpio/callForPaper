@@ -20,13 +20,7 @@
 
 package io.cfp.service.admin.config;
 
-import io.cfp.entity.CfpConfig;
-import io.cfp.entity.Event;
 import io.cfp.mapper.EventMapper;
-import io.cfp.repository.CfpConfigRepo;
-import io.cfp.repository.EventRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -38,32 +32,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ApplicationConfigService {
 
-    private final Logger log = LoggerFactory.getLogger(ApplicationConfigService.class);
-
-    @Autowired
-    private CfpConfigRepo cfpConfigRepo;
-    
     @Value("${authServer}")
     private String authServer;
 
     @Autowired
-    private EventRepository events;
-
-    @Autowired
     private EventMapper eventMapper;
-
-    @Deprecated
-    public boolean isCfpOpen(String eventId) {
-        return eventMapper.findOne(eventId).isOpen();
-    }
-
-    @Transactional
-    @Deprecated
-    public void openCfp() {
-        Event event = events.findOne(Event.current());
-        event.setOpen(true);
-        events.save(event);
-    }
 
     @Transactional
     public void openCfp(String eventId) {
@@ -73,28 +46,10 @@ public class ApplicationConfigService {
     }
 
     @Transactional
-    @Deprecated
-    public void closeCfp() {
-        Event event = events.findOne(Event.current());
-        event.setOpen(false);
-        events.save(event);
-    }
-
-    @Transactional
     public void closeCfp(String eventId) {
         io.cfp.model.Event event = eventMapper.findOne(eventId);
         event.setOpen(false);
         eventMapper.update(event);
-    }
-
-    @Transactional
-    @Deprecated
-    public void saveConf(String key, String value) {
-        CfpConfig conf = cfpConfigRepo.findByKeyAndEventId(key, Event.current());
-        conf.setValue(value);
-        cfpConfigRepo.save(conf);
-
-        log.debug(conf.getKey() + " -> " + conf.getValue());
     }
 
 }

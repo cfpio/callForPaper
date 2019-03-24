@@ -32,8 +32,6 @@ import io.cfp.entity.Talk;
 import io.cfp.entity.User;
 import io.cfp.mapper.EventMapper;
 import io.cfp.model.Proposal;
-import io.cfp.repository.CfpConfigRepo;
-import io.cfp.repository.EventRepository;
 import io.cfp.repository.UserRepo;
 import io.cfp.service.admin.config.ApplicationConfigService;
 import org.junit.After;
@@ -419,11 +417,6 @@ public class EmailingServiceTest {
             return mock(ApplicationConfigService.class);
         }
 
-        @Bean // field injection of ApplicationConfigService
-        public CfpConfigRepo cfpConfigRepo() {
-            return mock(CfpConfigRepo.class);
-        }
-
         @Bean // field injection of EmailingService
         public JavaMailSenderImpl javaMailSender() {
             return mock(JavaMailSenderImpl.class);
@@ -432,11 +425,6 @@ public class EmailingServiceTest {
         @Bean
         public UserRepo userRepo() {
             return mock(UserRepo.class);
-        }
-
-        @Bean // field injection of ApplicationConfigService
-        public EventRepository eventRepo() {
-            return mock(EventRepository.class);
         }
 
         @Bean
