@@ -27,6 +27,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import io.cfp.dto.EventSched;
 import io.cfp.dto.TalkAdmin;
 import io.cfp.dto.TalkAdminCsv;
+import io.cfp.entity.Event;
 import io.cfp.entity.Role;
 import io.cfp.entity.Talk;
 import io.cfp.model.User;
@@ -48,13 +49,14 @@ import java.io.IOException;
 import java.util.List;
 
 @Controller
-@RequestMapping(value = { "/v0/admin", "/api/admin" }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = { "/v0/admin" }, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@Deprecated
 public class AdminSessionController {
 
     @Autowired
     private TalkAdminService talkService;
 
-    @Autowired
+//    @Autowired
     private PdfCardService pdfCardService;
 
     /**
@@ -64,18 +66,18 @@ public class AdminSessionController {
 //    @Secured({Role.REVIEWER, Role.ADMIN})
 //    @ResponseBody
 //    @Deprecated
-    private List<TalkAdmin> getAllSessions(@AuthenticationPrincipal User user,
-                                          @RequestParam(name = "status", required = false) String status) {
-
-        Talk.State[] accept;
-        if (status == null) {
-            accept = new Talk.State[] { Talk.State.CONFIRMED, Talk.State.ACCEPTED, Talk.State.REFUSED, Talk.State.BACKUP };
-        } else {
-            accept = new Talk.State[] { Talk.State.valueOf(status) };
-        }
-
-        return talkService.findAll(user.getId(), accept);
-    }
+//    private List<TalkAdmin> getAllSessions(@AuthenticationPrincipal User user,
+//                                          @RequestParam(name = "status", required = false) String status) {
+//
+//        Talk.State[] accept;
+//        if (status == null) {
+//            accept = new Talk.State[] { Talk.State.CONFIRMED, Talk.State.ACCEPTED, Talk.State.REFUSED, Talk.State.BACKUP };
+//        } else {
+//            accept = new Talk.State[] { Talk.State.valueOf(status) };
+//        }
+//
+//        return talkService.findAll(user.getId(), accept);
+//    }
 
     /**
      * Get a specific session
@@ -166,6 +168,7 @@ public class AdminSessionController {
     @RequestMapping(path = "/sessions/export/sched.json", produces = "application/json")
     @Secured(Role.ADMIN)
     @ResponseBody
+    @Deprecated
     public List<EventSched> exportSched(@RequestParam(required = false) Talk.State[] states) {
         if (states == null) {
             states = new Talk.State[] { Talk.State.ACCEPTED };
@@ -175,8 +178,10 @@ public class AdminSessionController {
 
     @RequestMapping(path = "/sessions/export/sessions.csv", produces = "text/csv")
     @Secured(Role.ADMIN)
+    @Deprecated
     public void exportCsv(@AuthenticationPrincipal User user,
-                          HttpServletResponse response, @RequestParam(name = "status", required = false) String status) throws IOException {
+                          HttpServletResponse response,
+                          @RequestParam(name = "status", required = false) String status) throws IOException {
         response.addHeader(HttpHeaders.CONTENT_TYPE, "text/csv");
 
         CsvMapper mapper = new CsvMapper();
@@ -186,7 +191,15 @@ public class AdminSessionController {
         ObjectWriter writer = mapper.writer(schema);
         writer.getFactory().disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
 
-        List<TalkAdmin> sessions = getAllSessions(user, status);
+
+        Talk.State[] accept;
+        if (status == null) {
+            accept = new Talk.State[] { Talk.State.CONFIRMED, Talk.State.ACCEPTED, Talk.State.REFUSED, Talk.State.BACKUP };
+        } else {
+            accept = new Talk.State[] { Talk.State.valueOf(status) };
+        }
+
+        List<TalkAdmin> sessions =  talkService.findAll(Event.current(), user.getId(), accept);
 
         final ServletOutputStream out = response.getOutputStream();
         writer.writeValues(out).writeAll(sessions);

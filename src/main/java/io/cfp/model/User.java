@@ -86,6 +86,10 @@ public class User {
         return res;
     }
 
+    public String getFullName() {
+        return this.firstname + " " + this.lastname;
+    }
+
     public boolean isReviewer() {
         return hasRole(Role.REVIEWER);
     }
@@ -99,7 +103,7 @@ public class User {
     }
 
     public Set<String> getRoles() {
-        return roles != null ? roles : Collections.EMPTY_SET;
+        return roles != null ? roles : Collections.emptySet();
     }
 
 

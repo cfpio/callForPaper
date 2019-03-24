@@ -80,6 +80,7 @@ public class ProposalMapperTest {
         assertThat(foundProposal.getSchedule()).isEqualTo("2042-12-31");
         assertThat(foundProposal.getDescription()).isEqualTo("PROPOSAL_DESCRIPTION");
         assertThat(foundProposal.getFormat()).isEqualTo(FORMAT_ID);
+        assertThat(foundProposal.getFormatName()).isEqualTo("FORMAT_NAME");
         assertThat(foundProposal.getLanguage()).isEqualTo("PROPOSAL_LANGUAGE");
         assertThat(foundProposal.getDifficulty()).isEqualTo(1);
         assertThat(foundProposal.getName()).isEqualTo("PROPOSAL_NAME");

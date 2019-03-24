@@ -31,6 +31,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
+
 @Data
 @NoArgsConstructor
 @Accessors(chain = true)
@@ -54,6 +56,7 @@ public class Proposal {
     private Integer difficulty;
     private Date added;
     private Integer format;
+    private String formatName;
     private User speaker;
 
     private Date schedule;
@@ -68,4 +71,14 @@ public class Proposal {
     private List<String> voteUsersEmail;
     private String mean;
 
+
+    public String buildSpeakersList() {
+        String res = this.getSpeaker().getFullName();
+        if (isNotEmpty(this.getCospeakers())) {
+            for (User user : this.getCospeakers()) {
+                res += ", " + user.getFullName();
+            }
+        }
+        return res;
+    }
 }

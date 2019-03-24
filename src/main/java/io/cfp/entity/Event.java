@@ -45,6 +45,7 @@ public class Event {
 
     private static ThreadLocal<String> current = new ThreadLocal<String>();
 
+    @Deprecated
     public static String current() {
         String s = current.get();
         if (s == null) {

@@ -26,6 +26,9 @@ import io.cfp.entity.Event;
 import io.cfp.entity.Rate;
 import io.cfp.entity.Talk;
 import io.cfp.entity.User;
+import io.cfp.mapper.ProposalMapper;
+import io.cfp.model.Proposal;
+import io.cfp.model.queries.ProposalQuery;
 import io.cfp.repository.RateRepo;
 import io.cfp.repository.TalkRepo;
 import ma.glasnost.orika.MapperFacade;
@@ -52,6 +55,9 @@ public class TalkAdminService {
     private TalkRepo talkRepo;
 
     @Autowired
+    private ProposalMapper proposalMapper;
+
+    @Autowired
     private RateRepo rateRepo;
 
     @Autowired
@@ -63,8 +69,8 @@ public class TalkAdminService {
      * @param states List of states the talk must be
      * @return List of talks
      */
-    public List<TalkAdmin> findAll(int userId, Talk.State... states) {
-        List<TalkAdmin> talks = talkRepo.findByEventIdAndStatesFetch(Event.current(), Arrays.asList(states))
+    public List<TalkAdmin> findAll(String eventId, int userId, Talk.State... states) {
+        List<TalkAdmin> talks = talkRepo.findByEventIdAndStatesFetch(eventId, Arrays.asList(states))
             .stream().map(TalkAdmin::new)
             .collect(Collectors.toList());
 
@@ -97,7 +103,8 @@ public class TalkAdminService {
      * @param talkId Id of the talk to delete
      * @return Deleted talk
      */
-    public TalkAdmin delete(int talkId) {
+    @Deprecated
+    private TalkAdmin delete(int talkId) {
         Talk talk = talkRepo.findByIdAndEventId(talkId, Event.current());
         TalkAdmin deleted = mapper.map(talk, TalkAdmin.class);
         talkRepo.delete(talk);
@@ -109,6 +116,7 @@ public class TalkAdminService {
      * @param states State list to export
      * @return DTO in sched format
      */
+    @Deprecated
     public List<EventSched> exportSched(Talk.State... states) {
         return talkRepo.findByEventIdAndStatesFetch(Event.current(), Arrays.asList(states)).stream()
             .map(t ->
@@ -125,11 +133,28 @@ public class TalkAdminService {
             .collect(toList());
     }
 
+    public List<EventSched> exportSched(String eventId, Proposal.State... states) {
+        return proposalMapper.findAll(new ProposalQuery().setEventId(eventId).addStates(states)).stream()
+            .map(p ->
+                new EventSched().toBuilder()
+                    .id(String.valueOf(p.getId()))
+                    .name(p.getName())
+                    .description(p.getDescription())
+                    .speakers(p.buildSpeakersList())
+                    .language(p.getLanguage())
+                    .eventType(p.getTrackLabel())
+                    .format(p.getFormatName())
+                    .build()
+            )
+            .collect(toList());
+    }
+
     /**
      * Build the name of the speakers as Speaker FirstName Lastname + Cospeakers
      * @param t Talk to build the speakers
      * @return Speakers list (ex: John Doe, Jack Bauer)
      */
+    @Deprecated
     private String buildSpeakersList(Talk t) {
         String res = t.getUser().getFirstname() + " " + t.getUser().getLastname();
         if (isNotEmpty(t.getCospeakers())) {

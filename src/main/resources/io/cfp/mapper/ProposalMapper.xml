@@ -26,6 +26,7 @@
             p.refs as "references",
             p.format as "format",
             p.track as "trackId",
+            f.name as "formatName",
             t.libelle as "trackLabel",
             u.id as "speaker.id",
             u.email as "speaker.email",
@@ -54,6 +55,7 @@
             cu.social as "cospeaker_social"
         FROM proposals p
             left outer join tracks t on p.track = t.id
+            left outer join formats f on p.format = f.id
             left outer join users u on p.user = u.id
             left outer join cospeakers c on c.proposal_id = p.id
             left outer join users cu on c.user_id = cu.id
