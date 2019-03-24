@@ -27,10 +27,8 @@ import io.cfp.domain.exception.ForbiddenException;
 import io.cfp.domain.exception.NotFoundException;
 import io.cfp.dto.user.CospeakerProfil;
 import io.cfp.entity.Role;
-import io.cfp.mapper.CoSpeakerMapper;
-import io.cfp.mapper.ProposalMapper;
-import io.cfp.mapper.RateMapper;
-import io.cfp.mapper.UserMapper;
+import io.cfp.mapper.*;
+import io.cfp.model.Event;
 import io.cfp.model.Proposal;
 import io.cfp.model.Rate;
 import io.cfp.model.User;
@@ -63,6 +61,9 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 public class ProposalsController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProposalsController.class);
+
+    @Autowired
+    private EventMapper eventMapper;
 
     @Autowired
     private ProposalMapper proposals;
@@ -183,12 +184,17 @@ public class ProposalsController {
     @ResponseStatus(HttpStatus.CREATED)
     @Secured(AUTHENTICATED)
     @Transactional
-    public Proposal create(@TenantId String event,
+    public Proposal create(@TenantId String eventId,
                            @AuthenticationPrincipal User user,
                            @Valid @RequestBody Proposal proposal) {
         LOGGER.info("User {} create a proposal : {}", user.getId(), proposal.getName());
-        // FIXME manage drfat state client side without use of /drafts API
-        proposal.setEventId(event);
+        proposal.setEventId(eventId);
+
+        Event event = eventMapper.findOne(eventId);
+
+        if (!event.isOpen()) {
+            throw new BadRequestException("Submissions disabled");
+        }
 
         if (proposal.getSpeaker() == null) {
             proposal.setSpeaker(user);
@@ -200,7 +206,7 @@ public class ProposalsController {
             throw new BadRequestException();
         }
 
-        proposal.setState(Proposal.State.DRAFT) // when created, a talk is a Draft. Need to be confirmed
+        proposal.setState(Proposal.State.DRAFT) // when created, a talk is a Draft.
             .setAdded(new Date());
         proposals.insert(proposal);
 

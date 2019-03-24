@@ -147,6 +147,6 @@ public class ApplicationConfigServiceTest {
 
         when(eventRepository.findOne("EVENT_ID")).thenReturn(event);
 
-        assertThat(applicationConfigService.isCfpOpen()).isTrue();
+        assertThat(applicationConfigService.isCfpOpen("EVENT_ID")).isTrue();
     }
 }

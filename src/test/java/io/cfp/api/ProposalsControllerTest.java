@@ -1,13 +1,7 @@
 package io.cfp.api;
 
-import io.cfp.mapper.CoSpeakerMapper;
-import io.cfp.mapper.ProposalMapper;
-import io.cfp.mapper.RateMapper;
-import io.cfp.mapper.UserMapper;
-import io.cfp.model.Proposal;
-import io.cfp.model.Rate;
-import io.cfp.model.Role;
-import io.cfp.model.User;
+import io.cfp.mapper.*;
+import io.cfp.model.*;
 import io.cfp.model.queries.ProposalQuery;
 import io.cfp.service.PdfCardService;
 import io.cfp.service.email.EmailingService;
@@ -22,10 +16,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -51,6 +49,9 @@ public class ProposalsControllerTest {
 
     @MockBean
     private PdfCardService pdfCardService;
+
+    @MockBean
+    private EventMapper eventMapper;
 
     @Autowired
     private MockMvc mockMvc;
@@ -188,6 +189,10 @@ public class ProposalsControllerTest {
 
         when(userMapper.findByEmail("EMAIL")).thenReturn(user);
 
+        Event event = new Event();
+        event.setOpen(true);
+        when(eventMapper.findOne(anyString())).thenReturn(event);
+
         String newProposal = Utils.getContent("/json/proposals/new_proposal.json");
 
         mockMvc.perform(post("/api/proposals")
@@ -212,6 +217,10 @@ public class ProposalsControllerTest {
 
         when(userMapper.findByEmail("EMAIL")).thenReturn(user);
 
+        Event event = new Event();
+        event.setOpen(true);
+        when(eventMapper.findOne(anyString())).thenReturn(event);
+
         String invalidProposal = Utils.getContent("/json/proposals/invalid_proposal.json");
 
         mockMvc.perform(post("/api/proposals")
@@ -219,6 +228,34 @@ public class ProposalsControllerTest {
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .header("Authorization", "Bearer " + token)
             .content(invalidProposal)
+        )
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+        ;
+    }
+
+    @Test
+    public void should_not_create_proposals_if_cfp_is_close() throws Exception {
+
+        User user = new User();
+        user.setId(20);
+        user.setEmail("EMAIL");
+        user.addRole(Role.AUTHENTICATED);
+        String token = Utils.createTokenForUser(user);
+
+        when(userMapper.findByEmail("EMAIL")).thenReturn(user);
+
+        Event event = new Event();
+        event.setOpen(false);
+        when(eventMapper.findOne(anyString())).thenReturn(event);
+
+        String newProposal = Utils.getContent("/json/proposals/new_proposal.json");
+
+        mockMvc.perform(post("/api/proposals")
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .header("Authorization", "Bearer " + token)
+            .content(newProposal)
         )
             .andDo(print())
             .andExpect(status().isBadRequest())

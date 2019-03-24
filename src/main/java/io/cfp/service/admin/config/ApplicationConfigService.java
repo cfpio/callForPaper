@@ -20,7 +20,6 @@
 
 package io.cfp.service.admin.config;
 
-import io.cfp.dto.ApplicationSettings;
 import io.cfp.entity.CfpConfig;
 import io.cfp.entity.Event;
 import io.cfp.mapper.EventMapper;
@@ -54,14 +53,8 @@ public class ApplicationConfigService {
     private EventMapper eventMapper;
 
     @Deprecated
-    private ApplicationSettings getAppConfig() {
-        ApplicationSettings applicationSettings = new ApplicationSettings(events.findOne(Event.current()));
-        applicationSettings.setAuthServer(authServer);
-        return applicationSettings;
-    }
-
-    public boolean isCfpOpen() {
-        return events.findOne(Event.current()).isOpen();
+    public boolean isCfpOpen(String eventId) {
+        return events.findOne(eventId).isOpen();
     }
 
     @Transactional
@@ -85,7 +78,6 @@ public class ApplicationConfigService {
         Event event = events.findOne(Event.current());
         event.setOpen(false);
         events.save(event);
-
     }
 
     @Transactional
