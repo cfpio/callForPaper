@@ -117,18 +117,18 @@ public class ProposalsController {
         LOGGER.info("Search Proposals : {}", query);
         List<Proposal> p = proposals.findAll(query);
 
-        if (p != null) {
-            LOGGER.debug("Found {} Proposals", p.size());
+        LOGGER.debug("Found {} Proposals", p.size());
 
-            List<Rate> rates = this.rates.findAllWithTalk(event);
-            Map<Integer, List<Rate>> ratesByTalk = rates.stream().collect(Collectors.groupingBy(rate -> rate.getTalk().getId()));
+        List<Rate> rates = this.rates.findAllWithTalk(event);
+        Map<Integer, List<Rate>> ratesByTalk = rates.stream().collect(Collectors.groupingBy(rate -> rate.getTalk().getId()));
 
-
-            for (Proposal proposal : p) {
-                List<String> emails = new ArrayList<>();
-                float total = 0;
-                int votes = 0;
-                for (Rate rate : ratesByTalk.get(proposal.getId())) {
+        for (Proposal proposal : p) {
+            List<String> emails = new ArrayList<>();
+            float total = 0;
+            int votes = 0;
+            List<Rate> ratesOfProposal = ratesByTalk.get(proposal.getId());
+            if (ratesOfProposal != null) {
+                for (Rate rate : ratesOfProposal) {
                     emails.add(rate.getUser().getEmail());
                     if (rate.getRate() > 0) {
                         total += rate.getRate();
@@ -140,8 +140,6 @@ public class ProposalsController {
                     proposal.setMean(String.valueOf(total / votes));
                 }
             }
-        } else {
-            p = new ArrayList<>();
         }
 
         return p;
