@@ -39,6 +39,8 @@
         <insert tableName="users">
             <column name="id" value="10"/>
             <column name="email" value="EMAIL"/>
+            <column name="firstname" value="FIRSTNAME"/>
+            <column name="lastname" value="LASTNAME"/>
             <column name="tshirt_size" value="L"/>
             <column name="gender" value="FEMALE"/>
         </insert>

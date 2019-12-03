@@ -56,7 +56,7 @@ public class CommentsController {
             Proposal proposal = proposals.findById(proposalId, eventId);
 
             // si on est pas reviewer, on ne peut poster de commentaires que sur son propre proposal
-            if (!user.isOneOfTheSpeakersOf(proposal) ) {
+            if (!user.isOneOfTheSpeakersOf(proposal)) {
                  throw new ForbiddenException("Vous n'êtes pas autorisé à voir les commentaires de ce Proposal");
             }
         }
@@ -76,7 +76,8 @@ public class CommentsController {
 
         // si on est pas reviewer, on ne peut poster de commentaires que sur son propre proposal
         if (!user.hasRole(Role.REVIEWER)) {
-            if (proposal.getSpeaker().getId() != user.getId()) {
+            comment.setInternal(false);
+            if (!user.isOneOfTheSpeakersOf(proposal)) {
                 throw new ForbiddenException("Vous n'êtes pas autorisé à commenter le Proposal "+proposalId);
             }
         }
@@ -112,6 +113,7 @@ public class CommentsController {
                        @TenantId String eventId) {
         LOGGER.info("User {} update its comment on proposal {}", user.getId(), proposalId);
         Proposal proposal = proposals.findById(proposalId, eventId);
+        Comment existingComment = comments.findById(id, eventId);
 
         comment.setId(id);
         comment.setEventId(eventId);
@@ -120,6 +122,14 @@ public class CommentsController {
 
         if (!user.hasRole(REVIEWER)) {
             comment.setInternal(false);
+            // si on est pas reviewer, on ne peut poster de commentaires que sur son propre proposal
+            if (!user.isOneOfTheSpeakersOf(proposal)) {
+                throw new ForbiddenException("Vous n'êtes pas autorisé à commenter le Proposal "+proposalId);
+            }
+            // un cospeaker ne peut pas modifier le commentaire d'un autre speaker
+            if (existingComment.getUser().getId() != user.getId()) {
+                throw new ForbiddenException("Vous n'êtes pas autorisé à commenter le Proposal "+proposalId);
+            }
         }
 
         comments.update(comment);
@@ -144,11 +154,27 @@ public class CommentsController {
                        @AuthenticationPrincipal User user,
                        @TenantId String eventId) {
         LOGGER.info("User {} delete its comment", user.getId());
+
+        Proposal proposal = proposals.findById(proposalId, eventId);
+        Comment existingComment = comments.findById(id, eventId);
+
         Comment comment = new Comment();
         comment.setId(id);
         comment.setUser(user);
         comment.setEventId(eventId);
         comment.setProposalId(proposalId);
+
+        if (!user.hasRole(REVIEWER)) {
+            comment.setInternal(false);
+            // si on est pas reviewer, on ne peut poster de commentaires que sur son propre proposal
+            if (!user.isOneOfTheSpeakersOf(proposal)) {
+                throw new ForbiddenException("Vous n'êtes pas autorisé à commenter le Proposal "+proposalId);
+            }
+            // un cospeaker ne peut pas modifier le commentaire d'un autre speaker
+            if (existingComment.getUser().getId() != user.getId()) {
+                throw new ForbiddenException("Vous n'êtes pas autorisé à commenter le Proposal "+proposalId);
+            }
+        }
 
         comments.delete(comment);
     }

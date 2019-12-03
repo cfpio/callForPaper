@@ -213,7 +213,7 @@ public class CommentsControllerTest {
     }
 
     @Test
-    public void should_create_comments() throws Exception {
+    public void a_speaker_should_create_comments() throws Exception {
 
         User user = new User();
         user.setId(20);
@@ -224,6 +224,35 @@ public class CommentsControllerTest {
         when(userMapper.findByEmail("EMAIL")).thenReturn(user);
 
         when(proposalMapper.findById(eq(25), anyString())).thenReturn(new Proposal().setSpeaker(new User().setId(20)));
+
+        String newComment = Utils.getContent("/json/comments/new_comment.json");
+
+        mockMvc.perform(post("/api/proposals/25/comments")
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .header("Authorization", "Bearer "+token)
+            .content(newComment)
+        )
+            .andDo(print())
+            .andExpect(status().isCreated())
+        ;
+    }
+
+    @Test
+    public void a_cospeaker_should_create_comments() throws Exception {
+
+        User user = new User();
+        user.setId(20);
+        user.setEmail("EMAIL");
+        user.addRole(Role.AUTHENTICATED);
+        String token = Utils.createTokenForUser(user);
+
+        when(userMapper.findByEmail("EMAIL")).thenReturn(user);
+
+        Proposal proposal = new Proposal();
+        proposal.setSpeaker(new User().setId(10));
+        proposal.getCospeakers().add(new User().setId(20));
+        when(proposalMapper.findById(eq(25), anyString())).thenReturn(proposal);
 
         String newComment = Utils.getContent("/json/comments/new_comment.json");
 
@@ -291,18 +320,23 @@ public class CommentsControllerTest {
     }
 
     @Test
-    public void should_update_my_comments() throws Exception {
+    public void a_speaker_should_update_his_comments() throws Exception {
 
-        User user = new User();
-        user.setId(20);
-        user.setEmail("EMAIL");
-        user.addRole(Role.AUTHENTICATED);
-        String token = Utils.createTokenForUser(user);
+        User speaker = new User();
+        speaker.setId(20);
+        speaker.setEmail("EMAIL");
+        speaker.addRole(Role.AUTHENTICATED);
+        String token = Utils.createTokenForUser(speaker);
 
-        when(userMapper.findByEmail("EMAIL")).thenReturn(user);
+        when(userMapper.findByEmail("EMAIL")).thenReturn(speaker);
         when(proposalMapper.findById(eq(25), anyString())).thenReturn(new Proposal().setId(25)
             .setName("PROPOSAL_NAME")
-            .setSpeaker(new User().setId(21)));
+            .setSpeaker(speaker));
+
+        Comment comment = new Comment();
+        comment.setId(10);
+        comment.setUser(speaker);
+        when(commentMapper.findById(eq(10), anyString())).thenReturn(comment);
 
         String updatedComment = Utils.getContent("/json/comments/update_comment.json");
 
@@ -314,6 +348,169 @@ public class CommentsControllerTest {
         )
             .andDo(print())
             .andExpect(status().isNoContent())
+        ;
+    }
+
+    @Test
+    public void a_cospeaker_should_update_his_comments() throws Exception {
+
+        User cospeaker = new User();
+        cospeaker.setId(22);
+        cospeaker.setEmail("EMAIL");
+        cospeaker.addRole(Role.AUTHENTICATED);
+        String token = Utils.createTokenForUser(cospeaker);
+
+        when(userMapper.findByEmail("EMAIL")).thenReturn(cospeaker);
+        Proposal proposal = new Proposal().setId(25)
+            .setName("PROPOSAL_NAME")
+            .setSpeaker(new User().setId(21));
+        proposal.getCospeakers().add(cospeaker);
+
+        when(proposalMapper.findById(eq(25), anyString())).thenReturn(proposal);
+
+        Comment comment = new Comment();
+        comment.setId(10);
+        comment.setUser(cospeaker);
+        when(commentMapper.findById(eq(10), anyString())).thenReturn(comment);
+
+        String updatedComment = Utils.getContent("/json/comments/update_comment.json");
+
+        mockMvc.perform(put("/api/proposals/25/comments/10")
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .header("Authorization", "Bearer "+token)
+            .content(updatedComment)
+        )
+            .andDo(print())
+            .andExpect(status().isNoContent())
+        ;
+    }
+
+    @Test
+    public void a_cospeaker_should_not_update_another_speaker_comments() throws Exception {
+
+        User cospeaker = new User();
+        cospeaker.setId(22);
+        cospeaker.setEmail("EMAIL");
+        cospeaker.addRole(Role.AUTHENTICATED);
+        String token = Utils.createTokenForUser(cospeaker);
+
+        when(userMapper.findByEmail("EMAIL")).thenReturn(cospeaker);
+        User speaker = new User().setId(21);
+        Proposal proposal = new Proposal().setId(25)
+            .setName("PROPOSAL_NAME")
+            .setSpeaker(speaker);
+        proposal.getCospeakers().add(cospeaker);
+
+        when(proposalMapper.findById(eq(25), anyString())).thenReturn(proposal);
+        Comment comment = new Comment();
+        comment.setId(10);
+        comment.setUser(speaker);
+        when(commentMapper.findById(eq(10), anyString())).thenReturn(comment);
+
+        String updatedComment = Utils.getContent("/json/comments/update_comment.json");
+
+        mockMvc.perform(put("/api/proposals/25/comments/10")
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .header("Authorization", "Bearer "+token)
+            .content(updatedComment)
+        )
+            .andDo(print())
+            .andExpect(status().isForbidden())
+        ;
+    }
+
+    @Test
+    public void a_speaker_should_delete_his_comments() throws Exception {
+
+        User speaker = new User();
+        speaker.setId(20);
+        speaker.setEmail("EMAIL");
+        speaker.addRole(Role.AUTHENTICATED);
+        String token = Utils.createTokenForUser(speaker);
+
+        when(userMapper.findByEmail("EMAIL")).thenReturn(speaker);
+        when(proposalMapper.findById(eq(25), anyString())).thenReturn(new Proposal().setId(25)
+            .setName("PROPOSAL_NAME")
+            .setSpeaker(speaker));
+
+        Comment comment = new Comment();
+        comment.setId(10);
+        comment.setUser(speaker);
+        when(commentMapper.findById(eq(10), anyString())).thenReturn(comment);
+
+        mockMvc.perform(delete("/api/proposals/25/comments/10")
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .header("Authorization", "Bearer "+token)
+        )
+            .andDo(print())
+            .andExpect(status().isNoContent())
+        ;
+    }
+
+    @Test
+    public void a_cospeaker_should_delete_his_comments() throws Exception {
+
+        User cospeaker = new User();
+        cospeaker.setId(22);
+        cospeaker.setEmail("EMAIL");
+        cospeaker.addRole(Role.AUTHENTICATED);
+        String token = Utils.createTokenForUser(cospeaker);
+
+        when(userMapper.findByEmail("EMAIL")).thenReturn(cospeaker);
+        Proposal proposal = new Proposal().setId(25)
+            .setName("PROPOSAL_NAME")
+            .setSpeaker(new User().setId(21));
+        proposal.getCospeakers().add(cospeaker);
+
+        when(proposalMapper.findById(eq(25), anyString())).thenReturn(proposal);
+
+        Comment comment = new Comment();
+        comment.setId(10);
+        comment.setUser(cospeaker);
+        when(commentMapper.findById(eq(10), anyString())).thenReturn(comment);
+
+        mockMvc.perform(delete("/api/proposals/25/comments/10")
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .header("Authorization", "Bearer "+token)
+        )
+            .andDo(print())
+            .andExpect(status().isNoContent())
+        ;
+    }
+
+    @Test
+    public void a_cospeaker_should_not_delete_another_speaker_comments() throws Exception {
+
+        User cospeaker = new User();
+        cospeaker.setId(22);
+        cospeaker.setEmail("EMAIL");
+        cospeaker.addRole(Role.AUTHENTICATED);
+        String token = Utils.createTokenForUser(cospeaker);
+
+        when(userMapper.findByEmail("EMAIL")).thenReturn(cospeaker);
+        User speaker = new User().setId(21);
+        Proposal proposal = new Proposal().setId(25)
+            .setName("PROPOSAL_NAME")
+            .setSpeaker(speaker);
+        proposal.getCospeakers().add(cospeaker);
+
+        when(proposalMapper.findById(eq(25), anyString())).thenReturn(proposal);
+        Comment comment = new Comment();
+        comment.setId(10);
+        comment.setUser(speaker);
+        when(commentMapper.findById(eq(10), anyString())).thenReturn(comment);
+
+        mockMvc.perform(delete("/api/proposals/25/comments/10")
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .header("Authorization", "Bearer "+token)
+        )
+            .andDo(print())
+            .andExpect(status().isForbidden())
         ;
     }
 
@@ -350,17 +547,22 @@ public class CommentsControllerTest {
     @Test
     public void should_email_admins_if_comment_is_updated_by_speaker() throws Exception {
 
-        User user = new User();
-        user.setId(20);
-        user.setEmail("EMAIL");
-        user.addRole(Role.AUTHENTICATED);
-        String token = Utils.createTokenForUser(user);
+        User speaker = new User();
+        speaker.setId(20);
+        speaker.setEmail("EMAIL");
+        speaker.addRole(Role.AUTHENTICATED);
+        String token = Utils.createTokenForUser(speaker);
         Proposal proposal = new Proposal().setId(25)
             .setName("PROPOSAL_NAME")
-            .setSpeaker(user);
+            .setSpeaker(speaker);
 
-        when(userMapper.findByEmail("EMAIL")).thenReturn(user);
+        when(userMapper.findByEmail("EMAIL")).thenReturn(speaker);
         when(proposalMapper.findById(eq(25), anyString())).thenReturn(proposal);
+
+        Comment comment = new Comment();
+        comment.setId(10);
+        comment.setUser(speaker);
+        when(commentMapper.findById(eq(10), anyString())).thenReturn(comment);
 
         String updatedComment = Utils.getContent("/json/comments/update_comment.json");
 
@@ -374,7 +576,7 @@ public class CommentsControllerTest {
             .andExpect(status().isNoContent())
         ;
 
-        verify(emailingService).sendNewCommentToAdmins(eq(user), eq(proposal), anyString());
+        verify(emailingService).sendNewCommentToAdmins(eq(speaker), eq(proposal), anyString());
     }
 
     @Test

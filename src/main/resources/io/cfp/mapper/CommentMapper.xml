@@ -10,9 +10,11 @@
 
     <select id="findAll" parameterType="io.cfp.model.queries.CommentQuery" resultType="io.cfp.model.Comment">
         SELECT *,
-        u.email as "user.email",
-        u.firstname as "user.firstname",
-        u.lastname as "user.lastname"
+            c.proposal as "proposalId",
+            u.id as "user.id",
+            u.email as "user.email",
+            u.firstname as "user.firstname",
+            u.lastname as "user.lastname"
         FROM comments c
         LEFT OUTER JOIN users u on c.user = u.id
         <where>
@@ -26,6 +28,18 @@
                 AND c.internal = #{internal};
             </if>
         </where>
+    </select>
+
+    <select id="findById" resultType="io.cfp.model.Comment">
+        SELECT *,
+            c.proposal as "proposalId",
+            u.id as "user.id",
+            u.email as "user.email",
+            u.firstname as "user.firstname",
+            u.lastname as "user.lastname"
+        FROM comments c
+        LEFT OUTER JOIN users u on c.user = u.id
+        WHERE c.id = #{id} AND c.event_id = #{eventId}
     </select>
 
     <update id="update" parameterType="io.cfp.model.Comment">
