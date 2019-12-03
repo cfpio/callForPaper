@@ -20,16 +20,15 @@
 
 package io.cfp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
@@ -63,7 +62,7 @@ public class Proposal {
     private String scheduleHour;
     private Integer roomId;
 
-    private Set<User> cospeakers;
+    private Set<User> cospeakers = new HashSet<>();
 
     private String video;
     private String slides;
@@ -81,4 +80,13 @@ public class Proposal {
         }
         return res;
     }
+
+    @JsonIgnore
+    public Set<Integer> getSpeakersIds() {
+        Set<Integer> speakersIds = new HashSet<>();
+        speakersIds.add(this.getSpeaker().getId());
+        speakersIds.addAll(this.getCospeakers().stream().map(User::getId).collect(Collectors.toSet()));
+        return speakersIds;
+    }
+
 }

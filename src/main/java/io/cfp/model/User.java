@@ -27,6 +27,7 @@ import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -127,6 +128,10 @@ public class User {
         this.setPhone(null);
         this.setRoles(null);
         return this;
+    }
+
+    public boolean isOneOfTheSpeakersOf(Proposal proposal) {
+        return proposal.getSpeakersIds().contains(id);
     }
 }
 

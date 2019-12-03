@@ -85,6 +85,49 @@ public class CommentsControllerTest {
     }
 
     @Test
+    public void should_get_comments_of_its_proposals_when_user_is_cospeaker() throws Exception {
+
+        List<Comment> comments = new ArrayList<>();
+
+        Comment comment = new Comment()
+            .setId(10)
+            .setComment("COMMENT");
+
+        comments.add(comment);
+
+        when(commentMapper.findAll(any(CommentQuery.class))).thenReturn(comments);
+
+        User speaker = new User();
+        speaker.setId(1);
+        speaker.setEmail("EMAIL_SPEAKER");
+        speaker.addRole(Role.AUTHENTICATED);
+
+        User cospeaker = new User();
+        cospeaker.setId(2);
+        cospeaker.setEmail("EMAIL_COSPEAKER");
+        cospeaker.addRole(Role.AUTHENTICATED);
+        String token = Utils.createTokenForUser(cospeaker);
+
+        when(userMapper.findByEmail("EMAIL_COSPEAKER")).thenReturn(cospeaker);
+
+        Proposal proposal = new Proposal();
+        proposal.setSpeaker(speaker);
+        proposal.getCospeakers().add(cospeaker);
+        when(proposalMapper.findById(eq(25), anyString())).thenReturn(proposal);
+
+        mockMvc.perform(get("/api/proposals/25/comments")
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .header("Authorization", "Bearer "+token)
+        )
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$[0].id").value("10"))
+        ;
+    }
+
+    @Test
     public void should_get_all_comments_when_user_is_reviewers() throws Exception {
 
         List<Comment> comments = new ArrayList<>();
