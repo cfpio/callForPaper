@@ -264,8 +264,8 @@ public class ScheduleController {
         final Schedule[] schedules = new ObjectMapper().readValue(file.getBytes(), Schedule[].class);
         for (Schedule schedule : schedules) {
 
-
-            LocalDateTime eventStart = LocalDateTime.parse(schedule.getEventStart(), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY-MM-ddTHH:mm:ss");
+            LocalDateTime eventStart = LocalDateTime.parse(schedule.getEventStart(), formatter);
             Date eventDate = Date.from(eventStart.atZone(ZoneId.systemDefault()).toInstant());
 
             String hour = eventStart.format(DateTimeFormatter.ofPattern("HH:mm"));
